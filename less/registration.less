@@ -1,0 +1,94 @@
+@import "global_variables.less";
+
+.leadFormInfo{
+    margin:1.5em 0;
+    p{width:66.6667%;}
+}
+
+#reg_faq {
+    .panel-body {
+        div {
+        	margin:1em 0;
+            font-size: 12px;
+            p.question {
+                color: black;
+                font-weight:bold;
+                cursor: pointer;
+            }
+            span {
+                padding-left: .5em;
+            }
+            p{color:@dark-gray;}
+        }
+    }
+}
+
+.ui-scrollfix {
+	position:fixed;
+    top:120px;
+    width:350px;
+}
+
+.payment_radio {
+	input[type=radio] {
+		margin-right:.75em;
+	}
+}
+
+.books-btn{padding:.5em;}
+
+.books-btn:hover,.book-selected{
+    border:3px solid @dark-cyan;
+    background-color:#ffffff;
+    .box-shadow-mx(0px 0px 8px 0px #9DA7AE);
+    cursor:pointer;
+}
+
+.formHdr{margin-top:0;margin-bottom:0;}
+
+.regInfoPaymentCC {
+	border:1px solid #a94442;padding:.5em;margin:1em 0;border-radius: 5px;background-color:rgba(204,0,51,0.2);
+}
+
+.wiley-details{
+    display:block;width:100%;height:1.25em;margin:0 0 .50em .10em;
+    ul li{font-weight:bold;}
+}
+
+.credit-cards{
+    img{width:51px;height:32px;}
+}
+.secure-transaction{padding:2em 0;}
+
+// Chrome+1 CSS target for select
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
+        select{height:55px!important;}
+    }
+//
+
+table.examday-reminder-area {
+    td.text-left,td.text-right{border-top:none!important;}
+    td.text-right{padding-right:1em;}
+}    
+
+.spinInfo {
+    margin-top:10%;
+}
+
+@media @medium-devices {
+    .ui-scrollfix{
+        width:295px;
+    }
+}
+
+@media @small-devices {
+     .leadFormInfo{
+        p{width:100%;}
+    }   
+    .ui-scrollfix{
+        position:relative;
+        top:inherit;
+        left:inherit;
+        width:inherit;
+    }
+}

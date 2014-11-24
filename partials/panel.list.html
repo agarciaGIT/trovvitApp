@@ -1,0 +1,23 @@
+<div id="fieldlist" ng-controller="SFDCAppPanelListCtrl">
+
+  <div id="fieldListSpin"></div>
+
+  <div id="fieldListArea">
+
+    <div ng-if="panelInfo.allowEdit && panelInfo.recordData.length > 1">
+      <button type="button" class="btn garp-btn-orange" ng-click="addRecord(panelInfo.name)">Add</button>
+    </div>
+
+    <div ng-repeat="panelRecordItem in panelInfo.recordData | filter:criteriaMatch()">
+
+      <div ng-init="recordIndex = panelRecordItem.Id" ng-repeat="recordName in [panelInfo.name + ':' + panelRecordItem.Id]" ng-include="envPath + '/partials/panel.fields.html'"></div>
+
+    </div>
+
+    <div ng-if="panelInfo.allowEdit">
+      <button type="button" class="btn garp-btn-orange" ng-click="addRecord(panelInfo.name)">Add</button>
+    </div>
+    
+  </div>
+
+</div>

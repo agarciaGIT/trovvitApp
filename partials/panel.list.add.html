@@ -1,0 +1,15 @@
+<div class="container page-container">
+  <div id="spin"></div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb" style="color: black">
+        <li>{{panelRecord.title}}</li>
+        <li>Add</li>
+      </ol>
+    </div>
+  </div>
+
+  <div ng-repeat="recordName in [panelRecord.name]" ng-include="envPath + '/partials/panel.fields.html'"></div>
+  
+</div>

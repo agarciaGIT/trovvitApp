@@ -1,0 +1,29 @@
+[
+	{
+		"id":"0001",
+		"date":"2/3/2014",
+		"endDate" : "",
+		"time" : "7:30pm",
+		"location" : "23 E 57th St. New York NY 10038",
+		"title":"NYC Chapter Meeting",
+		"description":""
+	},
+	{
+		"id":"0002",
+		"date":"2/15/2014",
+		"endDate" : "",
+		"time" : "1:00pm",
+		"location" : "http://www.on24.com/webcast/1234",
+		"title":"Risk Web Cast",
+		"description":""
+	},
+	{
+		"id":"0003",
+		"date":"3/14/2014",
+		"endDate" : "3/16/2014",
+		"time" : "",
+		"location" : "Jacob Javits Center 304 W. 45th St. New York, NY 10035",
+		"title":"GARP Convention",
+		"description":""
+	}
+]

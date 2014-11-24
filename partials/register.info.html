@@ -1,0 +1,352 @@
+<div class="container page-container">
+
+  <div id="spin"></div>
+  
+  <div class="row leadFormInfo" ng-if="contactNotFound==1">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Sorry your account was not located. Please contact support!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row leadFormInfo" ng-if="!contactNotFound">
+    <div ng-if="regInfo.regType=='frm'" class="col-md-12">
+      <h1>Thank you for registering</h1>
+      <p>In order to complete your registration and sit for the exam please fill in the following information.</p>
+    </div>
+  </div>
+
+  <div class="row" ng-if="!contactNotFound">
+    <div class="col-lg-4 col-md-4 hidden-sm hidden-xs pull-right" id="reg_faq">
+        <div class="panel panel-default" ui-scrollfix="+100">
+            <div class="panel-body">
+                <div class="panel-title">
+                    <h3>Frequently Asked Questions</h3>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown1 = !arrowDown1">
+                        Q: When is the deadline to pay for the FRM Exam?
+                        <span ng-show="!arrowDown1">&#9656;</span>
+                        <span ng-show="arrowDown1">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown1">
+                        In order for your exam registration to be considered complete, payment must have been received by GARP by midnight, EDT, on the closing date of each registration period. For the May 2015 FRM Exam, these dates are: January 31, 2015; February 28, 2015; or April 15, 2015, respectively. Late payments will be charged additional fees.
+                    </p>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown2 = !arrowDown2">
+                        Q: How can I make secure payments?
+                        <span ng-show="!arrowDown2">&#9656;</span>
+                        <span ng-show="arrowDown2">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown2">
+                        Payments can be made online with a credit card. There is a US$50 processing fee that will be added to your invoice for any manual credit card payments. Complete the credit card payment portion found on the bottom of your invoice.
+                    </p>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown3 = !arrowDown3">
+                        Q: How can I pay for the Exam?
+                        <span ng-show="!arrowDown3">&#9656;</span>
+                        <span ng-show="arrowDown3">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown3">
+                        GARP accepts Visa, MasterCard, and American Express. Only single payments per candidate registration are accepted online. If you are paying for more than one candidate using the same credit card, please submit your payment via fax.
+                    </p>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown4 = !arrowDown4">
+                        Q: Can I pay by check?
+                        <span ng-show="!arrowDown4">&#9656;</span>
+                        <span ng-show="arrowDown4">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown4">
+                        GARP accepts checks from a US bank, in US Dollars and/or only foreign checks with US intermediate banks.Print out your invoice in order to post it with a US issued bank draft/ check. The check amount should include the US$50 processing fee. Checks should be made payable to the Global Association of Risk Professionals. Your full name and GARP ID must be written on your check. If this information is not provided, your payment cannot be processed.
+                    </p>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown5 = !arrowDown5">
+                        Q: Where should I mail my invoice and check?
+                        <span ng-show="!arrowDown5">&#9656;</span>
+                        <span ng-show="arrowDown5">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown5">
+                        Attn: FRM Administration
+                        <br />Global Association of Risk Professionals
+                        <br />111 Town Square Place, 14th Fl.
+                        <br />Jersey City, NJ 07310 USA
+                    </p>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown6 = !arrowDown6">
+                        Q: If I choose to fax my invoice/the payment, where do I send my completed form?
+                        <span ng-show="!arrowDown6">&#9656;</span>
+                        <span ng-show="arrowDown6">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown6">
+                        Please fax it to us at: +1.201.222.5022
+                    </p>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown7 = !arrowDown7">
+                        Q: Can I pay by wire transfer?
+                        <span ng-show="!arrowDown7">&#9656;</span>
+                        <span ng-show="arrowDown7">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown7">
+                        Yes. Please direct wire transfer payments in US dollars. A US$50 bank fee will be added to your invoice for each wire transfer. Please note that this bank charge is imposed by the bank. GARP has no control over this fee and does not receive any portion of the fee. Be sure to include your full name, GARP ID and invoice number on your wire transfer. If this information is not provided, your payment cannot be processed.
+                    </p>
+                </div>
+                <div>
+                    <p class="question" ng-click="arrowDown8 = !arrowDown8">
+                        Q: Can I get a refund?
+                        <span ng-show="!arrowDown8">&#9656;</span>
+                        <span ng-show="arrowDown8">&#9662;</span>
+                    </p>
+                    <p ng-show="arrowDown8">
+                        There are no refunds given under any circumstances for either the FRM Exam registration fee or the FRM Exam enrollment fee.
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        If you have any questions not answered above don't hesitate to reach out to <a href="emailto:memberservices@garp.org">memberservices@garp.org</a> or call us at <a href="tel:+12012225022">+1.201.222.5022</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8 col-md-8 col-sm-12 pull-left">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form name="regForm.main" ng-submit="submitForm(regForm.main).$valid" class="css-form" novalidate>
+
+            <div ng-if="regInfo.regType=='frm' || regInfo.regType=='erp'">
+
+              <div class="row" >
+                <div class="col-md-12">
+                  <h4 class="formHdr">Exam Identification</h4>
+                </div>
+                <div class="col-md-12">
+                  &nbsp;
+                </div>                
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                </div>
+              </div>              
+              <div class="row">
+                <div class="form-group col-md-12">
+                  <input type="radio" name="idtype" value="pass" ng-model="regInfo.idtype" ng-disabled="contact.ID_Type__c"> Passport &nbsp;&nbsp;
+                  <input type="radio" name="idtype" value="drive" ng-model="regInfo.idtype" ng-disabled="contact.ID_Type__c"> Drivers License &nbsp;&nbsp;
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6" ng-class="{ 'has-error' : regForm.main.idnum.$invalid && submitted }">
+                  <span class="in-input">ID Number</span>
+                  <input autocomplete="on" class="form-control" type="text" name="idnum" id="idnum" ng-model="regInfo.idnum" ng-minLength="2" ng-maxLength="125" ng-disabled="contact.ID_Number__c" required>
+                  <p ng-show="regForm.main.idnum.$error.required && submitted" class="help-block">Your id number is required to take the exam.</p>
+                  <p ng-show="regForm.main.idnum.$error.minlength && submitted" class="help-block">Your id number must be at least two characters.</p>
+                  <p ng-show="regForm.main.idnum.$error.maxlength && submitted" class="help-block">Your id number can not be more than 125 characters.</p>          
+                </div>
+                <div class="form-group col-md-6" ng-class="{ 'has-error' : regForm.main.idname.$invalid && submitted }">
+                  <span class="in-input">Name as it appears on ID</span>
+                  <input autocomplete="on" class="form-control" type="text" name="idname" id="idname" ng-model="regInfo.idname" ng-minLength="2" ng-maxLength="125" ng-disabled="contact.Name_As_it_Appears_On_ID__c" required>
+                  <p ng-show="regForm.main.idname.$error.required && submitted" class="help-block">Your name as it appears on your ID is required to take the exam.</p>
+                  <p ng-show="regForm.main.idname.$error.minlength && submitted" class="help-block">Your name as it appears on your ID must be at least two characters.</p>
+                  <p ng-show="regForm.main.idname.$error.maxlength && submitted" class="help-block">Your name as it appears on your ID can not be more than 125 characters.</p>    
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                   <p ng-if="contact.Name_As_it_Appears_On_ID__c">Note: This information can only be changed by contacting support.</p>
+                </div>
+              </div>
+            </div>    
+
+            <div class="row"><hr /></div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <h4 class="formHdr">Job Information</h4>
+                </div>
+                <div class="col-md-6">
+                </div>                
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12"></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <strong>Are you currently employed?</strong>
+                </div>
+                <div class="col-md-6">
+                </div>                
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12"></div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12">
+                  <input type="radio" name="employed" value="working" ng-model="regInfo.employed"> Yes I am currently working &nbsp;&nbsp;
+                  <input type="radio" name="employed" value="notworking" ng-model="regInfo.employed"> No I am not currently working &nbsp;&nbsp;
+                  <input type="radio" name="employed" value="student" ng-model="regInfo.employed"> I am a student &nbsp;&nbsp;
+                </div>                
+              </div>
+              <div ng-if="regInfo.employed=='working'">
+
+                <div class="row">
+                  <div class="form-group col-md-12"></div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <span class="in-input">What company do you work for?</span>
+                    <input autocomplete="on" class="form-control" type="text" name="company" id="company" ng-model="regInfo.company" data-typeahead="company for company in companies | limitTo:8" ng-maxLength="255" visited>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <span class="in-input">What industry do you work in?</span>
+                    <select class="form-control" ng-model="regInfo.industry" ng-options="s.name for s in industries">
+                        <option value="">Select Option</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <span class="in-input">What is your corporate title?</span>
+                    <select class="form-control" ng-model="regInfo.title" ng-options="s.name for s in titles">
+                        <option value="">Select Option</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <span class="in-input">What is your job function?</span>
+                    <select class="form-control" ng-model="regInfo.jobfunction" ng-options="s.name for s in jobs">
+                        <option value="">Select Option</option>
+                    </select>
+                  </div>
+                </div>
+
+
+                <div class="row">
+                  <div class="form-group col-md-12"></div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <strong>How many years have you held this job?</strong>
+                  </div>
+                  <div class="col-md-6">
+                  </div>                
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-12"></div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-12">
+                    <input type="radio" name="worked" value="0-1" ng-model="regInfo.worked"> 0 - 1 &nbsp;&nbsp;
+                    <input type="radio" name="worked" value="2-5" ng-model="regInfo.worked"> 2 - 5 &nbsp;&nbsp;
+                    <input type="radio" name="worked" value="6-10" ng-model="regInfo.worked"> 6 - 10 &nbsp;&nbsp;
+                    <input type="radio" name="worked" value="10+" ng-model="regInfo.worked"> 10+ &nbsp;&nbsp;
+                  </div>                
+                </div>
+
+                <div class="row">
+                  <div class="form-group col-md-12"></div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <strong>Do you currently hold any professional designations?</strong>
+                  </div>
+                  <div class="col-md-6">
+                  </div>                
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-12"></div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-12">
+                    <input type="checkbox" name="cfa" ng-model="regInfo.cfa"> CFA &nbsp;&nbsp;
+                    <input type="checkbox" name="cpa" ng-model="regInfo.cpa"> CPA &nbsp;&nbsp;
+                    <input type="checkbox" name="pmp" ng-model="regInfo.pmp"> PMP &nbsp;&nbsp;
+                    <input type="checkbox" name="acca" ng-model="regInfo.acca"> ACCA &nbsp;&nbsp;
+                    <input type="checkbox" name="cma" ng-model="regInfo.cma"> CMA &nbsp;&nbsp;
+                    <input type="checkbox" name="ca" ng-model="regInfo.ca"> CA &nbsp;&nbsp;
+                    <input type="checkbox" name="other" ng-model="regInfo.other"> Other &nbsp;&nbsp;
+                  </div>                
+                </div>
+
+                <div class="row" ng-show="regInfo.other">
+                  <div class="form-group col-md-6">
+                    <span class="in-input"> Other designation</span>
+                    <input type="text" class="form-control" ng-model="regInfo.other.designation" name="designation" id="designation" maxLength="255"></div>
+                </div>
+              </div>
+
+              <div class="row"><hr /></div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <h4 class="formHdr">Academic Information</h4>
+                </div>
+                <div class="col-md-6">
+                </div>                
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12"></div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <span ng-if="regInfo.employed=='working'" class="in-input">What school did you attend?</span>
+                  <span ng-if="regInfo.employed!='working'" class="in-input">What school are you attending?</span>
+                  <input autocomplete="on" class="form-control" type="text" name="school" id="school" ng-model="regInfo.school" ng-maxLength="255" visited>
+                </div>
+                <div class="form-group col-md-6">
+                  <span ng-if="regInfo.employed=='working'" class="in-input">What degree did you receive?</span>
+                  <span ng-if="regInfo.employed!='working'" class="in-input">What degree are you working on?</span>
+                  <input autocomplete="on" class="form-control" type="text" name="degree" id="degree" ng-model="regInfo.degree" ng-maxLength="255" visited>
+                </div>
+              </div>
+
+              <div class="row"><hr /></div>
+              <div class="row">
+                <div class="col-md-6">
+                  <h4 class="formHdr">Newsletters and Promotions</h4>
+                </div>
+                <div class="col-md-6">
+                </div>                
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12"></div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12">
+                  <input type="checkbox" name="help" ng-model="regInfo.help"> Need extra help? Sign up to receive information fro GARP's approved exam providers.
+                </div>                
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12"></div>
+              </div>
+              <div class="row">
+                <div class="form-group col-md-12">
+                  <input type="checkbox" name="offers" ng-model="regInfo.offers"> I'd like to receive emails/special offers from carefully selected partners.
+                </div>                
+              </div>
+
+              <div class="row"><hr /></div>
+
+              <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-8">
+                   <button type="submit" name="continue" class="btn btn-xl btn-block garp-btn-orange">Continue</button>
+                </div>
+                <div class="col-lg-1 col-lg-offset-3 pull-right" style="margin:2em 0;">
+                   <a ng-click="skip()">Skip</button>
+                </div>
+              </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

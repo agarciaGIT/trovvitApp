@@ -1,0 +1,367 @@
+/*global variables*/
+/*colors*/
+@dark-blue:#285E73;
+@light-grey:#DDDDDD;
+@medium-grey:#AAAAAA;
+@cyan:#00A2DD;
+@dark-cyan:#49A8CE;
+@viridian:#00AB91;
+@dark-viridian:#00876E;
+@dark-gray:#6E6E6E;
+@vermillion:#F05123;
+@dark-vermillion:#C44826;
+@chartreuse:#B0C636;
+@dark-chartreuse:#849C3A;
+@saffron:#FDB515;
+@dark-saffron:#CE9126;
+@fuschia:#B8258F;
+@dark-fuschia:#7F236E;
+@white:#FFFFFF;
+/*media queries*/
+@large-devices:~"(min-width: 1200px)";
+@medium-devices:~"(max-width: 1199px)";
+@small-devices:~"(max-width: 991px)";
+@extra-small-devices: ~"(max-width: 767px)";
+@mobile-landscape:~"(max-width: 480px)";
+@mobile-portrait:~"(max-width: 321px)";
+@tablet-landscape:~"(max-device-width: 1023px) and (orientation: landscape)";
+@tablet-portrait:~"(max-device-width: 768px) and (orientation: portrait)";
+/*@font-face CSS*/
+
+@font-face {
+    font-family: 'opensans_light';
+    src: url('../fonts/open-sans/opensans_light/OpenSans-Light.eot');
+    src: url('../fonts/open-sans/opensans_light/OpenSans-Light.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/open-sans/opensans_light/OpenSans-Light.svg#OpenSans-Light') format('svg'),
+         url('../fonts/open-sans/opensans_light/OpenSans-Light.woff') format('woff'),
+         url('../fonts/open-sans/opensans_light/OpenSans-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'opensans_regular';
+    src: url('../fonts/open-sans/opensans_regular/OpenSans-Regular.eot');
+    src: url('../fonts/open-sans/opensans_regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/open-sans/opensans_regular/OpenSans-Regular.svg#OpenSans-Regular') format('svg'),
+         url('../fonts/open-sans/opensans_regular/OpenSans-Regular.woff') format('woff'),
+         url('../fonts/open-sans/opensans_regular/OpenSans-Regular.ttf') format('truetype');
+      
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'opensans_semibold';
+    src: url('../fonts/open-sans/opensans_semibold/OpenSans-Semibold.eot');
+    src: url('../fonts/open-sans/opensans_semibold/OpenSans-Semibold.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/open-sans/opensans_semibold/OpenSans-Semibold.svg#OpenSans-Semibold') format('svg'),
+         url('../fonts/open-sans/opensans_semibold/OpenSans-Semibold.woff') format('woff'),
+         url('../fonts/open-sans/opensans_semibold/OpenSans-Semibold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'opensans_bold';
+    src: url('../fonts/open-sans/opensans_bold/OpenSans-Bold.eot');
+    src: url('../fonts/open-sans/opensans_bold/OpenSans-Bold.eot?#iefix') format('embedded-opentype'),
+         url('../open-sans/opensans_bold/OpenSans-Bold.svg#OpenSans-Bold') format('svg'),
+         url('../fonts/open-sans/opensans_bold/OpenSans-Bold.woff') format('woff'),
+         url('../open-sans/opensans_bold/OpenSans-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'robotoslab_light';
+    src: url('../fonts/roboto-slab/robotoslab_light/RobotoSlab-Light.eot');
+    src: url('../fonts/roboto-slab/robotoslab_light/RobotoSlab-Light.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto-slab/robotoslab_light/RobotoSlab-Light.svg#RobotoSlab-Light') format('svg'),
+         url('../fonts/roboto-slab/robotoslab_light/RobotoSlab-Light.woff') format('woff'),
+         url('../fonts/roboto-slab/robotoslab_light/RobotoSlab-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/*fonts*/
+@robotoslab_light:'robotoslab_light', Arial, sans-serif;
+@opensans_regular:'opensans_regular', Arial, sans-serif;
+@opensans_light:'opensans_light', Arial, sans-serif;
+@opensans_semibold:'opensans_semibold', Arial, sans-serif;
+@opensans_bold:'opensans_bold', Arial, sans-serif;
+@arial:Arial, Helvetica, sans-serif;
+
+/*ng-cloak*/
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+
+/*text-classes*/
+.cyan{color:@cyan!important;}
+.dark-blue{color:@dark-blue!important;}
+.light-grey{color:@light-grey!important;}
+.medium-grey{color:@medium-grey!important;}
+.dark-cyan{color:@dark-cyan!important;}
+.dark-gray{color:@dark-gray!important;}
+.saffron{color:@saffron!important;}
+.dark-saffron{color:@dark-saffron!important;}
+.viridian{color:@viridian!important;}
+.dark-viridian{color:@dark-viridian!important;}
+.vermillion{color:@vermillion!important;}
+.dark-vermillion{color:@dark-vermillion!important;}
+.chartreuse{color:@chartreuse!important;}
+.dark-chartreuse{color:@dark-chartreuse!important;}
+.fuschia{color:@fuschia!important;}
+.dark-fuschia{color:@dark-fuschia!important;}
+
+/*button classes for microsites*/
+.btn-xl{padding:1em 3em;}
+.btn-cyan{background-color:@cyan;color:white;}
+.btn-cyan:hover,.btn-cyan:active,.btn-cyan:focus{background-color:@dark-cyan;color:white;} 
+.btn-chartreuse{background-color:@dark-chartreuse;}
+.btn-chartreuse:hover,.btn-chartreuse:active,.btn-chartreuse:focus{background-color:@chartreuse;}
+.ftr-include{clear:both;}
+
+
+// FORM ELEMENTS
+// -------------------------------------------------------------
+    label{
+        color:@dark-gray;
+    }
+    label.valError {
+        color: red;
+    }
+    input[type="text"],input[type="password"],input[type="email"],textarea{
+        color:#666;
+    }    
+    // Shadows on inputs in Mac/Safari/Mobile FF 
+    input[type="search"]{
+      //-webkit-appearance: caret; /* for chrome */
+      -moz-appearance: caret; /* mobile firefox too! */
+    }
+    .form-control::-moz-placeholder {
+        color: #666;
+    }
+    .form-control::-webkit-input-placeholder {
+        color: #666;
+    }
+    .form-control::-moz-placeholder {
+        color: #666;
+    }
+    .form-control::-ms-input-placeholder {
+        color: #666;           
+    }
+    
+
+// BUTTONS
+// -------------------------------------------------------------
+    .garp-btn-blue,.garp-btn-green,.garp-btn-orange{
+        color:white!important;
+        .opacity-mx(.80);
+        margin:1.5em auto;
+        -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=75)';
+        filter: alpha(opacity=75);        
+    }    
+    .garp-btn-blue:hover,.garp-btn-green:hover,.garp-btn-orange:hover,
+    .garp-btn-blue:focus,.garp-btn-green:focus,.garp-btn-orange:focus,
+    .garp-btn-blue:active,.garp-btn-green:active,.garp-btn-orange:active{
+        .opacity-mx(100);.transition-mx(all 1s ease);
+        -ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)';
+        filter: alpha(opacity=100);
+        outline:0;
+        text-decoration:none;
+    }    
+
+    .garp-btn-blue{
+        background-color:@dark-blue;
+        border:1px solid @cyan;
+    }
+    .garp-btn-blue:hover,.garp-btn-blue:focus{
+        color:@saffron;
+        border:1px solid @saffron;   
+    }    
+    .garp-btn-green{
+        background-color:@dark-chartreuse;
+        border:1px solid white;
+    }
+    .garp-btn-green:hover,.garp-btn-green:focus{
+        color:white;
+        border:1px solid white;
+    }    
+    .garp-btn-orange{
+        background-color:@dark-blue;
+        border:1px solid @cyan;
+    }
+    .garp-btn-orange:hover,.garp-btn-orange:focus{
+        color:@vermillion;
+        border:1px solid @vermillion;      
+    }    
+    .garp-btn-white{
+        background-image:url('../img/bg/light_noise_diagonal.png');
+        background-position:center center!important;
+        background-repeat:repeat;
+        border:1px solid @cyan;
+        margin:1.5em 0;
+        color:@cyan;
+    }
+    .garp-btn-white:hover{
+        background-image:none;
+        background-color:white;
+        .transition-mx(all 1s ease);
+        text-decoration:none;
+    }
+
+    // WHITE BUTTON WITHOUT BACKGROUND PNG
+    .garp-btn-portal{
+        background-color:@white;
+        border:1px solid @dark-cyan;
+        margin:1.5em 0;
+        color:@dark-cyan!important;
+    }
+    .garp-btn-portal:hover{
+        background-color:@dark-cyan;
+        border:1px solid @dark-cyan;        
+        .transition-mx(all 1s ease);
+        color:white!important;
+        text-decoration:none;
+    }
+
+    .materials-checkbox{ 
+      display:inline-block;
+      height:16px;
+      width:16px;
+      font-size:16px;
+      line-height:14px;
+      border:1px solid #9E9E9E;
+      cursor:pointer;
+    } 
+
+// HAS ERROR
+
+.has-error{ 
+    p.help-block{text-align:left;}
+    //input,textarea{background-color:rgba(204,0,51,0.2);}
+    textarea{border:1px solid #a94442;}
+    select label,span.in-input{color: #a94442;}
+}
+
+// CUSTOM BOOTSTRAP BREADCRUMB
+
+.breadcrumb{
+    margin-top:35px;
+    background-color:rgb(218, 241, 242);
+    border:1px solid @light-grey;
+} 
+
+// TYPOGRAPHY FIX
+// -------------------------------------------------------------
+html {
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+
+// For Responsive Videos
+// -------------------------------------------------------------
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; // 56.25% for 16:9 aspect ratio; use 75% for videos with 4:3 aspect ratio
+    padding-top: 35px;
+    margin: 3em 0;
+    height: 0;
+    overflow: hidden;
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+}
+
+
+/*Mixins*/
+   // Placeholder text Mixin
+    .placeholder-mx(@color: @placeholderText) {
+        :-moz-placeholder {
+            color: @color;
+        }
+        ::-webkit-input-placeholder {
+            color: @color;
+        }
+        ::-moz-placeholder {
+            color: @color;
+        }
+        :-ms-input-placeholder {
+            color: @color;            
+        }    
+    }  
+
+     // for one background size
+    .bgsize-mx(@value) {
+	    -webkit-background-size: @value;
+	    -moz-background-size: @value;
+	    -o-background-size: @value;
+	    background-size: @value;	           
+    }        
+        
+     // for multiple background sizes
+    .multi-bgsize-mx(@value1, @value2){
+	    -webkit-background-size: @value1, @value2;
+	    -moz-background-size: @value1, @value2;
+	    -o-background-size: @value1, @value2;
+	    background-size: @value1, @value2;	           
+    }
+    
+    // box-shadow css
+    .box-shadow-mx(@string) {
+	    -webkit-box-shadow: @string;
+	    -moz-box-shadow: @string;
+	    -ms-box-shadow: @string;
+	    -o-box-shadow: @string;
+	    box-shadow: @string;        
+    }
+
+    // border-radius
+    .border-radius-mx(@value) {
+        -moz-border-radius: @value;
+        -webkit-border-radius: @value;
+        border-radius: @value;        
+    }  
+    // transition css animation
+    // @properties = [transition-property] [transition-duration] [transition-timing-function] [transition-delay];
+    .transition-mx(@properties) {
+        -moz-transition: @properties;
+        -o-transition: @properties;
+        -webkit-transition: @properties;
+        transition: @properties;      
+    }        
+    
+    // opacity
+    .opacity-mx(@decimal) {
+    	-webkit-opacity:@decimal;
+	    -moz-opacity:@decimal;
+    	opacity:@decimal;   
+    }
+    .animation-mx(@properties) {
+       -webkit-animation: @properties;
+	   -moz-animation: @properties;
+	   -ms-animation: @properties;
+	   animation: @properties;         
+    }  
+
+    .clearfix {
+      *zoom: 1;
+      &:before,
+      &:after {
+        display: table;
+        content: "";
+      }
+      &:after {
+        clear: both;
+      }
+    }

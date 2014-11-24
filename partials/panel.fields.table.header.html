@@ -1,0 +1,5 @@
+<tr class="row" ng-controller="SFDCAppPanelFieldsCtrl">
+  <td ng-repeat="panelFieldItem in panelRecord.fieldRecords | filter:criteriaMatch(panelFieldItem)">
+    {{panelFieldItem.label}}
+  </td>
+</tr>

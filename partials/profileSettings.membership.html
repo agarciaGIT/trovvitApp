@@ -1,0 +1,201 @@
+<div class="row topNavClr top-nav">
+    <div class="container" style="margin-top: 18px;">
+
+        <div class='profileSettingsTxt'>Profile &amp; Settings</div>
+        <div class="adjustSettingHeader container-fluid">
+            <div class="col-lg-12">
+                <ul class="headerUser nav nav-tabs">
+                    <li>
+                        <a href="" class='userOptions' ng-click="navigate('profileSettingsPersonalInformation')">Personal Information</a>
+                    </li>
+                    <li>
+                        <a href="" class='userOptions' ng-click="navigate('profileSettingsEmail')">Email Preferences</a>
+                    </li>
+                    <li>
+                        <a href="" class='userOptions' ng-click="navigate('profileSettingsDirectory')">Directory Settings</a>
+                    </li>
+                    <li>
+                        <a href="" class='userOptions' ng-click="navigate('profileSettingsChapters')">Preferred Chapters</a>
+                    </li>
+                    <li>
+                        <a href="" class='userOptions' ng-click="navigate('profileSettingsMembership')">Membership</a>
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+
+    </div>
+</div>
+
+<div class="container page-container">
+
+    <div id="spin"></div>
+
+    <div id="subSpin"></div>
+
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Your Membership</h1>
+                </div>
+                <div class="col-md-12">
+                    Bacon ipsum dolor sit amet pancetta corned beef short ribs andouille. Chicken shankle hamburger frankfurter bresaola, brisket porchetta venison pig leberkas sirloin beef ham hock chuck. Landjaeger kevin biltong, rump ball tip t-bone strip steak sirloin chicken pig shoulder ham hock brisket. Sausage brisket kielbasa bresaola pork chop tbone tail.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">&nbsp;
+                </div>
+            </div>
+
+            <div id="formArea" class="row">
+                <div class="col-md-6">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <b>GARP ID</b>
+                            <br>{{userData.contactData.GARP_ID__c}}
+                        </div>
+                        <div class="col-md-6">
+                            <b>Member type</b>
+                            <br>{{userData.contactData.Membership_Type__c}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">&nbsp;
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <b>Member Since</b>
+                            <br>{{getEpochDateText(userData.membershipContract.StartDate)}}
+                        </div>
+                        <div class="col-md-6">
+                            <b>Membership expires</b>
+                            <br>{{getEpochDateText(userData.membershipContract.EndDate)}}
+                        </div>
+                    </div>
+                    <div ng-if="userData.membershipContract.Status.indexOf('Activated') == -1">
+                        <div class="row">
+                            <div class="col-md-12">&nbsp;
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="color:orange">
+                                <h3>Your membership has expired!</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                    <div class="row" style="border:1px solid #8a6d3b;background-color: #EEAD8A;margin: 5px;padding: 5px;border-radius: 5px;">
+                        <div class="col-md-12">
+                            <div ng-if="userData.membershipContract.Status.indexOf('Activated') == -1">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span><b>Membership Renewal</b></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">&nbsp;</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        Your membership has expired. To renew your membership choose a memebrship type below and complete the checkout process.
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div>
+                                            <select name="type" ng-model="memberType" ng-change="onSelectType(memberType)">
+                                                <option value="{{MEMBER_PROD_CODE}}" selected>Individual Membership - ${{IndividualMembership}}</option>
+                                                <option ng-if="studentMembership" value="{{MEMBER_STUDENT_PROD_CODE}}">Student Membership - ${{studentMembership}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <div>
+                                                <div>
+                                                    <select class="ng-pristine ng-invalid ng-invalid-required" data-ng-model="paymentMethod" name="paymentMethod" ng-class="{valError : validationErrors && !paymentMethod}" ng-change="onSelectPay(paymentMethod)" required="">
+                                                        <option value="" selected="" disabled="">Please select a method of payment</option>
+                                                        <option data-ng-if="userData.accountData.BillingCountry !== 'Nigeria' && userData.accountData.BillingCountry !==  'Ghana'" value="creditCard" class="ng-scope">Credit Card</option>
+                                                        <option data-ng-if="userData.accountData.BillingCountry !== 'Nigeria' && userData.accountData.BillingCountry !==  'Ghana'" value="deferredCreditCardFax" class="ng-scope">credit card by fax (processing fee $50.00)</option>
+                                                        <option data-ng-if="userData.accountData.BillingCountry !== 'Nigeria' && userData.accountData.BillingCountry !==  'Ghana'" value="deferredCheck" class="ng-scope">check (processing fee $50.00)</option>
+                                                        <option value="deferredWireTransfer">wire transfer (processing fee $50.00)</option>
+                                                    </select>
+                                                </div>
+                                                <div><b>Total Cost:</b> ${{formatAmountDisplay(membership + fee)}}
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <input type="checkbox" ng-model="autoRenew">Auto-Renew my membership
+                                            </div>
+
+                                            <div>
+                                                <button name="searchButton" ng-click="purchase(memberType, paymentMethod)" class="btn garp-btn-orange">Purchase</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="userData.membershipContract.Status.indexOf('Activated') > -1">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span><b>Membership Auto Renewal</b></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">&nbsp;</div>
+                            </div>
+                            <div class="row">
+                                <div ng-if="userData.contactData.Membership_Type__c == 'Student'" class="col-md-12">
+                                    GARP will automatically renew my Student membership at the current rate (US ${{formatAmountDisplay(regProducts.MEMS.dMemberAmt)}}) the day it expires using the samepreviously used credit card.
+                                </div>
+                                <div ng-if="userData.contactData.Membership_Type__c != 'Student'" class="col-md-12">
+                                    GARP will automatically renew my Individual membership at the current rate (US ${{formatAmountDisplay(regProducts.MEMI.dMemberAmt)}}) the day it expires using the samepreviously used credit card.
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">&nbsp;</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <input bs-switch ng-model="autoRenew" type="checkbox" switch-active="true" switch-on-text="ON" switch-off-text="OFF" switch-on-color="success" switch-off-color="danger" switch-animate="true" switch-size="small" switch-label="" switch-icon="" switch-radio-off="false" ng-change="switchToggle()">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-12">&nbsp;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">&nbsp;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">&nbsp;
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+

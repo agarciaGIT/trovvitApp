@@ -1,0 +1,895 @@
+<div class="container page-container">
+
+    <div ng-if="ccProcess" class='spinInfo row'>
+        <div class='col-lg-12'>
+            <div id='heading'>
+                <h2 class="text-center">Processing Your Order</h2>
+            </div>
+        </div>
+    </div>
+
+    <div id='spin'></div>
+
+    <div ng-if="!ccProcess && loaded==1" class="row">
+
+        <div ng-if="regInfo.regType=='frm'" class="col-lg-12 leadFormInfo">
+            <h1>FRM Certification</h1>
+            <h2 ng-if="regProducts.FRMPartOne.strProductCode == 'FRM1E'">Early Registration</h2>
+            <h2 ng-if="regProducts.FRMPartOne.strProductCode == 'FRM1S'">Standard Registration</h2>
+            <h2 ng-if="regProducts.FRMPartOne.strProductCode == 'FRM1L'">Late Registration</h2>
+            <p>The FRM Certification is the globally recognized standard for those who manage risk.</p>
+            <h3>Exam is on {{getEpochDateText(testDate)}}</h3>
+        </div>
+
+        <div ng-if="regInfo.regType=='erp'" class="col-lg-12 leadFormInfo">
+            <h1>ERP Certification</h1>
+            <h2 ng-if="regProducts.ERP.strProductCode == 'ENCE'">Early Registration</h2>
+            <h2 ng-if="regProducts.ERP.strProductCode == 'ENCS'">Standard Registration</h2>
+            <h2 ng-if="regProducts.ERP.strProductCode == 'ENCL'">Late Registration</h2>
+            <p>The ERP Certification (US${{formatAmountDisplay(examOptions[0].price)}}) is the globally recognized standard for those who manage energy risk.</p>
+            <h3>Exam is on {{getEpochDateText(testDate)}}</h3>
+        </div>
+
+        <div ng-if="regInfo.regType=='icbrr'" class="col-lg-12 leadFormInfo">
+            <h1>International Certificate of Banking<br />Risk and Regulation</h1>
+            <p>ICBRR (US${{formatAmountDisplay(regProducts.ICBRR.dCBRNonMemberExamAmt)}} / US${{formatAmountDisplay(regProducts.ICBRR.dCBRMemberExamAmt)}} with Membership) delivers a deep, qualitative understanding of risk management methodologies, governance structures for the management of risk in banks, and the regulatory principles outlined by the Basel Committee on Banking Supervision. Successful candidates will be better prepared to recognize potential problems associated with risk assessment, mitigation and management.</p>
+        </div>
+
+        <div ng-if="regInfo.regType=='fbr'" class="col-lg-12 leadFormInfo">
+            <h1>Foundations of Banking Risk</h1>
+            <p>FBR (US${{formatAmountDisplay(regProducts.FBR.dFCBRNonMemberExamAmt)}} / US${{formatAmountDisplay(regProducts.FBR.dFCBRMemberExamAmt)}} with Membership) is a self-guided interactive program that covers how banks operate, how they're governed and how they're regulated. Learn the basics about the main risks banks take -- credit, market and operational -- and how international regulation, including the Basel Accords, affect the management of these risks.</p>
+        </div>
+
+        <div ng-if="regInfo.regType=='individual'" class="col-lg-12 leadFormInfo">
+            <h1>Individual Membership</h1>
+            <p>Individual Members (US$ {{formatAmountDisplay(membershipOptions[0].price)}}) have the advantage of a comprehensive collection of benefits delivering expert knowledge and global networking.</p>
+        </div>
+
+        <div ng-if="regInfo.regType=='student'" class="col-lg-12 leadFormInfo">
+            <h1>Student Membership</h1>
+            <p>Student Members (US$ {{formatAmountDisplay(membershipOptions[0].price)}}) have the advantage of a comprehensive collection of benefits delivering expert knowledge and global networking.</p>
+        </div>
+
+        <div class="col-lg-4 col-md-4 hidden-sm hidden-xs pull-right" id="reg_faq">
+            <div class="panel panel-default" ui-scrollfix="+100">
+                <div class="panel-body">
+                    <div class="panel-title">
+                        <h3>Frequently Asked Questions</h3>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown1 = !arrowDown1">
+                            Q: When is the deadline to pay for the FRM Exam?
+                            <span ng-show="!arrowDown1">&#9656;</span>
+                            <span ng-show="arrowDown1">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown1">
+                            In order for your exam registration to be considered complete, payment must have been received by GARP by midnight, EDT, on the closing date of each registration period. For the May 2015 FRM Exam, these dates are: January 31, 2015; February 28, 2015; or April 15, 2015, respectively. Late payments will be charged additional fees.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown2 = !arrowDown2">
+                            Q: How can I make secure payments?
+                            <span ng-show="!arrowDown2">&#9656;</span>
+                            <span ng-show="arrowDown2">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown2">
+                            Payments can be made online with a credit card. There is a US$50 processing fee that will be added to your invoice for any manual credit card payments. Complete the credit card payment portion found on the bottom of your invoice.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown3 = !arrowDown3">
+                            Q: How can I pay for the Exam?
+                            <span ng-show="!arrowDown3">&#9656;</span>
+                            <span ng-show="arrowDown3">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown3">
+                            GARP accepts Visa, MasterCard, and American Express. Only single payments per candidate registration are accepted online. If you are paying for more than one candidate using the same credit card, please submit your payment via fax.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown4 = !arrowDown4">
+                            Q: Can I pay by check?
+                            <span ng-show="!arrowDown4">&#9656;</span>
+                            <span ng-show="arrowDown4">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown4">
+                            GARP accepts checks from a US bank, in US Dollars and/or only foreign checks with US intermediate banks.Print out your invoice in order to post it with a US issued bank draft/ check. The check amount should include the US$50 processing fee. Checks should be made payable to the Global Association of Risk Professionals. Your full name and GARP ID must be written on your check. If this information is not provided, your payment cannot be processed.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown5 = !arrowDown5">
+                            Q: Where should I mail my invoice and check?
+                            <span ng-show="!arrowDown5">&#9656;</span>
+                            <span ng-show="arrowDown5">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown5">
+                            Attn: FRM Administration
+                            <br />Global Association of Risk Professionals
+                            <br />111 Town Square Place, 14th Fl.
+                            <br />Jersey City, NJ 07310 USA
+                        </p>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown6 = !arrowDown6">
+                            Q: If I choose to fax my invoice/the payment, where do I send my completed form?
+                            <span ng-show="!arrowDown6">&#9656;</span>
+                            <span ng-show="arrowDown6">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown6">
+                            Please fax it to us at: +1.201.222.5022
+                        </p>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown7 = !arrowDown7">
+                            Q: Can I pay by wire transfer?
+                            <span ng-show="!arrowDown7">&#9656;</span>
+                            <span ng-show="arrowDown7">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown7">
+                            Yes. Please direct wire transfer payments in US dollars. A US$50 bank fee will be added to your invoice for each wire transfer. Please note that this bank charge is imposed by the bank. GARP has no control over this fee and does not receive any portion of the fee. Be sure to include your full name, GARP ID and invoice number on your wire transfer. If this information is not provided, your payment cannot be processed.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="question" ng-click="arrowDown8 = !arrowDown8">
+                            Q: Can I get a refund?
+                            <span ng-show="!arrowDown8">&#9656;</span>
+                            <span ng-show="arrowDown8">&#9662;</span>
+                        </p>
+                        <p ng-show="arrowDown8">
+                            There are no refunds given under any circumstances for either the FRM Exam registration fee or the FRM Exam enrollment fee.
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            If you have any questions not answered above don't hesitate to reach out to <a href="emailto:memberservices@garp.org">memberservices@garp.org</a> or call us at <a href="tel:+12012225022">+1.201.222.5022</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>        
+
+        <div class="col-lg-8 col-md-8 col-sm-12 pull-left">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div>
+                        <div class="text-center">Already a member? <a href="{{loginURL}}">Sign In</a></div>
+
+                        <form id="formArea" name="regForm.main" ng-submit="submitForm(regForm.main).$valid" class="css-form" novalidate>
+
+                            <div ng-if="regInfo.regType=='frm' || regInfo.regType=='erp'">
+                                <div class="row">
+                                    <hr />
+                                </div>                            
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4 class="formHdr">Exam Information</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">&nbsp;
+                                    </div>
+                                </div>
+
+                                <div ng-if="examOptions.length > 1" class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.exam.$invalid && submitted }">
+                                        <span class="in-input">Registering for</span>
+                                        <select class="form-control" name="exam" ng-model="regInfo.exam" ng-options="option.name as (option.name + ' ($'+ option.price + ')') for option in examOptions" required>
+                                            <option value="">Select Option</option>
+                                        </select>
+                                        <p ng-show="regForm.main.exam.$invalid && submitted" class="help-block">An exam selection is required.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.examsite.$invalid && submitted }">
+                                        <span class="in-input">Exam Test Site</span>
+
+                                        <select class="form-control" name="examsite" ng-model="regInfo.examsite" ng-options="s.name as s.name for s in optionsSelectSites" required>
+                                            <option value="">Select Option</option>
+                                        </select>
+                                        <p ng-show="regForm.main.examsite.$invalid && submitted" class="help-block">An exam site selection is required.</p>
+                                    </div>
+                                </div>
+                                <div ng-if="examOptions.length == 1" class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.examsite.$invalid && submitted }">
+                                        <span class="in-input">Exam Test Site</span>
+
+                                        <select class="form-control" name="examsite" ng-model="regInfo.examsite" ng-options="s.name as s.name for s in optionsSelectSites" required>
+                                            <option value="">Select Option</option>
+                                        </select>
+                                        <p ng-show="regForm.main.examsite.$invalid && submitted" class="help-block">An exam site selection is required.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row" ng-hide="regInfo.regType=='icbrr' || regInfo.regType=='fbr'">
+                                <hr />
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-lg-12">
+                                    <h4 class="formHdr">Email and Name</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">&nbsp;
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.email.$invalid && submitted }">
+                                    <span class="in-input">Email</span>
+                                    <input autocomplete="on" class="form-control" type="email" name="email" id="email" ng-model="regInfo.email" type="email" placeholder="name@example.com" ng-maxLength="255" required>
+                                    <p ng-show="regForm.main.email.$error.required && submitted" class="help-block">You Email is required.</p>
+                                    <p ng-show="regForm.main.email.$error.email && submitted" class="help-block">Not a vaild email address.</p>
+                                </div>
+                                <div class="form-group col-lg-6" ng-class="{ 'has-error' : (regForm.main.vemail.$invalid && submitted) || (regInfo.email != regInfo.vemail && (submitted || !userForm.name.$pristine)) }">
+                                    <span class="in-input">Verify Email</span>
+                                    <input autocomplete="off" class="form-control" type="email" name="vemail" id="vemail" ng-model="regInfo.vemail" type="email" placeholder="Enter your email" ng-maxLength="255" required>
+                                    <p ng-show="regForm.main.email.$error.required && submitted" class="help-block">Verification email is required.</p>
+                                    <p ng-show="regForm.main.vemail.$error.email && submitted" class="help-block">Not a vaild email address.</p>
+                                    <p ng-show="regInfo.email != regInfo.vemail && (submitted || !userForm.name.$pristine)" class="help-block">Email address does not match.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.fname.$invalid && submitted }">
+                                    <span class="in-input">First Name</span>
+                                    <input autocomplete="on" class="form-control" type="text" name="fname" id="fname" ng-model="regInfo.fname" placeholder="First Name/Given Name" ng-maxLength="50" ng-minlength="2" required>
+                                    <p ng-show="regForm.main.fname.$error.required && submitted" class="help-block">Your first name is required.</p>
+                                    <p ng-show="regForm.main.fname.$error.minlength && submitted" class="help-block">Your first name must be at least two characters.</p>
+                                    <p ng-show="regForm.main.fname.$error.maxlength && submitted" class="help-block">Your first name can not be more than 50 characters.</p>
+
+                                </div>
+                                <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.lname.$invalid && submitted }">
+                                    <span class="in-input">Last Name</span>
+                                    <input autocomplete="on" class="form-control" type="text" name="lname" id="lname" ng-model="regInfo.lname" placeholder="Last Name/Surname" ng-maxLength="50" required>
+                                    <p ng-show="regForm.main.lname.$error.required && submitted" class="help-block">Your last name is required.</p>
+                                    <p ng-show="regForm.main.lname.$error.minlength && submitted" class="help-block">Your last name must be at least two characters.</p>
+                                    <p ng-show="regForm.main.lname.$error.maxlength && submitted" class="help-block">Your last name can not be more than 50 characters.</p>
+                                </div>
+                            </div>
+
+                            <div ng-if="regInfo.regType=='individual' || regInfo.regType=='student'">
+
+                            <div class="row"><hr /></div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4 class="formHdr">Wiley Bookstore</h4>
+                                        <span style="color:red">(Optional)</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="wiley" id="wiley" ng-model="regInfo.wiley">
+
+                                            <div class="wiley-details">
+                                                <p class="ng-binding">This unique collaboration provides Individual Members with access to a hand-picked collection of journals, a deeply-discounted online bookstore, and the option to subscribe to a free monthly ebook - all for only US per year.</p>
+
+                                                <ul class="list-unstyled col-lg-6 col-lg-6 col-sm-6">
+                                                    <li>European Financial Management</li>
+                                                    <li>Journal of Financial Research</li>
+                                                    <li>Financial Management</li>
+                                                    <li>Journal of Forecasting</li>
+                                                    <li>Financial Markets, Institutions &amp; Instruments</li>
+                                                    <li>Journal of Futures Markets</li>
+                                                    <li>Financial Review</li>
+                                                </ul>
+
+                                                <ul class="list-unstyled col-lg-6 col-lg-6 col-sm-6">
+                                                    <li>Journal of Money, Credit and Banking</li>
+                                                    <li>International Journal of Finance &amp; Economics</li>
+                                                    <li>Journal of Risk and Insurance</li>
+                                                    <li>International Review of Finance</li>
+                                                    <li>Mathematical Finance</li>
+                                                    <li>Journal of Applied Corporate Finance</li>
+                                                    <li>The Journal of Finance</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <strong>US ${{formatAmountDisplay(regProducts.WILEY.dMemberAmt)}}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div ng-if="regInfo.regType=='fbr' || regInfo.regType=='icbrr'">
+                                <div class="row">
+                                    <hr />
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <strong>Membership</strong>
+                                        <span style="color:red">(Optional)</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="membership" id="membership" ng-model="regInfo.membership">
+                                            <div>
+                                                Individual Members pay dues and are entitled to all GARP benefits. Their benefits include comprehensive access to specialist information, global networking opportunities, and special Members-only discounts on an array of valuable products and services.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <strong style="padding-left:1.5em;">US ${{formatAmountDisplay(regProducts.MEMI.dMemberAmt)}}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div ng-if="regInfo.regType=='frm' || regInfo.regType=='erp'">
+                                <div class="row">
+                                    <hr />
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4 class="formHdr">Materials</h4>
+                                    </div>
+                                    <div class="col-lg-12">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" ng-if="regInfo.regType=='frm' || regInfo.regType=='erp'">
+
+                                <div class="form-group col-lg-6">
+                                    <div class="btn-group books-btn" ng-class="{ 'book-selected' : regInfo.book1 }" ng-if="regInfo.book1Details">
+                                        <div name="book1" class="exam-materials-button ng-scope ng-pristine ng-valid" data-btn-checkbox="" data-ng-model="regInfo.book1">
+                                            <div class="pull-left materials-hdr" style="display:inline-block">
+                                                <span ng-hide="regInfo.book1" class="materials-checkbox"></span>
+                                                <span ng-show="regInfo.book1" class="materials-checkbox ng-hide">✓</span>
+                                            </div>
+                                            <div class="col-lg-4 col-md-2 col-sm-3 hidden-xs">
+                                                <img ng-if="regInfo.regType == 'frm'" border="0" class="img-responsive ng-scope" ng-src="{{envPath}}/img/GARPBooks/frm-p1-2014.png">
+                                                <img ng-if="regInfo.regType == 'erp'" border="0" class="img-responsive ng-scope" ng-src="{{envPath}}/img/GARPBooks/erp-p1-2014.png">
+                                            </div>
+
+                                            <div ng-if="regInfo.regType == 'frm'" style="padding:0;font-size: 12px;" class="col-lg-7 col-md-8 col-sm-7 ng-scope">
+                                                <h5 style="margin-top:0;">
+                                                    <strong>FRM Exam Part I Books</strong>
+                                                </h5>
+                                                <p style="padding-left:0;font-size:12px">
+                                                    This four volume set includes: Foundations of Risk Management; Quantitative Analysis; Financial Markets and Products; and Valuation and Risk Management. They are available in printed format only.
+                                                </p>
+                                                <h5 class="ng-binding">${{formatAmountDisplay(regInfo.book1Details.price)}}</h5>
+                                            </div>
+
+                                            <div ng-if="regInfo.regType == 'erp'" style="padding:0;font-size: 12px;" class="col-lg-7 col-md-8 col-sm-7 ng-scope">
+                                                <h5 style="margin-top:0;">
+                                                    <strong>ERP Exam Books</strong>
+                                                </h5>
+                                                <p style="padding-left:0;">
+                                                    xxxx yyy zzzz.
+                                                </p>
+                                                <h5 class="ng-binding">${{formatAmountDisplay(regInfo.book1Details.price)}}</h5>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-6">
+
+                                    <div ng-if="regInfo.regType == 'frm' && regInfo.exam == 'FRM Exam Part I and II'" class="btn-group books-btn" ng-if="regInfo.book2Details" ng-class="{ 'book-selected' : regInfo.book2 }">
+                                        <div name="book2" class="exam-materials-button ng-scope ng-pristine ng-valid" data-btn-checkbox="" data-ng-model="regInfo.book2">
+                                            <div class="pull-left materials-hdr" style="display:inline-block">
+                                                <span ng-hide="regInfo.book2" class="materials-checkbox"></span>
+                                                <span ng-show="regInfo.book2" class="materials-checkbox ng-hide">✓</span>
+                                            </div>
+                                            <div class="col-lg-4 col-md-2 col-sm-3 hidden-xs">
+                                                <img border="0" class="img-responsive ng-scope" ng-src="{{envPath}}/img/GARPBooks/frm-p2-2014.png">
+                                            </div>
+                                            <div style="padding:0;font-size: 12px;" class="col-lg-7 col-md-8 col-sm-7 ng-scope">
+                                                <h5 style="margin-top:0;">
+                                                    <strong>FRM Exam Part II Books</strong>
+                                                </h5>
+                                                <p style="padding-left:0;font-size:12px">
+                                                    This four volume set includes: Foundations of Risk Management; Quantitative Analysis; Financial Markets and Products; and Valuation and Risk Management. They are available in printed format only.
+                                                </p>
+                                                <h5 class="ng-binding">${{formatAmountDisplay(regInfo.book2Details.price)}}</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <hr />
+                            </div>
+
+                            <div ng-if="regInfo.book1 || regInfo.book2">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <input type="checkbox" name="billshipsame" id="billshipsame" ng-model="regInfo.billshipsame">&nbsp;&nbsp;Shipping address is the same as the Billing address.
+                                    </div>
+                                    <div class="col-lg-12">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">&nbsp;</div>
+                                </div>
+                            </div>
+
+                            <div ng-if="(regInfo.book1 || regInfo.book2) && regInfo.billshipsame == false">
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <strong>Shipping Information</strong>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        &nbsp;
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.company.$invalid && submitted }">
+                                        <span class="in-input">Company
+                                            <span style="color:red">(Optional)</span>
+                                        </span>
+                                        <input autocomplete="on" class="form-control" type="text" name="company" id="company" ng-model="regInfo.company" placeholder="" ng-minlength="2" ng-maxLength="50">
+                                        <p ng-show="regForm.main.company.$error.minlength && submitted" class="help-block">Your company must be at least two characters.</p>
+                                        <p ng-show="regForm.main.company.$error.maxlength && submitted" class="help-block">Your company can not be more than 50 characters.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.addr1.$invalid && submitted }">
+                                        <span class="in-input">Address 1</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="addr1" id="addr1" ng-model="regInfo.addr1" placeholder="" ng-minlength="2" ng-maxLength="50" required>
+                                        <p ng-show="regForm.main.addr1.$error.required && submitted" class="help-block">Your address is required.</p>
+                                        <p ng-show="regForm.main.addr1.$error.minlength && submitted" class="help-block">Your address must be at least two characters.</p>
+                                        <p ng-show="regForm.main.addr1.$error.maxlength && submitted" class="help-block">Your address can not be more than 50 characters.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.addr2.$invalid && submitted }">
+                                        <span class="in-input">Address 2</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="addr2" id="addr2" ng-model="regInfo.addr2" placeholder="" ng-minlength="2" ng-maxLength="50">
+                                        <p ng-show="regForm.main.addr2.$error.minlength && submitted" class="help-block">Your address must be at least two characters.</p>
+                                        <p ng-show="regForm.main.addr2.$error.maxlength && submitted" class="help-block">Your address can not be more than 50 characters.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.addr3.$invalid && submitted }">
+                                        <span class="in-input">Address 3</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="addr3" id="addr3" ng-model="regInfo.addr3" placeholder="" ng-minlength="2" ng-maxLength="50">
+                                        <p ng-show="regForm.main.addr3.$error.minlength && submitted" class="help-block">Your address must be at least two characters.</p>
+                                        <p ng-show="regForm.main.addr3.$error.maxlength && submitted" class="help-block">Your address can not be more than 50 characters.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.country.$invalid && submitted }">
+                                        <span class="in-input">Country</span>
+                                        <select class="form-control" name="country" ng-model="regInfo.country" ng-options="s.code as s.name for s in countries" required>
+                                            <option value="">Select Option</option>
+                                        </select>
+                                        <p ng-show="regForm.main.country.$error.required && submitted" class="help-block">Your country is required.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.city.$invalid && submitted }">
+                                        <span class="in-input">City</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="city" id="city" ng-model="regInfo.city" placeholder="" ng-minlength="2" ng-maxLength="50" required>
+                                        <p ng-show="regForm.main.city.$error.required && submitted" class="help-block">Your city is required.</p>
+                                        <p ng-show="regForm.main.city.$error.minlength && submitted" class="help-block">Your city must be at least two characters.</p>
+                                        <p ng-show="regForm.main.city.$error.maxlength && submitted" class="help-block">Your city can not be more than 50 characters.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.state.$invalid && submitted }">
+                                        <span class="in-input">State/Province</span>
+                                        <input ng-if="regInfo.country != 'US' && regInfo.country != 'CA'" autocomplete="on" class="form-control" type="text" name="state" id="state" ng-model="regInfo.state" placeholder="" ng-minlength="2" ng-maxLength="50" required>
+
+                                        <select ng-if="regInfo.country == 'US'" class="form-control" name="state" id="state" ng-options="us.n as us.n for us in usData" ng-model="regInfo.state" placeholder="" required></select>
+
+                                        <select ng-if="regInfo.country == 'CA'" class="form-control" name="state" id="state" ng-options="ca.n as ca.n for ca in caData" ng-model="regInfo.state" placeholder="" required></select>
+
+                                        <p ng-show="regForm.main.state.$error.required && submitted" class="help-block">Your state/province is required.</p>
+                                        <p ng-show="regForm.main.state.$error.minlength && submitted" class="help-block">Your state/province must be at least two characters.</p>
+                                        <p ng-show="regForm.main.state.$error.maxlength && submitted" class="help-block">Your state/province can not be more than 50 characters.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.zip.$invalid && submitted }">
+                                        <span class="in-input">Postal Code</span>
+
+                                        <input ng-if="regInfo.country != 'HK'" autocomplete="on" class="form-control" type="text" name="zip" id="zip" ng-model="regInfo.zip" placeholder="" ng-minlength="4" ng-maxLength="11" required>
+
+                                        <input ng-if="regInfo.country == 'HK'" autocomplete="on" class="form-control" type="text" name="zip" id="zip" ng-model="regInfo.zip" placeholder="" ng-minlength="4" ng-maxLength="11">
+
+                                        <p ng-show="regForm.main.zip.$error.required && submitted" class="help-block">Your postal code is required.</p>
+                                        <p ng-show="regForm.main.zip.$error.minlength && submitted" class="help-block">Your postal code must be at least four digits.</p>
+                                        <p ng-show="regForm.main.zip.$error.maxlength && submitted" class="help-block">Your postal code can not be more than 11 digits.</p>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.phone.$invalid && submitted }">
+                                        <span class="in-input">Phone Number</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="phone" id="phone" ng-model="regInfo.phone" placeholder="" ng-minlength="10" ng-maxLength="15" required>
+                                        <p ng-show="regForm.main.phone.$error.required && submitted" class="help-block">Your phone number is required.</p>
+                                        <p ng-show="regForm.main.phone.$error.minlength && submitted" class="help-block">Your phone number must be at least 10 digits.</p>
+                                        <p ng-show="regForm.main.phone.$error.maxlength && submitted" class="help-block">Your phone number can not be more than 15 digits.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <span ng-if="regInfo.billshipsame == false || (!regInfo.book1 && !regInfo.book2)">
+                                            <h4 class="formHdr">Billing Address</h4>
+                                        </span>
+                                        <span ng-if="regInfo.billshipsame == true && (regInfo.book1 || regInfo.book2)">
+                                            <h4 class="formHdr">Billing/Shipping Address</h4>
+                                        </span>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        &nbsp;
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billcompany.$invalid && submitted }">
+                                        <span class="in-input">Company
+                                            <span style="color:red">(Optional)</span>
+                                        </span>
+                                        <input autocomplete="on" class="form-control" type="text" name="billcompany" id="billcompany" ng-model="regInfo.billcompany" placeholder="" ng-minlength="2" ng-maxLength="50">
+                                        <p ng-show="regForm.main.billcompany.$error.minlength && submitted" class="help-block">Your company must be at least two characters.</p>
+                                        <p ng-show="regForm.main.billcompany.$error.maxlength && submitted" class="help-block">Your company can not be more than 50 characters.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billaddr1.$invalid && submitted }">
+                                        <span class="in-input">Address 1</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="billaddr1" id="billaddr1" ng-model="regInfo.billaddr1" placeholder="" ng-minlength="2" ng-maxLength="50" required>
+                                        <p ng-show="regForm.main.billaddr1.$error.required && submitted" class="help-block">Your address is required.</p>
+                                        <p ng-show="regForm.main.billaddr1.$error.minlength && submitted" class="help-block">Your address must be at least two characters.</p>
+                                        <p ng-show="regForm.main.billaddr1.$error.maxlength && submitted" class="help-block">Your address can not be more than 50 characters.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billaddr2.$invalid && submitted }">
+                                        <span class="in-input">Address 2</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="billaddr2" id="billaddr2" ng-model="regInfo.billaddr2" placeholder="" ng-minlength="2" ng-maxLength="50">
+                                        <p ng-show="regForm.main.billaddr2.$error.minlength && submitted" class="help-block">Your address must be at least two characters.</p>
+                                        <p ng-show="regForm.main.billaddr2.$error.maxlength && submitted" class="help-block">Your address can not be more than 50 characters.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billaddr3.$invalid && submitted }">
+                                        <span class="in-input">Address 3</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="billaddr3" id="billaddr3" ng-model="regInfo.billaddr3" placeholder="" ng-minlength="2" ng-maxLength="50">
+                                        <p ng-show="regForm.main.billaddr3.$error.minlength && submitted" class="help-block">Your address must be at least two characters.</p>
+                                        <p ng-show="regForm.main.billaddr3.$error.maxlength && submitted" class="help-block">Your address can not be more than 50 characters.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billcountry.$invalid && submitted }">
+                                        <span class="in-input">Country</span>
+                                        <select class="form-control" name="billcountry" ng-model="regInfo.billcountry" ng-options="s.code as s.name for s in countries" required>
+                                            <option value="">Select Option</option>
+                                        </select>
+                                        <p ng-show="regForm.main.billcountry.$error.required && submitted" class="help-block">Your country is required.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billcity.$invalid && submitted }">
+                                        <span class="in-input">City</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="billcity" id="billcity" ng-model="regInfo.billcity" placeholder="" ng-minlength="2" ng-maxLength="50" required>
+                                        <p ng-show="regForm.main.billcity.$error.required && submitted" class="help-block">Your city is required.</p>
+                                        <p ng-show="regForm.main.billcity.$error.minlength && submitted" class="help-block">Your city must be at least two characters.</p>
+                                        <p ng-show="regForm.main.billcity.$error.maxlength && submitted" class="help-block">Your city can not be more than 50 characters.</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billstate.$invalid && submitted }">
+                                        <span class="in-input">State/Province</span>
+                                        <input ng-if="regInfo.billcountry != 'US' && regInfo.billcountry != 'CA'" autocomplete="on" class="form-control" type="text" name="billstate" id="billstate" ng-model="regInfo.billstate" placeholder="" ng-minlength="2" ng-maxLength="50" required>
+
+                                        <select ng-if="regInfo.billcountry == 'US'" class="form-control" name="billstate" id="billstate" ng-options="us.n as us.n for us in usData" ng-model="regInfo.billstate" placeholder="" required></select>
+
+                                        <select ng-if="regInfo.billcountry == 'CA'" class="form-control" name="state" id="state" ng-options="ca.n as ca.n for ca in caData" ng-model="regInfo.state" placeholder="" required></select>
+
+                                        <p ng-show="regForm.main.billstate.$error.required && submitted" class="help-block">Your state/province is required.</p>
+                                        <p ng-show="regForm.main.billstate.$error.minlength && submitted" class="help-block">Your state/province must be at least two characters.</p>
+                                        <p ng-show="regForm.main.billstate.$error.maxlength && submitted" class="help-block">Your state/province can not be more than 50 characters.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billzip.$invalid && submitted }">
+                                        <span class="in-input">Postal Code</span>
+
+                                        <input ng-if="regInfo.billcountry != 'HK'" autocomplete="on" class="form-control" type="text" name="billzip" id="billzip" ng-model="regInfo.billzip" placeholder="" ng-minlength="4" ng-maxLength="11" required>
+
+                                        <input ng-if="regInfo.billcountry == 'HK'" autocomplete="on" class="form-control" type="text" name="billzip" id="billzip" ng-model="regInfo.billzip" placeholder="" ng-minlength="4" ng-maxLength="11">
+
+                                        <p ng-show="regForm.main.billzip.$error.required && submitted" class="help-block">Your postal code is required.</p>
+                                        <p ng-show="regForm.main.billzip.$error.minlength && submitted" class="help-block">Your postal code must be at least four digits.</p>
+                                        <p ng-show="regForm.main.billzip.$error.maxlength && submitted" class="help-block">Your postal code can not be more than 11 digits.</p>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : regForm.main.billphone.$invalid && submitted }">
+                                        <span class="in-input">Phone Number</span>
+                                        <input autocomplete="on" class="form-control" type="text" name="billphone" id="billphone" ng-model="regInfo.billphone" placeholder="" ng-minlength="10" ng-maxLength="15" required>
+                                        <p ng-show="regForm.main.billphone.$error.required && submitted" class="help-block">Your phone number is required.</p>
+                                        <p ng-show="regForm.main.billphone.$error.minlength && submitted" class="help-block">Your phone number must be at least 10 digits.</p>
+                                        <p ng-show="regForm.main.billphone.$error.maxlength && submitted" class="help-block">Your phone number can not be more than 15 digits.</p>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div ng-if="(regInfo.book1 || regInfo.book2)">
+
+                                <div class="row">
+                                    <hr />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h4 class="formHdr">Shipping</h4>
+                                    </div>
+                                </div>        
+
+                                <div class="row">
+                                    <div class="form-group col-lg-6" ng-class="{ 'has-error' : (regForm.main.shipping.$invalid && submitted)  || (!isAddressSame() && submitted) }">
+                                        <div ng-if="!isAddressSame()">
+                                            <button name="shippingButton" ng-click="shippingSelect()" ng-disabled="regInfo.looking==1 || !isAddressEntered()" class="btn btn-xl btn-block garp-btn-orange" style="margin-bottom:0;">Calculate Shipping</button>
+                                            <p ng-show="(regForm.main.shipping.$invalid && submitted)  || (!isAddressSame() && submitted)" class="help-block">Please calculate and choose shipping speed.</p>
+                                        </div>
+                                        <div ng-if="isAddressSame()">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    &nbsp;
+                                                </div>
+                                            </div>                                        
+                                            <span ng-if="shippingOptions.length>0" class="in-input">Shipping Speed</span>
+                                            <select class="form-control" name="shipping" ng-model="regInfo.shipping" ng-options="s.name as s.name for s in shippingOptions" required>
+                                                <option value="">Select Option</option>
+                                            </select>
+                                            <p ng-show="regForm.main.shipping.$error.required && submitted" class="help-block">Your shipping speed is required.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div ng-if="shippingError==1">
+                                            <span style="color:red">Your address could not be verified please review it to ensure it is correct.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <hr />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <span>
+                                        <h4 class="formHdr">Payment<h4 class="formHdr">
+                                    </span>
+                                </div>
+                                <div class="col-lg-12">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">&nbsp;
+                                </div>
+                            </div>
+                            <div class="row" ng-if="regInfo.ccError">
+                                <div class="col-lg-12">
+                                    <span style="color:red">{{regInfo.ccError}}</span>
+                                </div>
+                            </div>
+                            <div class="row" ng-if="regInfo.ccError">
+                                <div class="col-lg-12">&nbsp;
+                                </div>
+                            </div>
+
+                            <div class="payment_radio">
+                                <div class="form-group">
+                                    <input type="radio" name="payment" value="cc" ng-model="regInfo.payment">Credit Card &nbsp;&nbsp;
+                                    <input type="radio" name="payment" value="wire" ng-model="regInfo.payment">Wire Transfer (${{regProducts.DeferredPayment.dMemberAmt}}) &nbsp;&nbsp;
+                                    <input type="radio" name="payment" value="check" ng-model="regInfo.payment">Check (${{regProducts.DeferredPayment.dMemberAmt}}) &nbsp;&nbsp;
+                                    <input type="radio" name="payment" value="ccfax" ng-model="regInfo.payment">Credit Card by Fax (${{regProducts.DeferredPayment.dMemberAmt}}) &nbsp;&nbsp;
+                                </div>
+                            </div>
+
+                            <div ng-if="regInfo.payment=='cc'" class="row">
+                                <div class="form-group col-md-8" ng-class="{ 'has-error' : regForm.main.ccnumber.$invalid && submitted }">
+                                    <span class="in-input">Credit Card Number</span>
+                                    <input autocomplete="on" class="form-control" type="text" name="ccnumber" id="ccnumber" ng-model="regInfo.ccnumber" ng-minlength="16" ng-maxLength="19" required>
+                                    <p ng-show="regForm.main.ccnumber.$error.required && submitted" class="help-block">Your credit card number is required.</p>
+                                    <p ng-show="regForm.main.ccnumber.$error.minlength && submitted" class="help-block">Your credit card number must be at least 16 digits.</p>
+                                    <p ng-show="regForm.main.ccnumber.$error.maxlength && submitted" class="help-block">Your credit card number can not be more than 19 digits.</p>
+                                </div>
+                                <div class="form-group col-md-4" ng-class="{ 'has-error' : regForm.main.ccvnumber.$invalid && submitted }">
+                                    <span class="in-input">Credit Card CCV Number</span>
+                                    <input autocomplete="on" class="form-control" type="text" name="ccvnumber" id="ccvnumber" ng-model="regInfo.ccvnumber" ng-minlength="3" ng-maxLength="4" required>
+                                    <p ng-show="regForm.main.ccvnumber.$error.required && submitted" class="help-block">Your credit card CCV number is required.</p>
+                                    <p ng-show="regForm.main.ccvnumber.$error.minlength && submitted" class="help-block">Your credit card CCV number must be must be at least three digits.</p>
+                                    <p ng-show="regForm.main.ccvnumber.$error.maxlength && submitted" class="help-block">Your credit card CCV number can not be more than four digits.</p>
+                                </div>
+                            </div>
+                            <div ng-if="regInfo.payment=='cc'" class="row">
+                                <div class="form-group col-lg-8 col-md-6 col-sm-6" ng-class="{ 'has-error' : regForm.main.ccname.$invalid && submitted }">
+                                    <span class="in-input">Name as it appears on card</span>
+                                    <input autocomplete="on" class="form-control" type="text" name="ccname" id="ccname" ng-model="regInfo.ccname" ng-minlength="3" ng-maxLength="125" required>
+                                    <p ng-show="regForm.main.ccname.$error.required && submitted" class="help-block">Your name is required.</p>
+                                    <p ng-show="regForm.main.ccname.$error.minlength && submitted" class="help-block">Your name must be at least three letter.</p>
+                                    <p ng-show="regForm.main.ccname.$error.maxlength && submitted" class="help-block">Your name can not be more than 125 characters.</p>
+                                </div>
+                                <div class="form-group col-lg-2 col-md-3 col-sm-3" ng-class="{ 'has-error' : regForm.main.ccmonth.$invalid && submitted }">
+                                    <span class="in-input">Exp Month</span>
+                                    <select class="form-control" name="ccmonth" id="ccmonth" ng-model="regInfo.ccmonth" ng-options="s.name as s.name for s in monthSelectOptions" required>
+                                        <option value="">Select</option>
+                                    </select>
+                                    <small ng-show="regForm.main.ccmonth.$error.required && submitted" class="help-block">Expiration month is required.</small>
+                                </div>
+                                <div class="form-group col-lg-2 col-md-3 col-sm-3" ng-class="{ 'has-error' : regForm.main.ccyear.$invalid && submitted }">
+                                    <span class="in-input">Exp Year</span>
+                                    <select class="form-control" name="ccyear" id="ccyear" ng-model="regInfo.ccyear" ng-options="s.name as s.name for s in yearSelectOptions" required>
+                                        <option value="">Select</option>
+                                    </select>
+                                    <small ng-show="regForm.main.ccyear.$error.required && submitted" class="help-block">Expiration year is required.</small>
+                                </div>
+                            </div>
+
+                            <div ng-if="regInfo.payment!='cc'">
+                                <div class="regInfoPaymentCC col-lg-12">
+                                    After clicking “PAY AND REGISTER” you will receive instructions on how to pay via
+                                    <span ng-if="regInfo.payment=='wire'">wire transfer</span>
+                                    <span ng-if="regInfo.payment=='check'">check</span>
+                                    <span ng-if="regInfo.payment=='ccfax'">credit card via fax</span>
+                                    on your invoice or in the portal.
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div ng-if="regInfo.payment=='cc'">
+
+                                    <div class="col-lg-12">
+                                        <h4 class="formHdr">Membership Auto Renewal</h4>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="checkbox">
+                                            <input type="checkbox" name="autorenew" id="autorenew" ng-model="regInfo.autorenew" ng-checked="true">
+                                            <div ng-if="regInfo.regType=='student'">
+                                                I agree that GARP will automatically renew my Student membership at the current rate (US ${{formatAmountDisplay(regProducts.MEMS.dMemberAmt)}}) the day it expires using the samepreviously used credit card.
+                                            </div>
+                                            <div ng-if="regInfo.regType!='student'">
+                                                I agree that GARP will automatically renew my Individual membership at the current rate (US ${{formatAmountDisplay(regProducts.MEMI.dMemberAmt)}}) the day it expires using the samepreviously used credit card.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <hr />
+                            </div>
+
+                            <!-- div id="spin"></div -->
+
+                            <div class="row">
+                                <div class="col-md-8 ">
+                                </div>
+                                <div class="col-md-4">
+
+                                    <table class="table table-condensed examday-reminder-area">
+                                        <tr ng-if="purchase.enrollment">
+                                            <td class="text-right"><b>Enrollment</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(purchase.enrollment)}}</td>
+                                        </tr>
+                                        <tr ng-if="getSelectedExamPrice() > 0">
+                                            <td class="text-right"><b>Exam</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(getSelectedExamPrice())}}</td>
+                                        </tr>
+                                        <tr ng-if="getSelectedWileyPrice() > 0">
+                                            <td class="text-right"><b>Wiley Subscription</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(getSelectedWileyPrice())}}</td>
+                                        </tr>
+                                        <tr ng-if="getSelectedMaterialsPrice() > 0">
+                                            <td class="text-right"><b>Materials</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(getSelectedMaterialsPrice())}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right"><b>Membership</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(getSelectedMembershipPrice())}}</td>
+                                        </tr>
+                                        <tr ng-if="getSelectedShippingPrice()>0">
+                                            <td class="text-right"><b>Shipping</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(getSelectedShippingPrice())}}</td>
+                                        </tr>
+                                        <tr ng-if="getProcessingFeePrice()>0">
+                                            <td class="text-right"><b>Processing Fee</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(getProcessingFeePrice())}}</td>
+                                        </tr>
+                                        <tr ng-if="getCanadianDutyPrice()>0">
+                                            <td class="text-right"><b>Canadian Customs Duty</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(getCanadianDutyPrice())}}</td>
+                                        </tr>
+
+                                        <tr ng-if="calcTax(getSelectedShippingPrice())>0">
+                                            <td class="text-right"><b>Tax</b>
+                                            </td>
+                                            <td class="text-left">${{formatAmountDisplay(calcTax(getSelectedShippingPrice()))}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align:right;padding-right:1em;"><h3>Total</h3></td>
+                                            <td style="text-align:left;padding-right:1em;"><h3>${{formatAmountDisplay(calcTax(getSelectedShippingPrice()) + getSelectedMaterialsPrice() + getSelectedExamPrice() + getSelectedShippingPrice() + getSelectedMembershipPrice() + getSelectedWileyPrice() + getCanadianDutyPrice() + purchase.enrollment + getProcessingFeePrice())}}</h3>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <hr />
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-8" ng-class="{ 'has-error' : ((regForm.main.$valid == false && submitted == true) || finalValidationPass == false) }">
+                                    <button type="submit" name="purchaseButton" class="btn btn-xl btn-block garp-btn-orange">PAY AND REGISTER</button>
+
+                                    <p ng-if="finalValidationPass == true && ((regForm.main.$valid == false && submitted == true) || (!isAddressSame() && submitted))">
+                                        <span style="color:#a94442;">There have been some errors on your form. Please review the noted fields.</span>
+                                    </p>
+
+                                    <p ng-if="finalValidationPass == false">{{finalValidationPassErrorMsg}}</p>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4" style="margin:2em 0;">
+                                    <p class="medium-grey">
+                                        <span class="glyphicon glyphicon-lock"></span>&nbsp;Secure transaction via ########</p>
+                                </div>
+
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <small class="text-center">When you click pay you are agreeing to our <a href="#">Privacy Policy</a>,<a href="#">Code of Conduct</a>, and <a href="#">Candidate Responsibility Statement</a> and to receiving emails from GARP with news, special offers, promotions and future messages that may be of interest to you.
+                                    </small>
+                                    <br /><br />
+                                    <small class="visible-xs">
+                                        If you have any questions not answered above don't hesitate to reach out to <a href="emailto:memberservices@garp.org">memberservices@garp.org</a> or call us at <a href="tel:+12012225022">+1.201.222.5022</a>
+                                    </small>                                    
+                                </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-if="!ccProcess && loaded==1">
+        <div class="container">
+            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 text-center">
+                <ul class="credit-cards list-inline">
+                    <li>
+                        <img ng-src="{{envPath}}/img/american-express-curved-32px.png" border="0" alt="" title="" class="img-responsive" />
+                    </li>
+                    <li>
+                        <img ng-src="{{envPath}}/img/mastercard-curved-32px.png" border="0" alt="" title="" class="img-responsive" />
+                    </li>
+                    <li>
+                        <img ng-src="{{envPath}}/img/visa-curved-32px.png" border="0" alt="" title="" class="img-responsive" />
+                    </li>
+                </ul>
+                <p style="margin-bottom:5em;">Your card will be charged immediately</p>
+            </div>
+            <div class="col-lg-4">
+                &nbsp;
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,894 @@
+@import "global_variables.less";
+
+// MAIN NAVIGATION
+// --------------------------------------------------
+
+.navbar{
+    	width:100%;
+    	border-radius:0!important;
+    	//border-bottom:1px solid @cyan;
+    	border-top:none;
+    	border-left:none;
+    	border-right:none;
+    	font-family:@arial;
+      min-height:60px!important;     
+    }
+    nav{
+        z-index:1000;
+    }
+    .navbar-default .navbar-collapse{
+        background-color:@light-grey;
+    }
+    
+    ul.nav.navbar-nav{
+        //margin-top:.5em;
+    }
+    ul.navbar-nav > li > a{
+        color:@dark-cyan!important;
+        padding-right:15px;   
+    }
+    ul.navbar-nav > li > a:hover{
+        color:@dark-cyan!important;
+        background-color:@light-grey;
+        text-decoration:none;
+        border-bottom:5px solid @dark-cyan;
+        z-index:2000;
+        cursor:pointer;            
+    }
+    a.navbar-brand{
+        margin-left:0;
+        padding:10px 5px 10px 15px;
+    }
+   
+    .navbar-nav.navbar-right:last-child{
+        //margin:.5em;
+    }
+
+.glyphicon-question-sign {
+    color: @medium-grey;
+}
+
+body {
+  min-height: 2000px;
+  padding-top: 60px;
+  min-height:100%;
+  
+}
+
+.stretch {
+    width:100%;
+    height:100%;
+    position: fixed;
+}
+
+#background {
+    width: 100%; 
+    height: 100%; 
+    position: absolute; 
+    left: 0px; 
+    top: 0px; 
+    z-index: -1;
+    opacity:0.3;
+}
+
+.filterpanel-item-selected {
+  background: rgb(215, 215, 215);
+    cursor: pointer;
+}
+
+
+.ui-dform-label {
+  padding-left: 7px;
+  padding-top: 5px;
+  position: absolute;
+  font-weight: 600;
+  z-index: 5;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #333332; 
+}
+
+.form-control {
+  height: 50px;
+  padding: 16px 5px 0;
+  color: #777;
+  -moz-box-shadow: inset 0 2px 2px #9DA7AE;
+  -webkit-box-shadow: inset 0 2px 2px #9DA7AE;
+  box-shadow: inset 0 2px 2px #9DA7AE;
+  font-family: 'Lato', sans-serif;
+}
+
+.inputbar {
+    height: 24px;
+    padding-bottom: 11px;
+
+}
+
+.in-input {
+  padding-left: 7px;
+  padding-top: 5px;
+  position: absolute;
+  font-weight: 600;
+  z-index: 5;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #333332;
+}
+
+.fieldName {
+  font-family: @opensans_regular; 
+}
+
+
+.fieldValue {
+  font-family: @opensans_semibold;
+}
+
+.dash-profile {
+  height: 0px;
+}
+
+.altCrumb{
+    background-color: rgb(218, 241, 242);
+    height: 100px;
+}
+
+.dash-profile-info {
+    height: 100px;
+    width: 0px;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    float: right;
+    left: 143px;
+}
+
+.settings-profile-image {
+  height: 160px;
+  border-radius: 150px;
+  width: 160px;
+  border: 1px solid #006c99;
+}
+
+.nav-profile-image {
+  float: left;
+  margin: 1px;
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  margin-top: -5px;
+  border: 1px solid #006c99;
+}
+
+.myaccount-profile-image {
+  float: left;
+  margin: 10px;
+  width: 100px;
+}
+
+.dash-profile-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 50px;
+  border: 1px solid #006c99;
+}
+
+.ticket-info-checklist {
+   margin: 10px;
+}
+
+.ticket-info-checklist-times {
+  font-size: 20px;
+  color: #00A2DD;
+}
+
+.ticket-info {
+   margin: 10px;
+   width: 800px;
+   height: 210px
+}
+
+.ticket-info-area-table {
+  margin-bottom: 0px;
+}
+
+.ticket-header {
+  height: 90px;
+}
+
+.ticket-logo-left {
+  float: left;
+  margin: 10px;  
+}
+
+.ticket-logo-right {
+  float: right;
+  margin: 10px;  
+}
+
+.ticket-info-qrcode {
+  width: 100px;
+  float: left;
+}
+
+.ticket-info-area {
+  width: 500px;
+  float: left;
+}
+
+.ticket-reminders {
+   margin: 10px;  
+}
+
+.ticket-info-qrcode-image {
+  margin: 10px;
+}
+
+.ticket-divide-line {
+  height: 3px;
+  background-color: #00A2DD;
+  margin: 10px;   
+}
+
+.ticket-info-label {
+  font-weight: bold;
+}
+
+.ticket-info-label-important {
+  font-weight: bold;
+  font-size: 20px;  
+}
+
+.ticket-reminder-heading {
+  font-weight: bold;
+  color: #00A2DD;
+}
+
+.ticket-footer {
+  text-align: center;
+}
+
+
+.invoice-info-area {
+   margin: 10px;
+   width: 800px;
+   height: 210px
+}
+
+.invoice-addess {
+  width: 300px;
+  float: left;
+}
+
+.invoice-info {
+  margin-left: 30px;
+  width: 300px;
+  float: right;
+}
+
+.invoice-contact-area {
+   margin: 10px;
+   width: 800px;
+   height: 300px
+}
+
+.invoice-exam-area {
+   margin: 10px;
+   width: 800px;
+   height: 50px
+}
+
+
+.invoice-contact {
+   margin: 10px;
+  width: 300px;
+  float: left;
+}
+
+.invoice-shipping {
+  margin: 10px;
+  width: 300px;
+  float: right;
+}
+
+.frm-study-books {
+  float:left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.exam-results-signatures {
+  float:left;
+  margin-right: 30px;
+}
+
+
+.exam-results-category-heading {
+  text-align: center;
+}
+
+.userNameDrop {
+    margin-right: 7px;
+    text-decoration: none;
+    color: @dark-cyan;
+}
+
+.userNameDrop:hover {
+    color: @dark-cyan;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.userEmail {
+    text-align: center;
+}
+
+.mbrPrflHead,
+.eventsPnl,
+.pnlOvrride{
+    border-bottom: 1px solid @dark-cyan;
+    h3 {
+        font-family: @opensans_semibold;
+    }
+}
+
+.bluePnl {
+    background-color: #0E6386;
+    color: @white;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    h3 {
+        font-family: @opensans_semibold;
+    }
+}
+
+.prgrmTxt {
+    text-align: center;
+}
+
+.exmBdy {
+    background-color: #E7E8EF;;
+}
+
+.trademark {
+    color: black;
+    vertical-align: top;
+    font-size: 11px;
+}
+
+.whatPrgrm {
+    text-align: center;
+    font-size: 21px;
+    font-family: @opensans_regular;
+    color: black;
+}
+
+.prgrmAd {
+    color: #737369;
+    font-size: 18px;
+}
+
+.profileName {
+    font-family: @opensans_regular;
+}
+
+.percentage {
+    text-align: center;
+}
+
+#mailingInfo,
+#billingInfo {
+    border: 1px solid @light-grey;
+    padding: 35px;
+    font-family: @opensans_regular;
+}
+
+#formArea {
+    height: 100%;
+    padding: 0;
+}
+
+.formContainer {
+    padding: 0;
+    padding-top: 25px;
+    padding-bottom: 24px;
+}
+
+.membershipContainer {
+    text-align: center;
+    padding: 0;
+    padding-bottom: 7px;
+}
+
+.memType {
+    height: 45px;
+    margin-top: 14px;
+}
+
+.memTxt {
+    font-weight: 900;
+}
+
+.userMem {
+    font-weight: 400;
+    color: @light-grey;
+}
+
+.userMemId {
+   font-family: @opensans_bold;
+    font-size: 20px;
+}
+
+.idArea {
+    background-color: @dark-cyan;
+    color: white;
+    height: 77px;
+    padding-top: 10px;
+}
+
+.customPrgrs {
+    border-radius: 0;
+    height: 32px;
+    border: 1px solid rgb(215, 212, 212);
+}
+
+.notCmplte {
+    background-color: @white;
+    color: black;
+    font-family: @opensans_bold;
+    width: 100%;
+    height: 100%;
+}
+
+#searchText {
+    height: 28px;
+    padding: 14px;
+    box-shadow: none;
+}
+
+.completeHeader {
+    width: 700px;
+}
+
+#profileName {
+    font-family: @opensans_bold;
+    text-align: center;
+}
+
+.memberSince {
+    font-family: @opensans_bold;
+    font-size: 12px;
+}
+
+.memberExp {
+    font-family: @opensans_bold;
+    font-size: 12px;
+}
+
+.memAccount {
+    white-space: nowrap;
+}
+
+.backgroundPrgs {
+    background-color: @light-grey;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#profileId {
+    font-family: @opensans_bold;
+    font-size: 12px;
+}
+
+.meetingTitle {
+    font-size: 20px;
+}
+
+.chapterLine{
+    color: @light-grey;
+}
+
+.prflButtons {
+    font-size: 12px;
+}
+
+.checkboxStyle {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid black;
+    width: 10px;
+    height: 10px;
+}
+
+.columnAdj {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.noWrapTxt {
+    white-space: nowrap;
+    margin-left: 4px;
+}
+
+.checkSpacing {
+    padding-left: 13px;
+    padding-right: 15px;
+}
+
+.font {
+    font-size: 10px;
+    font-family: @opensans_semibold;
+    white-space: nowrap;
+}
+
+.checkSpacing2 {
+    margin-left: -16px;
+}
+
+.profileSettingsTxt {
+    color: black;
+    text-align: center;
+    font-family: @opensans_regular;
+    font-size: 18px;
+}
+
+.adjustSettingHeader {
+    margin-left: 100px;
+}
+
+.topNavClr {
+    background-color: rgb(218, 241, 242);
+    color: @dark-cyan;
+    height: 115px;
+    margin-bottom: 15px;
+}
+
+.headerUser > li > a:hover {
+    background-color: @light-grey;
+    border-radius: 50px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    
+}
+
+.headerUser {
+    border: none;
+    padding-top: 20px;
+}
+
+.headerUser > li > .userOptions {
+    padding: 5px 10px;
+}
+
+// media queries
+
+@media @large-devices {
+    .adjustSettingHeader {
+    margin-left: 175px;
+    }
+}
+
+@media @small-devices {
+ .nav-tabs li {
+        width: 100%;
+        margin: 0 auto;
+        a {
+            text-align: center;
+        }
+    }
+    .adjustSettingHeader {
+        margin-left: 0;
+    }
+    .topNavClr {
+        height: 250px;
+    }
+}
+
+@media @extra-small-devices {
+    .topNavClr {
+        display: none;
+    }
+    
+}
+
+@media @small-devices {
+ .nav-tabs li {
+        width: 100%;
+        margin: 0 auto;
+        a {
+            text-align: center;
+        }
+    }
+    .adjustSettingHeader {
+        margin-left: 0;
+    }
+    .topNavClr {
+        height: 250px;
+    }
+}
+
+@media @extra-small-devices {
+    .topNavClr {
+        display: none;
+    }
+    
+}
+
+.social-buttons { display: block; list-style: none; padding: 0; margin: 20px; }
+.social-buttons > li { display: block; margin: 0; padding: 10px; float: left; }
+.social-buttons .socialite { display: block; position: relative; background: url('images/social-sprite.png') 0 0 no-repeat; }
+.social-buttons .socialite-loaded { background: none !important; }
+
+.social-buttons .twitter-share { width: 55px; height: 65px; background-position: 0 0; }
+.social-buttons .googleplus-one { width: 50px; height: 65px; background-position: -75px 0; }
+.social-buttons .facebook-like { width: 50px; height: 65px; background-position: -145px 0; }
+.social-buttons .linkedin-share { width: 60px; height: 65px; background-position: -215px 0; }
+
+.darkClass
+{
+    background-color: #8b8989;
+    filter:alpha(opacity=50); /* IE */
+    opacity: 0.5; /* Safari, Opera */
+    -moz-opacity:0.50; /* FireFox */
+    z-index: 20;
+    height: 100%;
+    width: 100%;
+    background-repeat:no-repeat;
+    background-position:center;
+    position:absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.has-error{ // Merge this with everyone else
+    p.help-block{
+        text-align:left;
+    }
+    //input,textarea{background-color:rgba(204,0,51,0.2);}
+    textarea{
+        border:1px solid #a94442;
+    }
+    select label,span.in-input{
+        color: #a94442;
+    }
+}
+
+    
+.breadcrumb{
+    margin-top:35px;background-color:rgb(218, 241, 242);
+    border:1px solid @light-grey;
+} // Merge this with everyone else
+
+  
+.materials-checkbox { 
+  display:inline-block;
+  height:16px;
+  width:16px;
+  font-size:16px;
+  line-height:14px;
+  border:1px solid #9E9E9E;
+  cursor:pointer;
+} 
+
+  // step progress bar
+
+.bs-wizard {
+    margin-top: 40px;
+    border-bottom:0;
+}
+
+/*Form Wizard*/
+.bs-wizard {
+    border-bottom: solid 1px #e0e0e0; 
+    padding: 0 0 10px 0;
+}
+.bs-wizard > .bs-wizard-step {
+    padding: 0; 
+    position: relative;
+}
+.bs-wizard > .bs-wizard-step + .bs-wizard-step {}
+.bs-wizard > .bs-wizard-step .bs-wizard-stepnum { 
+    margin-bottom: 5px;
+    color: #595959; 
+    font-size: 16px;
+}
+.bs-wizard > .bs-wizard-step .bs-wizard-info {
+    color: black; 
+    font-size: 14px;
+}
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot {
+    position: absolute; 
+    width: 30px; 
+    height: 30px; 
+    display: block; 
+    background: #26A6DD; 
+    top: 23px; 
+    left: 50%; 
+    margin-top: -15px; 
+    margin-left: -15px; 
+    border-radius: 50%;
+} 
+
+.bs-wizard>.bs-wizard-step>.greyDot { //grey dot, if user HASN'T completed step
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: block;
+    background: @light-grey;
+    top: 23px;
+    left: 50%;
+    margin-top: -15px;
+    margin-left: -15px;
+    border-radius: 50%;
+    border: 1px solid rgb(98, 98, 98);
+}
+
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot:after { // blue dots on progress bar, when user HAS completed step
+    content: ' '; 
+    width: 14px; 
+    height: 14px; 
+    background: #199DFB; // center dot color 
+    border-radius: 50px; 
+    position: absolute; 
+    top: 8px; 
+    left: 8px; 
+} 
+.bs-wizard > .bs-wizard-step > .progress { // grey progress bar
+    position: relative; 
+    border-radius: 0px;  
+    height: 5px; 
+    box-shadow: none; 
+    margin: 20px 0;
+    background-color: @medium-grey;
+}
+.bs-wizard > .bs-wizard-step > .progress > .progress-bar {
+    width:0px; 
+    box-shadow: none; 
+    background: @medium-grey;
+}
+.bs-wizard > .bs-wizard-step.complete > .progress > .progress-bar {
+    width:100%;
+}
+.bs-wizard > .bs-wizard-step.active > .progress > .progress-bar {
+    width:50%;
+}
+.bs-wizard > .bs-wizard-step:first-child.active > .progress > .progress-bar {
+    width:0%;
+}
+.bs-wizard > .bs-wizard-step:last-child.active > .progress > .progress-bar {
+    width: 100%;
+}
+.bs-wizard > .bs-wizard-step.disabled > .bs-wizard-dot {
+    background-color: #f5f5f5;
+}
+.bs-wizard > .bs-wizard-step.disabled > .bs-wizard-dot:after {
+    opacity: 0;
+}
+.bs-wizard > .bs-wizard-step:first-child  > .progress {
+    left: 50%; width: 50%;
+}
+.bs-wizard > .bs-wizard-step:last-child  > .progress {
+    width: 50%;
+}
+.bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot{ 
+    pointer-events: none; 
+}
+
+
+
+.examContainer {
+    padding-bottom: 0;
+}
+
+.buttons {
+    background-color: @dark-cyan; 
+    cursor: pointer;
+    color: @white;
+    height: 60px;
+    text-align: center;
+    padding-top: 8px;
+}
+
+.buttons:hover {
+    background-color: @dark-blue;
+    cursor: pointer;
+    color: @white;
+}
+
+.breakLine {
+    margin-top:0px;
+    border: 1px solid @dark-cyan;
+}
+
+.cpdCircle {
+    border-radius: 50%;
+    height: 125px;
+    width: 125px;
+    background: @white;
+    border: 2px solid black;
+    color: #0E6386;
+    font-family: sans-serif;
+}
+
+.cpdNumber {
+    color: #0E6386;
+    font-size: x-large;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.cpdText {
+    color: #A2ACAD;
+    font-family: sans-serif;
+}
+
+.calStyle {
+    border: 2px solid #DBDBDB;
+}
+
+.calTitle {
+    font-size: 24px;
+    font-family: sans-serif;
+}
+
+.calArrows {
+    font-size: 33px !important;
+    color: rgb(221, 217, 217);
+}
+
+.monthName {
+    font-size: 19px;
+    font-weight: 200;
+}
+
+.eventTitle {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.calPresenters {
+    font-family: @opensans_regular;
+}
+
+// for calendar list view image
+
+.calendar-stack {
+        position: relative;
+        //display: inline-block;
+        width: (13em / 14);
+        height: 1em;
+
+    .fa-calendar-o,
+    .calendar-day {
+        position: absolute;
+    }
+
+    .calendar-day {
+        top: (7em / 8);
+        left: 1.0em;
+        width: (11em / 8);
+        height: (6em / 8);
+        font-family: sans-serif;
+        font-size: (8em / 14);
+        font-weight: 700;
+        line-height: (8em / 14);
+        text-align: center;
+      }
+  }
+
+.event-profile-image{
+    border-radius:50%;
+    height: 200px;
+    width: 200px;
+    border: 3px solid @medium-grey;
+}
+
+.registeredTrue {
+    color: @dark-cyan !important;
+}

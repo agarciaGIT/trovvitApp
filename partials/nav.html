@@ -1,0 +1,160 @@
+<!-- Fixed navbar -->
+<div class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="SFDCAppNavCtrl">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" ng-class="{ active: isActive('/dash')}" ng-click="navigate('dash')" data-tabbed-nav="tab" style='padding-bottom:0;background-color:#f8f8f8;'>
+            </a>
+            <!-- -->
+        </div>
+        <div class="collapse navbar-collapse" style='border:none;'>
+            <div class='adjustNav'>
+                <ul class="nav navbar-nav full-nav">
+                    <!--id="mainnav-dashboard" ng-class="{ active: isActive('/dash')}" -->
+                    <li>
+                        <a href="" ng-click="navigate('dash')">Wall</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="navigate('dash')">Time Line</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="navigate('posts')">Posts</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="navigate('programs')">Badges</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="navigate('programs')">User Groups</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="navigate('programs')">Institutions</a>
+                    </li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right full-nav">
+                    <li id="mainnav-readings" ng-class="{ active: isActive('/myaccount')}">
+                        <a class="dropdown-toggle userNameDrop" data-toggle="dropdown">
+                            <img ng-src="{{userData.userData.FullPhotoUrl}}" class="nav-profile-image"><span class="userNameDrop">{{userData.contactData.FirstName}}</span><b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="" ng-click="navigate('profileSettingsPersonalInformation')">Personal Information</a>
+                            </li>
+                            <li><a href="" ng-click="navigate('profileSettingsDirectory')">Settings</a>
+                            </li>
+                            <li><a href="" ng-click="navigate('profileSettingsMembership')">Membership</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="" ng-click="navigate('orders')">Orders</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="https://build-garpbuild.cs16.force.com/secur/logout.jsp">Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li id="mainnav-readings" class="dropdown" ng-class="{ active: isActive('/myaccount')}">
+                        <a href="#" class="dropdown-toggle question-sign" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="fa fa-question-circle"></span>
+                        </a>
+                        <ul class="dropdown-menu question-sign-menu">
+                            <li><a href="#">F.A.Q</a>
+                            </li>
+                            <li><a href="#">By Laws</a>
+                            </li>
+                            <li><a href="#">Code of Conduct</a>
+                            </li>
+                            <li><a href="#">Privacy Policy</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!-- mobile nav-->
+            
+            <ul class="nav mobile-nav">
+                <li class="dropdown">
+                    <a href="" ng-click="navigate('dash')">Dashboard</a>
+                </li>
+                <li class="dropdown">
+                    <a href="" ng-click="navigate('programs')">My Programs</a>
+                </li>
+                <li ng-if="userData.membershipContract" id="mainnav-readings" ng-class="{ active: isActive('/chapters')}" class="dropdown">
+                    <a href="" ng-click="navigate('eventsCalendar')">Calendar</a>
+                </li>
+             </ul>
+            <ul class="nav mobile-nav">   
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" tabbed>Risk Intelligence <span class="caret"></span></a> 
+                    <ul>
+                        <li>
+                            <a href="" ng-click="gotoBookstore()">Bookstore</a>
+                        </li>
+                        <li>
+                            <a href="" ng-click="navigate('riskNewsResources')">Risk Resources</a>
+                        </li>
+                        <li>
+                            <a href="" ng-click="navigate('verifyAuth')" target="_new">Daily Limit</a>
+                        </li>
+                        <li>
+                            <a href="javascript: document.SSO.submit()">Jobs</a>
+                        </li>
+                        <!-- Missing the Directory linkage-->
+                        <li ng-if="userData.isChapterDirector || userData.canViewResources">
+                            <a href="" ng-click="navigate('chapterDirectorResources')">Chapter Director Resources</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav mobile-nav">
+                <li id="mainnav-readings" ng-class="{ active: isActive('/myaccount')}" class="dropdown">
+                    <a href="#" data-toggle="dropdown">
+                        <img ng-src="{{userData.userData.FullPhotoUrl}}" class="nav-profile-image">
+                        <span class="userNameDrop">{{userData.contactData.FirstName}}</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul>
+                        <li><a href="" ng-click="navigate('profileSettingsPersonalInformation')">Personal Information</a>
+                        </li>
+                        <li><a href="" ng-click="navigate('profileSettingsEmail')">Email Preferences</a>
+                        </li>
+                        <li><a href="" ng-click="navigate('profileSettingsDirectory')">Directory Settings</a>
+                        </li>
+                        <li><a href="" ng-click="navigate('profileSettingsChapters')">Preferred Chapters</a>
+                        </li>
+                        <li><a href="" ng-click="navigate('profileSettingsMembership')">Membership</a>
+                        </li>
+                        <li><a href="" ng-click="navigate('orders')">Orders</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav mobile-nav">           
+                <li id="mainnav-readings" ng-class="{ active: isActive('/myaccount')}">
+                    <a href="https://build-garpbuild.cs16.force.com/secur/logout.jsp">Logout</a>
+                    <ul>
+                        <li><a href="#">F.A.Q.</a></li>              
+                        <li><a href="#">By Laws</a></li>
+                        <li><a href="#">Code of Conduct</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="https://build-garpbuild.cs16.force.com/secur/logout.jsp">Logout</a></li>          
+                    </ul>
+                </li>
+            </ul>
+
+            <form action="https://www.jobtarget.com/c/login/autocreate.cfm" target="_new" method="POST" name="SSO">
+                <input type="hidden" name="site_id" value="9349">
+                <input type="hidden" name="cust_code" value="GARP">
+                <input type="hidden" name="email" value="alberto.garcia@garp.com">
+                <input type="hidden" name="member_number" value="253128">
+                <input type="hidden" name="first_name" value="Alberto">
+                <input type="hidden" name="last_name" value="Garcia">
+                <input type="hidden" name="goto" value="{{decodeEntities('/c/resumes/index.cfm?site_id=9349')}}">
+            </form>
+
+        </div>
+        <div class="fixed-nav-line hidden-sm hidden-xs"></div>

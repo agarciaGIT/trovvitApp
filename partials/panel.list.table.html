@@ -1,0 +1,69 @@
+<div id="fieldlist" ng-controller="SFDCAppPanelListCtrl">
+
+  <div ng-if="panelInfo.allowEdit && panelInfo.fieldRecords.length > 1">
+    <p><button type="button" class="btn garp-btn-orange" ng-click="addRecord(panelInfo.name)">Add</button></p>
+  </div>
+
+  <div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">         
+
+            <table class="table table-condensed examday-reminder-area">
+
+              <tr>
+                <td ng-repeat="panelFieldItem in panelInfo.fieldRecords | filter:criteriaFieldMatch()">
+                  <a href="" ng-click="order(panelFieldItem.name)">{{panelFieldItem.label}}</a>
+                </td>
+              </tr>
+
+              <tr ng-repeat="panelRecordItem in panelInfo.recordData | filter:criteriaMatch()">
+                <td ng-repeat="panelFieldItem in panelInfo.fieldRecords | filter:criteriaFieldMatch()">
+                  <div ng-if="panelFieldItem.type == 'TEXTAREA'">
+                    <span ng-if="panelRecordItem[panelFieldItem.name]" class="glyphicon glyphicon-comment" ng-click="showTextArea(panelFieldItem.label, panelRecordItem[panelFieldItem.name])"></span>
+                  </div>
+                  <div ng-if="panelFieldItem.type == 'BOOLEAN'">
+                    <span ng-if="panelRecordItem[panelFieldItem.name]" class="glyphicon glyphicon-ok"></span>
+                  </div>
+                  <div ng-if="panelFieldItem.type != 'TEXTAREA' && panelFieldItem.type != 'BOOLEAN'">
+                    {{panelRecordItem[panelFieldItem.name]}}
+                  </div>
+
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div ng-if="panelInfo.allowEdit">
+    <button type="button" class="btn garp-btn-orange" ng-click="addRecord(panelInfo.name)">Add</button>
+  </div>
+
+<div class="modal fade" id="myTextAreaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">
+          {{textareaModalLabel}}
+        </h4>
+      </div>
+      <div class="modal-body">
+
+        <p>{{textareaModalValue}}</p>
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+</div>

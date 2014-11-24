@@ -1,0 +1,214 @@
+<div class="row" ng-controller="SFDCAppDashMemberProfileCtrl">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="mbrPrflHead panel-heading">
+                <h3 class="panel-title">Memberbership</h3>
+            </div>
+            <div class="membershipContainer panel-body">
+                <div class='idArea'>
+                    <p id="profileId center-block">GARP ID</p>
+                    <p class='userMemId'>{{userData.contactData.GARP_ID__c}}</p>
+                </div>
+                <div class="memType">
+                    <span class="userMem">Member type</span><br>
+                    <span class="memTxt">{{toProperCase(userData.contactData.Membership_Type__c)}}</span>
+                </div><br>
+                <div class="memType">
+                    <span class="userMem">Member since</span><br>
+                    <span class="memTxt">{{getEpochDateText(userData.membershipContract.StartDate)}}</span>
+                </div><br>
+                <div class="memType">
+                    <span class="userMem">Membership expires on</span><br>
+                    <span class="memTxt">{{getEpochDateText(userData.membershipContract.EndDate)}}</span>
+                </div>
+
+
+                <!-- <div class="media">
+                        <div class="pull-left" href="#">
+                            <img class="media-object dash-profile-image" ng-src="{{userData.userData.FullPhotoUrl}}">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading" id="profileName">{{userData.contactData.Name}}</h4>
+                            <div ng-if='userData.contactData.Job_Function__c'>
+                                {{userData.contactData.Job_Function__c}}
+                            </div>
+                            <div ng-if='userData.contactData.Company__c'>
+                                {{userData.contactData.Company__c}}
+                            </div>
+                            <div ng-if='userData.contactData.Email'>
+                                Email: {{userData.contactData.Email}} <span>(</span><a href="" ng-click="navigateDash('myaccount')">update</a><span>)</span>
+                            </div>
+                        </div>
+                    </div>-->
+
+
+
+            </div>
+
+        </div>
+
+
+
+
+        <!--   <div class="dash-profile">
+                    <div class="dash-profile-info">
+                        <div>
+                            <p id="profileName">
+                                <h4>{{userData.contactData.Name}}</h4>
+                            </p>
+                            <div class='allInfo'>
+                                <h6 class='jobFunction'>{{userData.contactData.Job_Function__c}}</h6>
+                                <div class="addInfo">
+                                    <h6 class='company'>{{userData.contactData.Company__c}}</h6>
+                                    <br>
+                                    <h6 class='usrMail'>Email: {{userData.contactData.Email}} <span>(</span><a href="" ng-click="navigateDash('myaccount')">update</a><span>)</span>
+
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+        <!--  <p ng-if="!userData.contactData.MailingCity || !userData.contactData.MailingCountry || !userData.contactData.MailingPostalCode || !userData.contactData.MailingState || !userData.contactData.MailingStreet">
+
+                    </p> -->
+        <!--<div class='row'>
+                        <div class="col-md-4">
+                            <div ng-if="userData.contactData.Membership_Type__c != 'Affiliate' && now >= userData.membershipContract.StartDate && now < userData.membershipContract.EndDate">
+                                <p class='memberSince'>{{toProperCase(userData.contactData.Membership_Type__c)}} Member Since</p>
+                            </div>
+
+                            <p class='memberSinceDate'>{{getEpochDateText(userData.membershipContract.StartDate)}}</p>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <p class='memberExp'>Membership Expires</p>
+                            <p class='memberExpDate'>{{getEpochDateText(userData.membershipContract.EndDate)}}</p>
+
+                        </div>-->
+        <!--<a ng-if="userData.membershipContract.Status != 'Activated ( Auto-Renew )' && !userData.renewOppPending" href ng-click="upgrade()">Renew now!</a>-->
+
+        <!--<div class="col-md-4">
+                            <p id="profileId">GARP Identification</p>
+                            </br>
+                            <p class='garpId'>{{userData.contactData.GARP_ID__c}}</p>
+                        </div>
+                    </div>-->
+
+        <!--   <p>
+                                <span ng-if="userData.renewOppPending">Renew Pending Payment: <a href ng-click="payPendingMembership(userData.renewOppPending)">Pay Now</a>
+          </p>
+
+                            <div ng-if="userData.membershipContract.Status != 'Activated ( Auto-Renew )'">
+                                <p><a href="" ng-click="turnOnAuto()">Turn On your Auto-Renewal</a>
+                                </p>
+                            </div>
+
+                            <div ng-if="userData.membershipContract.Status == 'Activated ( Auto-Renew )'">
+                                <p><a href="" ng-click="turnOffAuto()">Turn Off your Auto-Renewal</a>
+                                </p>
+                            </div>
+
+
+                    </div>-->
+
+
+        <!-- start of buttons here --<div class='col-md-12'>
+                        <div class="col-md-3">
+                            <span ng-if="userData.contactData.HomePhone || userData.contactData.OtherPhone" ng-click="navigateDash('myaccount')" class="glyphicon glyphicon-info-sign">
+                             
+                             Edit Info </span>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="" ng-click="navigateDash('chatterProfile')" class="glyphicon glyphicon-camera"><span ng-if="userData.userData.FullPhotoUrl" ></span></a>
+                            </br>Edit Photo
+                        </div>
+                        <div class="col-md-3">
+                            <a href="" ng-click="navigateDash('professionalExperience',{mode:'Professional'})" class="glyphicon glyphicon-briefcase"><span ng-if="userData.professionalExperienceData.length" ></span></a>
+                            </br>Edit Work Info
+                        </div>
+                        <div class="col-md-3">
+                            <a href="" class="glyphicon glyphicon-trash"><span ng-if="userData.acdemicExperienceData.length" ng-click="navigateDash('professionalExperience',{mode:'Academic'})"></span></a>
+                            </br>Edit Education Info
+                        </div>
+                    </div>
+                </div> -->
+        <!--<div ng-if="userData.membershipContract.StartDate > now">
+          <p>Your {{userData.contactData.Membership_Type__c}} membership will begin on {{getEpochDateText(userData.membershipContract.StartDate)}}</p>
+        </div>
+
+        <div ng-if="now > userData.membershipContract.EndDate">
+          <p>Your {{userData.contactData.Membership_Type__c}} membership has lapsed. <a href ng-click="upgrade()">Renew now!</a></p>
+        </div>-->
+
+
+
+
+        <div ng-if="userData.contactData.Membership_Type__c == 'Affiliate' && now >= userData.membershipContract.StartDate && now < userData.membershipContract.EndDate">
+            <p>Affiliate Since: {{getEpochDateText(userData.membershipContract.StartDate)}}
+                <span ng-if="!userData.renewOppPending"><a href ng-click="upgrade()">Upgrade Now!</a></span>
+            </p>
+            <div ng-if="userData.renewOppPending">
+                <p>Renew Pending Payment: <a href ng-click="payPendingMembership(userData.renewOppPending)">Pay Now</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="selectMemberType" style="display:none;">
+
+            <p>
+                <select name="type" ng-model="memberType" ng-change="onSelectType(memberType)">
+                    <option value="{{MEMBER_PROD_CODE}}" selected>Individual Membership - ${{IndividualMembership}}</option>
+                    <option ng-if="studentMembership" value="{{MEMBER_STUDENT_PROD_CODE}}">Student Membership - ${{studentMembership}}</option>
+                </select>
+            </p>
+
+            <p>
+                <div>
+                    <p>
+                        <select class="ng-pristine ng-invalid ng-invalid-required" data-ng-model="paymentMethod" name="paymentMethod" ng-class="{valError : validationErrors && !user.paymentMethod}" ng-change="onSelectPay(paymentMethod)" required="">
+                            <option value="" selected="" disabled="">Please select a method of payment</option>
+                            <option data-ng-if="user.accountData.BillingCountry !== 'Nigeria' && user.accountData.BillingCountry !==  'Ghana'" value="creditCard" class="ng-scope">Credit Card</option>
+                            <option data-ng-if="user.accountData.BillingCountry !== 'Nigeria' && user.accountData.BillingCountry !==  'Ghana'" value="deferredCreditCardFax" class="ng-scope">credit card by fax (processing fee $50.00)</option>
+                            <option data-ng-if="user.accountData.BillingCountry !== 'Nigeria' && user.accountData.BillingCountry !==  'Ghana'" value="deferredCheck" class="ng-scope">check (processing fee $50.00)</option>
+                            <option value="deferredWireTransfer">wire transfer (processing fee $50.00)</option>
+                        </select>
+                    </p>
+                    <p><b>Total Cost:</b> ${{formatAmountDisplay(membership + fee)}}
+                </div>
+                </p>
+
+                <p>
+                    <input type="checkbox" ng-model="autoRenew">Auto-Renew my membership
+                </p>
+
+                <p>
+                    <button name="searchButton" ng-click="purchase(memberType, paymentMethod)" class="btn garp-btn-orange">Purchase</button>
+                </p>
+
+        </div>
+
+        <div>
+
+
+
+            <!-- <p ng-if="userData.contactData.MailingCity && userData.contactData.MailingCountry && userData.contactData.MailingPostalCode && userData.contactData.MailingState && userData.contactData.MailingStreet && userData.canRegisterFRM1"><a ui-sref="memberRegistration({examName:'FRM'})">Sign up for the FRM Exam!</a></p>
+
+          <p ng-if="userData.contactData.MailingCity && userData.contactData.MailingCountry && userData.contactData.MailingPostalCode && userData.contactData.MailingState && userData.contactData.MailingStreet && userData.canRegisterERP"><a ui-sref="memberRegistration({examName:'ERP'})">Sign up for the ERP Exam!</a></p>
+
+          <p ng-if="userData.contactData.MailingCity && userData.contactData.MailingCountry && userData.contactData.MailingPostalCode && userData.contactData.MailingState && userData.contactData.MailingStreet && (fbr || fbr_mem) && !userData.fbrContract"><a href="" href="" ng-click="navigateDash('buyFBR')">Sign up for the FBR!</a></p>
+          <p ng-if="userData.contactData.MailingCity && userData.contactData.MailingCountry && userData.contactData.MailingPostalCode && userData.contactData.MailingState && userData.contactData.MailingStreet && (icbrr || icbrr_mem || icbrr_retake) && (!userData.icbrrContract || icbrr_retake)"><a href="" href="" ng-click="navigateDash('buyICBRR')">Sign up for the ICBRR!</a></p>-->
+
+            <p ng-if="userData.defferedExams.bERPSwitch && userData.frmContract && isPaid(userData.frmContract)"><a href="{{erpSwitchExamRegistrationURL}}">Switch the FRM Exam to ERP!</a>
+            </p>
+            <p ng-if="userData.defferedExams.bFRMSwitch && userData.erpContract && isPaid(userData.erpContract)"><a href="{{examSwitchRegistrationURL}}">Switch the ERP Exam to FRM!</a>
+            </p>
+        </div>
+
+
+    </div>
+
+</div>
+</div>

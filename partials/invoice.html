@@ -1,0 +1,430 @@
+<div class="container page-container">
+  <div id="spin"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-body">
+
+
+          <div class="row">
+            <div class="col-md-12">
+
+                  <div class="ticket-header">
+                    <div class="ticket-logo-left">
+                      <img class='img-responsive' ng-src="{{envPath}}/img/logo.png">
+                    </div>
+                    <a href='' class="ticket-logo-right fa fa-download" title='Download as a PDF' ng-click='downloadPDF();'>
+                    </a>
+                  </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="ticket-divide-line"></div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-6">
+                <b>Global Association of Risk Professionals, Inc </b><br>
+                111 Town Square Place Suite, 14th Floor <br>
+                Jersey City, NJ 07310 USA <br>
+                Tel: +1 201.719.7210 Fax: +1 201.222.5022 <br>
+                Email: memberservices@garp.com <br>
+                <span ng-if="opportunityItem.Company__c == 'GARP'">Federal Tax ID: 02-0571-577</span> <br>
+                <span ng-if="opportunityItem.Company__c == 'GRA'">Federal Tax ID: 02-3453-938</span> <br>
+            </div>
+
+            <div class="col-md-6">
+
+              <div class="panel panel-primary">
+                <div class="panel-body">
+                  <table class="table table-condensed ticket-info-area-table">
+                    <tr>
+                      <td class="ticket-info-label">GARP ID:</td>
+                      <td>{{userData.contactData.GARP_Member_ID__c}}</td>
+                    </tr>
+                    <tr>
+                      <td class="ticket-info-label">Date:</td>
+                      <td>{{getEpochDateText(opportunityItem.CreatedDate)}}</td>
+                    </tr>
+                    <tr>
+                      <td class="ticket-info-label">Invoice #:</td>
+                      <td>{{opportunityItem.GARP_Invoice_Number__c}}</td>
+                    </tr>
+                    <tr>
+                      <td class="ticket-info-label">Status:</td>
+                      <td>{{status}}</td>
+                    </tr>
+                    <tr>
+                      <td class="ticket-info-label">Payment Type:</td>
+                      <td>{{paymentType}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>                  
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="ticket-divide-line"></div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-md-6">
+
+                <h3>Contact Information</h3>
+                <table class="table table-condensed ticket-info-area-table">
+                  <tr>
+                    <td class="ticket-info-label">Name:</td>
+                    <td>{{opportunityItem.Shipping_First_Name__c}} {{opportunityItem.Shipping_Last_Name__c}}</td>
+                  </tr>
+                  <tr ng-if="opportunityItem.Shipping_Company_Name__c">
+                    <td class="ticket-info-label">Company:</td>
+                    <td>{{opportunityItem.Shipping_Company_Name__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">Address:</td>
+                    <td>{{opportunityItem.Ship_Street__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">City/State/Zip:</td>
+                    <td>{{opportunityItem.Shipping_City__c}} / {{opportunityItem.Shipping_State__c}} / {{opportunityItem.Shipping_Postal_Code__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">Country:</td>
+                    <td>{{opportunityItem.Shipping_Country__c}}</td>
+                  </tr>
+                  <tr ng-if="opportunityItem.Shipping_Phone_No__c">
+                    <td class="ticket-info-label">Telephone:</td>
+                    <td>{{opportunityItem.Shipping_Phone_No__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">Email:</td>
+                    <td>{{opportunityItem.Shipping_E_mail__c}}</td>
+                  </tr>
+                </table>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <h3>Shipping Information</h3>
+                <table class="table table-condensed ticket-info-area-table">
+                  <tr>
+                    <td class="ticket-info-label">Name:</td>
+                    <td>{{opportunityItem.Shipping_First_Name__c}} {{opportunityItem.Shipping_Last_Name__c}}</td>
+                  </tr>
+                  <tr ng-if="opportunityItem.Shipping_Company_Name__c">
+                    <td class="ticket-info-label">Company:</td>
+                    <td>{{opportunityItem.Shipping_Company_Name__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">Address:</td>
+                    <td>{{opportunityItem.Ship_Street__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">City/State/Zip:</td>
+                    <td>{{opportunityItem.Shipping_City__c}} / {{opportunityItem.Shipping_State__c}} / {{opportunityItem.Shipping_Postal_Code__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">Country:</td>
+                    <td>{{opportunityItem.Shipping_Country__c}}</td>
+                  </tr>
+                  <tr ng-if="opportunityItem.Shipping_Phone_No__c">
+                    <td class="ticket-info-label">Telephone:</td>
+                    <td>{{opportunityItem.Shipping_Phone_No__c}}</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-info-label">Email:</td>
+                    <td>{{opportunityItem.Shipping_E_mail__c}}</td>
+                  </tr>
+                </table>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="ticket-divide-line"></div>
+            </div>
+          </div>
+
+
+          <div ng-if="examReg" class="row">
+            <div class="col-md-12">
+              <div class="invoice-contact">
+                <b>Exam Date:</b> {{getEpochDateText(examReg.Exam_Site__r.Exam_Date__c)}}
+              </div>
+              <div class="invoice-shipping">
+                <b>Exam Site:</b> {{examReg.Exam_Site__r.Site__r.Name}}
+              </div>              
+            </div>
+          </div>
+
+          <div ng-if="examReg" class="row">
+            <div class="col-md-12">
+              <div class="ticket-divide-line"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+
+              <table class="table table-condensed ticket-info-area-table">
+                <tr>
+                  <td class="ticket-info-label">Product Information</td>
+                  <td>$US</td>
+                </tr>
+                <tr ng-repeat="lineItem in opportunityItem.OpportunityLineItems | orderBy:mySortFunction">
+                  <td>{{getProductName(lineItem.PricebookEntryId)}} <span ng-if="lineItem.Description">{{lineItem.Description}}</td>
+                  <td>${{formatAmountDisplay(lineItem.TotalPrice)}}</td>
+                </tr>
+                <tr>
+                  <td class="ticket-info-label">Total</td>
+                  <td>${{formatAmountDisplay(opportunityItem.Amount)}}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr ng-repeat="payment in payments | orderBy:sortPayments">
+                  <td><span ng-if="payment.ChargentSFA__Type__c == 'Charge'">{{payment.ChargentSFA__Type__c}}</span> {{payment.ChargentSFA__Payment_Method__c}} {{payment.ChargentSFA__Response_Status__c}} on {{getEpochDateTimeText(payment.ChargentSFA__Gateway_Date__c)}}</td>
+                  <td>${{formatAmountDisplay(payment.ChargentSFA__Amount__c)}}</td>
+                </tr>
+              </table>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="ticket-divide-line"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+            
+              <div ng-if="FRM && CreditCard">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  Thank you for your order.</p>
+
+                <p><b>Membership:</b>  As a convenience to you, GARP will automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-out of this service, please contact us directly at memberservices@garp.com.  Please note that because you paid via a credit card, an email notification will be sent to you four weeks prior to your renewal date.  </p>
+
+                <p><b>FRM Program Enrollment:</b>  Once you have passed the FRM Part I Exam, the enrollment fee is good for 4 years.  If you still have not passed FRM Part II after 4 years, you will need to re-enroll in the program as a new candidate and re-take the FRM Part I.  </p>
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for either the FRM Exam registration fee or the FRM Exam enrollment fee.  Candidates cannot transfer a registration to another candidate.  Candidates do, however, have the option to defer their FRM Exam one time only to the following exam date, but they will be subject to a US$100 administration processing fee for the deferral.</p>
+              </div>
+
+              <div ng-if="FRM && CheckFax">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your registration to be considered complete, and based on the *Early Registration rate, your payment must be received by the “Early Registration Deadline of July 31”.  If your payment is received after the deadline, you will be charged the rate effective when your payment is received.  That is either the Standard or Late registration fee, in which case you will be required to make an additional payment. </p>
+
+                <p><b>Membership:</b>  To enroll in automatic membership renewal, please contact us directly at memberservices@garp.com.</p>
+
+                <p><b>FRM Program Enrollment:</b>  Once you have passed the FRM Part I Exam, the enrollment fee is good for 4 years.  If you still have not passed FRM Part II after 4 years, you will need to re-enroll in the program as a new candidate and re-take the FRM Part I again.</p>
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for either the FRM Exam registration fee or the FRM Exam enrollment fee.  Candidates cannot transfer a registration to another candidate.  Candidates do, however, have the option to defer their FRM Exam one time only to the following exam date, but they will be subject to a US$100 administration processing fee for the deferral.</p>
+              </div>
+
+              <div ng-if="FRM && Wire">
+                <p><b>Important Information:</b></p>
+                <p><b>By Wire Transfer: (instructions are as follows)</b></p>
+
+                <p>Bank Account Name:<br>
+                Bank Name:<br>
+                Bank Address:<br>
+                Account Number:<br>
+                Routing Number/Sort Code:<br>
+                Swift Code:<br>
+                <b>Your must quote your GARP ID number when making payment.</b></p>
+
+                <p><b>Payment:</b>  For your registration to be considered complete and based on the *Early Registration rate, your payment must be received by the “Early Registration Deadline of July 31”.  If your payment is received after the deadline, you will be charged the Standard or Late Rate effective when your payment is received; in which case you will be required to make an additional payment.</p>
+
+                <p><b>Membership:</b>  As a convenience to you, GARP can automatically renew your membership every year from your initial sign-up-date.  If you would like to opt-in to this service, please contact us directly at memberservices@garp.com.</p>
+
+                <p><b>FRM Program Enrollment:</b>  Once you have passed the FRM Part I Exam, the enrollment fee is good for 4 years.  If you still have not passed FRM Part II after 4 years, you will need to re-enroll in the program and re-take the FRM Part I as a new candidate.</p>
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for either the FRM Exam registration fee or the FRM Exam enrollment fee.  Candidates cannot transfer a registration to another candidate.  Candidates do, however, have the option to defer their FRM Exam one time only to the following exam date, but they will be subject to a US$100 administration processing fee for the deferral.</p>
+
+                <p><b>Standard Registration blurb:</b><br>
+                </b>Payment:</b>  In order for your registration to be considered complete and based on the *Standard Registration rate, your payment must be received by the “Standard Registration Deadline of August 31”.  If your payment is received after the deadline, you will be charged the Late Rate effective when your payment is received; in which case you will be required to make an additional payment.</p>
+
+                <p><b>Late Registration blurb:</b><br>
+                <b>Payment:</b>  In order for your registration to be considered complete, based on the *Late Registration rate, your payment must be received by the “Late Registration Deadline of October 15th”.  If your payment is received after the registration deadline, your registration will be cancelled; as registration is closed.</p>
+
+              </div>
+
+
+              <div ng-if="Membership && CreditCard">
+
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:  Thank you for your order.</b></p>
+
+                <p><b>Membership:</b>  As a convenience to you, GARP will automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-out of this service, please contact us directly at memberservices@garp.com.  Please note that because you paid via a credit card, an email notification will be sent to you four weeks prior to your renewal date.</p>
+
+                <p><b>Refunds:</b>  There are no membership refunds given under any circumstances after 60 days.  Nor can members transfer a membership to another.</p>
+
+              </div>
+
+
+              <div ng-if="Membership && CheckFax">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your membership application to be considered complete, payment must be received within 30 days.  
+
+                <p><b>Membership:</b>  To enroll in automatic membership renewal, log on at www.garp.org/membership and select the “Update Profile” link from the Member Resources box. From the navigation bar of your Profile you can select the “Enable” option for Automatic Renewal.</p> 
+
+                <p><b>Refunds:</b>  There are no membership refunds given under any circumstances after 60 days.  Nor can members transfer membership to another.</p>      
+              </div>
+
+
+              <div ng-if="Membership && Wire">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your membership application to be considered complete, payment must be received within 30 days.</p>
+
+                <p><b>Membership:</b>  To enroll in automatic membership renewal, log on at www.garp.org/membership and select the “Update Profile” link from the Member Resources box. From the navigation bar of your Profile you can select the “Enable” option for Automatic Renewal.</p>
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances after 60 days.  Nor can members transfer membership to another.</p>
+
+              </div>
+
+
+
+              <div ng-if="ERP && CreditCard">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:  Thank you for your order. </b></p>
+
+                <p><b>Membership:</b>  As a convenience to you, GARP will automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-out of this service, please contact us directly at memberservices@garp.com.  Please note that because you paid via a credit card, an email notification will be sent to you four weeks prior to your renewal date.</p>
+
+                <p><b>ERP Program Enrollment:</b>  The enrollment fee is good for 4 years.  If you still have not passed the ERP Exam after 4 years, you will need to re-enroll in the program as a new candidate and pay the enrollment fee again.  </p>
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for either the ERP Exam registration fee or the ERP Exam enrollment fee.  Candidates cannot transfer a registration to another candidate.  Candidates do, however, have the option to defer their ERP Exam one time only to the following exam date, but they will be subject to a US$100 administration processing fee for the deferral.</p>
+
+              </div>
+
+              <div ng-if="ERP && CheckFax">
+
+                <p><b>Important Information:</b></p>
+
+                <p><b>Payment:</b>  In order for your registration to be considered complete, and based on the *Early Registration rate, your payment must be received by the “Early Registration Deadline of July 31”.  If your payment is received after the end the deadline you will be charged the rate effective when your payment is received.  That is either the Standard or Late registration fee, in which case you will be required to make an additional payment.  </p>
+
+                <p><b>Check Payment Instructions:</b><BR>
+                CHECK payable to:<br>
+                GARP Risk Academy<br>
+                Newport Financial Center<br>
+                111 Town Square Place<br>
+                Jersey City, NJ 07310<br>
+                USA</p>
+                <p><b>Note:</b>  GARP accepts checks drawn on US banks or foreign checks drawn on a US Intermediate Bank account.</p>
+
+                 
+                <p><b>Fax Payment Instructions:</b><br>
+                Complete the information below, sign and fax it back to us at +1.201.222.5022.
+
+                Circle the Credit Card Type:  AMEX / VISA / MasterCard<br>
+                <br>
+                Card Number:  _______________________________________<br>
+                CVV Code:   ______    Expiration Date: _____________<br>
+                <br>
+                Signature of Approval:          _____________________________________<br>
+                Print your name as it appears on your credit card:  _____________________________________</p>
+
+                <p><b>Membership:</b>  To enroll in automatic membership renewal, please contact us at memberservices@garp.com.</p>
+
+                <p><b>ERP Program Enrollment:</b>  The enrollment fee is good for 4 years.  If you still have not passed the ERP Exam after 4 years, you will need to re-enroll in the program as a new candidate and pay the enrollment fee again.</p>  
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for either the ERP Exam registration fee or the ERP Exam enrollment fee.  Candidates cannot transfer a registration to another candidate.  Candidates do, however, have the option to defer their ERP Exam one time only to the following exam date, but they will be subject to a US$100 administration processing fee for the deferral.</p>
+
+
+              </div>
+
+              <div ng-if="ERP && Wire">
+                <p><b>Important Information:</b></p>  
+
+                <p><b>Payment:</b>  For your registration to be considered complete and based on the *Early Registration rate, your payment must be received by the “Early Registration Deadline of July 31”.  If your payment is received after the deadline, you will be charged the Standard or Late Rate effective when your payment is received; in which case you will be required to make an additional payment.  
+
+                <p><b>Wire Transfer Instructions:</b><br>
+                Bank Account Name:  GARP Risk Academy, LLC.<br>
+                Bank Name: Citibank, N.A.<br>
+                Bank Address: 79 Fifth Avenue, New York, NY 10003<br>
+                Account Number: 53544466<br>
+                Routing Number/Sort Code: 0210000089<br>
+                Swift Code: CITIUS33<br>
+                Your must quote your GARP ID number when making payment.</p>
+
+
+                <p><b>Membership:</b>  As a convenience to you, GARP can automatically renew your membership every year from your initial sign-up-date.  If you would like to opt-in to this service, please contact us directly at memberservices@garp.com.  </p>
+
+                <p><b>ERP Program Enrollment:</b>  The enrollment fee is good for 4 years.  If you still have not passed the ERP Exam after 4 years, you will need to re-enroll in the program as a new candidate, and pay the enrollment fee again. </p>
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for either the ERP Exam registration fee or the ERP Exam enrollment fee.  Candidates cannot transfer a registration to another candidate.  Candidates do, however, have the option to defer their ERP Exam one time only to the following exam date, but they will be subject to a US$100 administration processing fee for the deferral.</p>
+
+                <p><b>Standard Registration blurb:</b>
+                Payment:  In order for your registration to be considered complete and based on the *Standard Registration rate, your payment must be received by the “Standard Registration Deadline of August 31”.  If your payment is received after the deadline, you will be charged the Late Rate effective when your payment is received; in which case you will be required to make an additional payment.  </p>
+
+                <p><b>Late Registration blurb:</b>
+                Payment:  In order for your registration to be considered complete, based on the *Late Registration rate, your payment must be received by the “Late Registration Deadline of October 15th”.  If your payment is received after the registration deadline, your registration will be cancelled; as registration is closed.  </p>
+              </div>
+
+              <div ng-if="ICBRR && CreditCard">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your registration to be considered complete, please process your payment promptly. </p>
+
+                <p><b>Membership:</b>  If you purchase membership with your ICBRR registration, as a convenience to you, GARP will automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-out of this service, please click here or contact us directly at memberservices@garp.com.  Please note that because you paid via a credit card, an email notification will be sent to you four weeks prior to your renewal date.  </p>
+
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for the ICBRR Exam. Nor can candidates transfer a registration to another candidate.    </p>              
+              </div>
+
+              <div ng-if="ICBRR && CheckFax">
+                <p><b>Important Information:</b></p> 
+
+                <p><b>Payment:</b>  In order for your registration to be considered complete, payment must be received within 30 days.</p>   
+
+                <p><b>Membership:</b>  If you purchase membership with your ICBRR registration, as a convenience to you, GARP can automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-into this service, please click here or contact us directly at memberservices@garp.com.</p> 
+                
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for the ICBRR Exam. Nor can candidates transfer a registration to another candidate.  </p> 
+              </div>
+
+              <div ng-if="ICBRR && Wire">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your registration to be considered completed, payment must be received within 30 days.  </p>
+                <p><b>Membership:</b>  If you purchase membership with your ICBRR registration, as a convenience to you, GARP can automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-into this service, please click here or contact us directly at memberservices@garp.com.</p>
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for the ICBRR Exam. Nor can candidates transfer a registration to another candidate.  </p>
+              </div>
+
+              <div ng-if="FBR && CreditCard">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your registration to be considered complete, please process your payment promptly. </p>
+                <p><b>Membership:</b>  If you purchase membership with your FBR registration, as a convenience to you, GARP will automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-out of this service, please click here or contact us directly at memberservices@garp.com.  Please note that because you paid via a credit card, an email notification will be sent to you four weeks prior to your renewal date.</p>  
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for the FBR Exam. Nor can candidates transfer a registration to another candidate.  </p>
+              </div>
+
+              <div ng-if="FBR && CheckFax">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your registration to be considered complete, payment must be received within 30 days.  </p>
+                <p><b>Membership:</b>  If you purchase membership with your FRB registration, as a convenience to you, GARP will automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-into this service, please click here or contact us directly at memberservices@garp.com.</p>
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for the FBR Exam. Nor can candidates transfer a registration to another candidate. </p> 
+              </div>
+              <div ng-if="FBR && Wire">
+                <p><b>Important Information:</b></p>
+                <p><b>Payment:</b>  In order for your registration to be considered completed, payment must be received within 30 days.  </p>
+                <p><b>Membership:</b>  If you purchase membership with your FBR registration, as a convenience to you, GARP will automatically renew this membership every year from your initial sign-up-date.  If you would like to opt-into this service, please click here or contact us directly at memberservices@garp.com.</p>
+                <p><b>Refunds:</b>  There are no refunds given under any circumstances for the FBR Exam. Nor can candidates transfer a registration to another candidate. </p> 
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

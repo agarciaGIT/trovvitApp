@@ -1,0 +1,31 @@
+<div class="row" ng-controller="SFDCAppProfileCtrl">
+    <div class="col-md-12">
+
+        <div class="panel">
+
+            <div class="formContainer panel-body">
+
+
+
+                <img class="center-block img-responsive dash-profile-image" ng-src="{{userData.userData.FullPhotoUrl}}">
+                <br>
+                <h4 id='profileName' class="center-block">{{userData.contactData.Name}}</h4>
+                <br>
+                <span class='userEmail center-block'>Email Address</span>
+                <div class='userEmail center-block' ng-if='userData.contactData.Email'>{{userData.contactData.Email}}</div>
+
+                <div class="customPrgrs progress progress-striped active">
+                    <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="{{profilePercentComplete}}" aria-valuemin="0" aria-valuemax="100" style="width: {{profilePercentComplete}}%;">
+                    </div>
+                </div>
+                <!-- get rid of padding for loading bar to fill div-->
+
+
+                <p class='percentage'>{{profilePercentComplete}}% Complete</p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</div>

@@ -1,0 +1,67 @@
+
+<div class="container page-container">
+
+    <div id="spin"></div>
+    <div id="Subspin"></div>
+
+    <div class="row">
+        <div class="col-md-4 myaccount-info-area">
+
+            <div ng-repeat="recordName in ['nameEmail']" ng-include="envPath + '/partials/panel.fields.html'"></div>
+
+            <div ng-repeat="recordName in ['mailingInfo']" ng-include="envPath + '/partials/panel.fields.html'"></div>
+
+            <div ng-repeat="recordName in ['eduInfo']" ng-include="envPath + '/partials/panel.fields.html'"></div>
+
+        </div>
+        <div class="col-md-4 myaccount-info-area">
+
+            <!-- PHOTO -->
+            <div id="formArea" class="panel">
+                <div class="mbrPrflHead panel-heading">
+                    <h3 class="panel-title">Profile Photo</h3>
+                </div>
+
+                <div ng-if="photoMode == 'edit'" class="panel-body">
+                    <div id="fieldSpin"></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <iframe style="width:100%;height:220px;" src="{{iFrameSrc}}">&#160;</iframe>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button ng-if="photoMode=='view'" name="done" ng-click="editPhoto()" class="btn btn-block garp-btn-portal ">Update your profile photo</button>
+                            <button ng-if="photoMode=='edit'" name="done" ng-click="donePhoto()" class="btn btn-block garp-btn-portal ">Done</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div ng-if="photoMode == 'view'" class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img ng-src="{{userData.userData.FullPhotoUrl}}" class="img-center center-block settings-profile-image">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-block garp-btn-portal" ng-click="editPhoto()">Update your profile photo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-repeat="recordName in ['billingInfo']" ng-include="envPath + '/partials/panel.fields.html'"></div>
+
+        </div>
+        <div class="col-md-4 myaccount-info-area">
+
+            <div ng-repeat="recordName in ['phone']" ng-include="envPath + '/partials/panel.fields.html'"></div>
+
+            <div ng-repeat="recordName in ['jobInfo']" ng-include="envPath + '/partials/panel.fields.html'"></div>
+
+        </div>
+
+    </div>
+</div>

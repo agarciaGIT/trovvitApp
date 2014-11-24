@@ -1,0 +1,58 @@
+{
+	"id":"123456DBX",
+	"name":"Bob Jones",
+	"address":"",
+	"photo":"",
+	"insperation":"",
+	"registeredExams": [
+		{
+			"id":"FRM",
+			"name":"FRM Part 1",
+			"address" : {
+				"address":"2130 Fulton Street",
+				"city":"San Francisco",
+				"state":"CA",
+				"zip":"94117-1080",
+				"country":"USA"
+			},
+			"day":"November 11th, 2013",
+			"time":"7:00 am",
+			"duration":"2",
+			"enrolledOn": "4/2/2013",
+			"registedOn": "4/2/2013",
+			"paidOn": "",
+			"assetsAccessed": [
+				{
+					"id":"001",
+					"title":"FRM Study Guide"
+				},
+				{
+					"id":"002",
+					"title":"Study App"
+				}
+
+			]
+		}
+	],
+	"membership" : {
+		"type" : "affiliate",
+		"since" : "2/23/2008",
+		"expiresOn" : "2/23/2015"		
+	},
+	"workExperience" : [
+		{
+			"employer" : "Citi Bank",
+			"startDate" : "5/12/2008",
+			"endDate" : "10/28/2012",
+			"title" : "Chief Risk Officer"
+		}
+	],
+	"educationalExperience" : [
+		{
+			"school" : "Drexel University",
+			"graduationYear" : "2007",
+			"program" : "Business School",
+			"degree" : "Bacholers in Business Management"
+		}
+	]
+}
