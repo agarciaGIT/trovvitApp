@@ -1,0 +1,341 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" id="visualForceServices" controller="trovitAppRemoter">
+    <script type="text/javascript">
+    
+    var sfdcService = {
+        currentAccount: null
+    };
+
+     sfdcService.fetchUserData = function(callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.fetchUserData }',
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+         
+
+    sfdcService.attestBadge = function(badgeId, essay, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.attestBadge}',
+            badgeId, essay,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+
+    sfdcService.setBadgeStatus = function(badgeId, memberId, status, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.setBadgeStatus}',
+            badgeId, memberId, status,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+         
+    sfdcService.addUserGroupShare = function(userGroupId, postId, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.addUserGroupShare}',
+            userGroupId, postId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+                      
+    sfdcService.fetchUserGroups = function(callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.fetchUserGroups}',
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+     
+     sfdcService.getPostFolders = function(callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.getPostFolders}',
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+     
+    sfdcService.getPostFolders = function(callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.getPostFolders}',
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+     
+    sfdcService.fetchObjectShareDetails = function(parentObject, objectId, contactId, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.fetchObjectShareDetails}',
+            parentObject, objectId, contactId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+     
+    sfdcService.addObjectMember = function(parentObject, groupId, contactId, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.addObjectMember}',
+            parentObject, groupId, contactId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+     
+    sfdcService.addObjectShare = function(parentObject, objectId, contactId, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.addObjectShare}',
+            parentObject, objectId, contactId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+
+    sfdcService.deleteObjectMember = function(parentObject, groupId, contactId, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.deleteObjectMember}',
+            parentObject, groupId, contactId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+
+    sfdcService.deleteObjectShare = function(parentObject, objectId, contactId, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.deleteObjectShare}',
+            parentObject, objectId, contactId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+    
+    sfdcService.searchUsers = function(searchText, searchType, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.searchUsers}',
+            searchText,
+            searchType,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+
+    sfdcService.fetchObjectMembers = function(parentObject, parentID, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.fetchObjectMembers}',
+            parentObject,
+            parentID,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+
+    sfdcService.fetchObjectShares = function(parentObject, parentID, callback) {
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.fetchObjectShares}',
+            parentObject,
+            parentID,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+     
+    sfdcService.savePanel = function(objectType, recordId, fields, callback) {
+    
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.saveFormData}',
+            objectType,
+            recordId,
+            fields,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+
+sfdcService.deletePanel = function(objectType, recordId, callback) {
+    
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.deleteFormData}',
+            objectType,
+            recordId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+    
+    sfdcService.fetchPanel = function(objectType, recordId, fields, callback) {
+    
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.fetchFormData}',
+            objectType,
+            recordId,
+            fields,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+    sfdcService.removeAttachment = function(attachmentId, callback) {
+    
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.removeAttachment}',
+            attachmentId,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+                             
+    sfdcService.fetchPanelList = function(objectType, parentField, parentId, fields, callback) {
+    
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.trovitAppRemoter.fetchFormList}',
+            objectType,
+            parentField,
+            parentId,
+            fields,
+            function(result, event){
+                var returnObj = {
+                    result: result,
+                    event: event
+                }
+                callback(null, returnObj);
+                return returnObj;                
+            }, 
+            {escape: true}
+        );        
+    }
+    
+    </script>
+</apex:page>

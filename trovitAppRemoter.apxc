@@ -1,0 +1,821 @@
+global without sharing class trovitAppRemoter {
+ 
+    public String accountName { get; set; }
+    public static Account account { get; set; }
+    public String startURL { get; set; }
+    public String Examattemptid {get; set;}
+
+
+    public trovitAppRemoter() { 
+    }
+        
+    global class fieldInfo {
+        public string name { get; set; }
+        public string type { get; set; }        
+        public string label { get; set; }  
+        public string description { get; set; }  
+        public List<String> pickList { get; set; }   
+        public string value { get; set; }  
+        public Long epochValue { get; set; } 
+        public string refValue { get; set; }  
+        public string refOtherField { get; set; }  
+        public integer order { get; set; }  
+        public integer maxLength { get; set; }
+        public boolean isCalculated { get; set; }
+        public boolean isNillable { get; set; }
+        public boolean readOnly { get; set; }
+        public boolean hidden { get; set; }
+        public boolean multiSelect { get; set; }
+        public boolean view { get; set; }
+    }
+    
+    global class returnData {
+        public List<sObject> recordShares { get; set; }
+        public List<sObject> recordData { get; set; }
+        public Map<string,fieldInfo > fields { get; set; }
+        public List<Attachment> attachments { get; set; }
+        public List<sObject> members { get; set; }
+        public List<Attachment> memberAttachments { get; set; }
+    }    
+
+   	global class fetchObjectMembersData {
+        public List<sObject> members { get; set; }
+        public List<Attachment> memberAttachments { get; set; }
+        public List<User> memberUsers { get; set; }
+    }    
+    
+   	global class returnShareDetails {
+        public List<Post_Share__c> recordShares { get; set; }
+        public List<User> recordUsers { get; set; }
+    }    
+
+    global class getUserReturnData {
+        public List<User> userData { get; set; }
+        public List<Contact> contactData { get; set; }
+        public List<Account> accountData { get; set; }
+        public List<Opportunity> opportunityData { get; set; }
+        public List<PricebookEntry> priceBookEntryData { get; set; }
+        public List<Product2> productData { get; set; }
+        public List<Contract> contractData { get; set; }
+        public List<RecordType> contractRecordTypes { get; set; }
+    }    
+
+    @RemoteAction
+    public static void logError(String errorObject, String msg, String file, String method) {            
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select u.Id,u.ContactId from User u where u.Id = :userId];
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+            
+            List<Contact> lstContact = [select Id, Name from Contact where Id = :lstUser[0].ContactId];
+            if( lstContact != null && lstContact.size() > 0 ) {            
+                AppError__c appError = new AppError__c();
+                appError.Error__c = errorObject;
+                appError.Contact__c = lstContact[0].Id;
+                appError.Message__c = msg;
+                appError.File__c = file;
+                appError.Method__c = method;
+                insert appError;
+            }            
+        }
+    }
+
+    @RemoteAction
+    public static Boolean attestBadge(String badgeId, String essay) {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        List<User_Group__c> lstPf;
+        List<Badge_Contact__c> lstBc;
+        if( lstUser != null && lstUser.size() > 0 ) {
+            lstBc = [select Id, Contact__c, Badge__c, Status__c from Badge_Contact__c where Badge__c = :badgeId AND Contact__c = :lstUser[0].ContactId];
+            if( lstBc != null && lstBc.size() > 0 ) {
+                lstBc[0].Essay__c = essay;
+                lstBc[0].Status__c = 'Badge Completed / Attestation Submitted';
+                update lstBc;
+            }
+        }
+        return true;
+    }    
+                           
+                           
+	@RemoteAction
+    public static Boolean addUserGroupShare(String userGroupId, String postId) {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id, ContactId from User u where Id = :userId];
+        List<User_Group__c> lstPf;
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+            
+            List<User_Group_Contact__c> lstUgc = [select Id, Name, Contact__c, User_Group__c from User_Group_Contact__c where User_Group__c = :userGroupId];
+            List<Post_Share__c> lsdtPs = [select Id, Name, Contact__c from Post_Share__c where Post__c = :postId];
+            
+            System.debug('* * * lstUgc ' + lstUgc);  
+            System.debug('* * * lsdtPs ' + lsdtPs);  
+            
+            MAP<Id, Id> mapPs = new MAP<Id, Id>();
+            for(Post_Share__c ps :lsdtPs) {
+                mapPs.put(ps.Contact__c, ps.Id);
+            }
+            List<Post_Share__c> newPs = new List<Post_Share__c>();
+            for(User_Group_Contact__c ugc :lstUgc) {
+                // Is contact already shared to?
+                Id ps = mapPs.get(ugc.Contact__c);
+                if(ps == null) {
+                    Post_Share__c nps = new Post_Share__c();
+                    nps.Owner__c = lstUser[0].ContactId;
+            		nps.Contact__c = ugc.Contact__c;
+            		nps.Post__c = postId;
+                    newPs.add(nps);
+                }
+            }
+            insert newPs;
+        }
+        return true;
+    }    
+
+    @RemoteAction
+    public static Boolean setBadgeStatus(String badgeId, String memberId, String status) {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        List<User_Group__c> lstPf;
+        List<Badge_Contact__c> lstBc;
+        
+        if(memberId != null) {
+                lstBc = [select Id, Contact__c, Badge__c, Status__c from Badge_Contact__c where Badge__c = :badgeId AND Contact__c = :memberId];
+                //System.assert(false, 'BOOM!:' + badgeId +':'+ lstUser[0].ContactId);
+            
+        } else {
+            if( lstUser != null && lstUser.size() > 0 ) {
+                lstBc = [select Id, Contact__c, Badge__c, Status__c from Badge_Contact__c where Badge__c = :badgeId AND Contact__c = :lstUser[0].ContactId];
+                
+                //System.assert(false, 'BOOM!:' + badgeId +':'+ lstUser[0].ContactId);
+            } 
+        }
+        if( lstBc != null && lstBc.size() > 0 ) {
+            lstBc[0].Status__c = status;
+            update lstBc;
+            return true;
+        }
+        
+        return false;
+    }    
+
+    
+	@RemoteAction
+    public static List<User_Group__c> fetchUserGroups() {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        List<User_Group__c> lstPf;
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+            lstPf = [select Id, Name from User_Group__c where Contact_Owner__c = :lstUser[0].ContactId];
+        }
+        return lstPf;
+    }    
+    
+	@RemoteAction
+    public static List<Post_Folder__c> getPostFolders() {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        List<Post_Folder__c> lstPf;
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+            lstPf = [select Id, Name from Post_Folder__c where Contact_Owner__c = :lstUser[0].ContactId];
+        }
+        return lstPf;
+    }    
+
+	@RemoteAction
+    public static Boolean addObjectMember(String parentObject, String groupId, String contactId) {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+        
+            if(parentObject == 'User_Group__c') {
+                User_Group_Contact__c np = new User_Group_Contact__c();
+                np.Contact__c = contactId;
+                np.User_Group__c = groupId;
+                insert np;
+            } else if(parentObject == 'Badge__c') {
+                Badge_Contact__c np = new Badge_Contact__c();
+                np.Contact__c = contactId;
+                np.Badge__c = groupId;
+                np.Status__c = 'Invite Sent';
+                insert np;
+            }
+            
+            return true;
+        }
+        return false;
+    }
+    
+    @RemoteAction
+    public static Boolean addObjectShare(String parentObject, String objectId, String contactId) {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+        
+            Post_Share__c np = new Post_Share__c();
+            np.Owner__c = lstUser[0].ContactId;
+            np.Contact__c = contactId;
+            np.Post__c = objectId;
+            
+            insert np;
+            
+            return true;
+        }
+        return false;
+    }
+
+    @RemoteAction
+    public static Boolean deleteObjectMember(String parentObject, String groupId, String contactId) {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+        
+			if(parentObject == 'User_Group__c') {
+                List<User_Group_Contact__c> lstSp = [select Id from User_Group_Contact__c where Contact__c = :contactId and User_Group__c = :groupId];
+                if( lstSp != null && lstSp.size() > 0 ) {   
+                    delete lstSp;
+                }
+            } else if(parentObject == 'Badge__c') {
+                List<Badge_Contact__c> lstSp = [select Id from Badge_Contact__c where Contact__c = :contactId and Badge__c = :groupId];
+                if( lstSp != null && lstSp.size() > 0 ) {   
+                    delete lstSp;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @RemoteAction
+    public static Boolean deleteObjectShare(String parentObject, String objectId, String contactId) {
+        
+        String userId = UserInfo.getUserId();            
+        List<User> lstUser = [Select Id,ContactId from User u where Id = :userId];
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+        
+            List<Post_Share__c> lstSp = [select Id from Post_Share__c where Owner__c = :lstUser[0].ContactId and Contact__c = :contactId and Post__c = :objectId];
+            if( lstSp != null && lstSp.size() > 0 ) {   
+                delete lstSp;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @RemoteAction
+    public static returnShareDetails fetchObjectShareDetails(String parentObject, String parentID) {
+        List<Post_Share__c> lstPs = [select Id, Owner__c, Contact__c, Contact__r.Name, Post__c from Post_Share__c where Post__c = :parentID ];
+        
+        //System.assert(false, 'BOOM!:' + lstPs);
+        
+        List<Id> conIds = new List<Id>();
+		for(Post_Share__c ps :lstPs)
+            conIds.add(ps.Contact__c);
+        
+        List<User> lstUser = [Select Id,ContactId,Name,Email,FullPhotoUrl from User u where ContactId in :conIds];
+
+        returnShareDetails rd = new returnShareDetails();
+        rd.recordShares = lstPs;
+        rd.recordUsers = lstUser;
+        return rd;
+    }
+    
+    @RemoteAction
+    public static fetchObjectMembersData fetchObjectMembers(String parentObject, String parentID) {
+       
+        fetchObjectMembersData fomd = new fetchObjectMembersData();
+        if(parentObject == 'User_Group__c') {
+	        List<User_Group_Contact__c> lstUgc = [select Id, Contact__c, Contact__r.Name, User_Group__c from User_Group_Contact__c where User_Group__c = :parentID ];
+            fomd.members = lstUgc;
+            fomd.memberAttachments = NULL;
+
+            List<Id> conIds = new List<Id>();
+            for(User_Group_Contact__c ps :lstUgc)
+                conIds.add(ps.Contact__c);        
+
+			fomd.memberUsers = [Select Id,ContactId,Name,Email,FullPhotoUrl from User u where ContactId in :conIds];
+            
+            return fomd;
+        } else if(parentObject == 'Badge__c') {
+	        List<Badge_Contact__c> lstBc = [select Id, Contact__c, Contact__r.Name, Badge__c, Status__c, Essay__c from Badge_Contact__c where Badge__c = :parentID ];
+            fomd.members = lstBc;
+            fomd.memberAttachments = [Select Id, Name, ParentId, ContentType from Attachment where ParentId in :lstBc order by LastModifiedDate];
+
+            List<Id> conIds = new List<Id>();
+            for(Badge_Contact__c ps :lstBc)
+                conIds.add(ps.Contact__c);        
+
+			fomd.memberUsers = [Select Id,ContactId,Name,Email,FullPhotoUrl from User u where ContactId in :conIds];
+
+
+            return fomd;
+        }
+        
+       
+        return null;
+        
+    }
+    
+    @RemoteAction
+    public static List<Post_Share__c> fetchObjectShares(String parentObject, String parentID) {
+        List<Post_Share__c> lstPs = [select Id, Owner__c, Contact__c, Contact__r.Name, Post__c from Post_Share__c where Post__c = :parentID ];
+        return lstPs;
+    }
+
+    @RemoteAction
+    public static List<Contact> searchUsers(String searchText, String searchType) {
+        List<Contact> lstCon = [select Id, Name, Email from Contact];
+        return lstCon;
+    }
+
+
+    public static getUserReturnData fetchUserDataInside(String contactID) {
+        return fetchUserDataInternal(contactID);
+    }
+    
+    @RemoteAction
+    public static getUserReturnData fetchUserData() {
+        return fetchUserDataInternal(null);
+    }
+    
+  
+    public static getUserReturnData fetchUserDataInternal(String contactInputID) {
+
+        getUserReturnData rd = new getUserReturnData ();
+        String contactId = null;
+        
+        if(contactInputID != null) {
+            rd.userData = null;
+            contactId = contactInputID;
+            List<User> lstUser = [Select u.Id,u.ContactId, FullPhotoUrl from User u where u.ContactId = :contactId];
+            if( lstUser != null && lstUser.size() > 0 ) {
+                rd.userData = lstUser;        
+            }
+            
+        } else {
+
+            String userId = UserInfo.getUserId();        
+            List<User> lstUser = [Select u.Id,u.ContactId, FullPhotoUrl from User u where u.Id = :userId];
+            if( lstUser != null && lstUser.size() > 0 ) {
+                rd.userData = lstUser;        
+                contactId = lstUser[0].ContactId;
+            }
+        }
+ 
+        if(contactId != null) {
+                        
+            List<Contact> lstContact = [SELECT Id, Name, FirstName, LastName, Email, HomePhone, OtherPhone, 
+                                        MailingCity, MailingCountry, MailingPostalCode, MailingState, MailingStreet, 
+                                        AccountId FROM Contact WHERE Id = :contactId];
+
+            if( lstContact != null && lstContact.size() > 0 ) {
+
+                rd.contactData = lstContact;
+                String accountId = lstContact[0].AccountId;
+
+                List<Account> lstAccount = [SELECT Id, Name, BillingCity, BillingCountry, BillingPostalCode, BillingState, BillingStreet  FROM Account where Id =  :accountId];
+                
+                if( lstAccount != null && lstAccount.size() > 0 ) {
+                
+                    rd.accountData = lstAccount;
+                    
+                    List<Opportunity> lstOpportunity = [SELECT Id, Name, StageName, Amount, CreatedDate FROM Opportunity where AccountId = :accountId];
+                     
+                    if( lstOpportunity != null && lstOpportunity.size() > 0 ) {
+                    
+                        rd.opportunityData = lstOpportunity;
+                        set<id> opportunityIds = new set<id>();
+                        set<id> productIds = new set<id>();
+                        for(Opportunity o :lstOpportunity){
+                            opportunityIds.add(o.id); 
+                            
+                            for(OpportunityLineItem ol :o.OpportunityLineItems){
+                                productIds.add(ol.PricebookEntryId);
+                            }
+                        }
+                        List<PricebookEntry> lstPriceBookEntry = [SELECT Id, Name, Product2Id, ProductCode from PriceBookEntry where Pricebook2.IsActive = true and Id in :productIds];
+                        
+                        rd.priceBookEntryData = lstPriceBookEntry;
+                        List<Id> prods = new List<Id>();
+                        for(PricebookEntry pe : lstPriceBookEntry) {
+                            prods.add(pe.Product2Id);
+                        }
+                        
+                        List<Product2> lstProducts = [select Id, Name, ProductCode, Description from Product2 where IsActive=true and Id in :prods];
+                        rd.productData = lstProducts;
+                                                   
+                        List<Contract> lstContract = [Select Id, Name, ContractNumber, StartDate, EndDate, ContractTerm, Status from Contract where AccountId=:accountId and Status != 'Canceled'];                        
+                        if( lstContract != null && lstContract.size() > 0 ) {                                                                            
+                            rd.contractData = lstContract;
+                        }
+
+                        List<RecordType>rtypes = [Select Name, Id From RecordType 
+                                  where sObjectType='Account' and isActive=true];
+                
+                        Map<String,String> accountRecordTypes = new Map<String,String>{};
+                        for(RecordType rt: rtypes)
+                            accountRecordTypes.put(rt.Name,rt.Id);
+                            
+                        String AcademicRecordTypeId = accountRecordTypes.get('Academic Institution');
+                        String BusinessRecordTypeId = accountRecordTypes.get('Business');
+   
+                    }                    
+                }        
+            }
+        } 
+        return rd;        
+        
+    }
+     
+     
+
+    @RemoteAction
+    global static Boolean deleteFormData(String objectType, String recordId) {
+    
+        sObject s;
+        s = Database.query('SELECT Id FROM ' + objectType + ' WHERE Id = :recordId');
+        delete s;
+        
+        return true;
+    
+    }
+
+    @RemoteAction
+    global static Id saveFormData(String objectType, String recordId, List<fieldInfo> fields) {
+
+        String query;
+        Integer cnt=0;
+        MAP<String, String> nameValues = new MAP<String, String>();
+        for (fieldInfo field : fields) {
+            System.debug('field name is ' + field.name);  
+            System.debug('field value is ' + field.value);
+            String val = nameValues.get(field.name);
+            if(val == null) {
+                if(cnt == 0) {
+                    query = field.name;
+                } else {
+                    query = query + ',' + field.name;
+                }     
+                cnt++;
+                nameValues.put(field.name, 'Yes');
+            }
+        }
+        
+        sObject s;
+        if(String.isEmpty(recordId)) {
+        
+            Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objectType);
+            s =  targetType.newSObject();
+            
+        } else {
+                    
+            s = Database.query('SELECT ' + query + ' FROM ' + objectType + ' WHERE Id = :recordId');
+        }
+
+        for (fieldInfo field : fields) {
+            System.debug('field name is ' + field.name);  
+            System.debug('field value is ' + field.value);
+            
+            if(field.value == null || field.readOnly == true) {
+                continue;
+            }
+            
+            System.debug('field type is ' + field.type);
+            
+            if(field.type.toLowerCase().compareTo('boolean')== 0) {
+            
+                if(field.value != null) {     
+                    if(field.value.toLowerCase().compareTo('true')== 0) {
+                        s.put(field.name, true);  
+                    } else {
+                        s.put(field.name, false);  
+                    }
+                } else {
+                    s.put(field.name, false);  
+                }
+            } else if(field.type.toLowerCase().compareTo('double')== 0) {
+                
+                if(!String.isEmpty(field.value)) {
+                    s.put(field.name, decimal.valueOf(field.value));
+                }
+                
+            } else if(field.type.toLowerCase().compareTo('currency')== 0) {
+                
+                if(!String.isEmpty(field.value)) {
+                    s.put(field.name, decimal.valueOf(field.value));
+                }
+                
+            } else if(field.type.toLowerCase().compareTo('reference')== 0) {
+                String refVal = field.refValue;
+                
+                System.debug('reference ' + refVal);
+                
+                if(!String.isEmpty(refVal)) {
+                    s.put(field.name, refVal);
+                } else {
+                    String refOtherField = field.refOtherField;
+                    
+                    System.debug('reference other ' + refOtherField);
+                    
+                    if(!String.isEmpty(refOtherField)) {
+                        s.put(refOtherField, field.value);
+                    }
+                }
+            } else if(field.type.toLowerCase().compareTo('date')== 0 || field.type.toLowerCase().compareTo('datetime')== 0 ) {
+                
+                datetime myDateTime = datetime.now();
+                datetime setDate = datetime.newInstance(field.epochValue);
+                Date myDate = date.newinstance(setDate.year(), setDate.month(), setDate.day());
+                
+                s.put(field.name, myDate);
+                
+            } else {
+                s.put(field.name, field.value);  
+            }
+        }
+
+        if(String.isEmpty(recordId)) {
+            insert s;
+        } else {
+            update s;
+        }        
+        
+        return s.Id;
+    }
+    
+    
+
+    @RemoteAction
+    global static returnData fetchFormList(String objectType, String parentField, String parentId, List<String> fields) {
+
+        returnData rd = new returnData();
+        Schema.DescribeSObjectResult DR_SObject;
+        Map<String, Schema.sObjectField> mapToken_Fields;
+        Map<String, Schema.sObjectType> mapToken_SObjects;
+        
+        Map<string,fieldInfo > resultObject = new Map<String,fieldInfo >();    
+        mapToken_SObjects = Schema.getGlobalDescribe();
+        
+        DR_SObject = mapToken_SObjects.get(objectType).getDescribe();
+        
+        mapToken_Fields = DR_SObject.fields.getMap();
+        
+        System.debug('fields ' + DR_SObject.fields);
+                      
+        String userId = UserInfo.getUserId();        
+        List<User> lstUser = [Select u.Id,u.ContactId from User u where u.Id = :userId];
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+
+            String contactId = lstUser[0].ContactId;
+            String query;
+            Integer cnt=0;
+            for (String field : fields) {
+                if(cnt == 0) {
+                    query = field;
+                } else {
+                    query = query + ',' + field;
+                }     
+                cnt++;
+            }        
+            
+            String fname;
+            for (String fieldName : mapToken_Fields.keySet()){
+                System.debug('field name is ' + fieldName);   
+                
+                Integer found=0;
+                for (String field : fields) {
+                    
+                    if(field.toLowerCase().compareTo(fieldName.toLowerCase()) == 0) {
+                        found = 1;
+                    }
+                }
+                
+                if(found == 0) {
+                    continue;
+                }
+                
+                fname = fieldName;
+                
+                Schema.DescribeFieldResult dfr = mapToken_Fields.get(fieldName).getDescribe();
+                System.debug(dfr.getName() + ' >> ' + dfr.getLabel());    
+                
+                fieldInfo fd = new fieldInfo();
+                fd.name = dfr.getName();
+                fd.label = dfr.getLabel(); 
+                fd.type = String.valueOf(dfr.getType()); 
+                
+                fd.maxLength = dfr.getLength();
+                fd.isCalculated = dfr.isCalculated();
+                fd.isNillable = dfr.isNillable();
+                fd.description = dfr.getInlineHelpText();
+                
+                List<String> lstPickvals=new List<String>();
+                
+                List<Schema.PicklistEntry>pick_list_values = dfr.getPickListValues();
+                for (Schema.PicklistEntry a : pick_list_values) { //for all values in the picklist list
+                    lstPickvals.add(a.getValue());//add the value  to our final list
+                }             
+                
+                fd.pickList = lstPickvals;
+                
+                resultObject.put(dfr.getName(), fd);     
+                
+            }   
+            List<sObject> L;
+            List<sObject> L1 = new List<sObject>();
+            List<sObject> LAll = new List<sObject>();
+            
+            if(parentId == null || parentId.length() == 0) {                 
+                L = Database.query('SELECT ' + query + ' FROM ' + objectType + ' WHERE ' + parentField + ' = :contactId or ' + objectType + '.Id = :contactId');   
+            } else {                
+                //System.assert(false, 'BOOM!:' + 'SELECT ' + query + ' FROM ' + objectType + ' WHERE ' + parentField + ' = :parentId or ' + objectType + '.Id in ()');   
+                L = Database.query('SELECT ' + query + ' FROM ' + objectType + ' WHERE ' + parentField + ' = :parentId');
+                
+                if(objectType == 'Post__c') {
+                	L1 = Database.query('SELECT ' + query + ' FROM ' + objectType + ' WHERE ' + objectType + '.Id in (select Post__c from post_share__c where Contact__c = :parentId)');    
+                }
+                if(objectType == 'Badge__c') {
+                	L1 = Database.query('SELECT ' + query + ' FROM ' + objectType + ' WHERE ' + objectType + '.Id in (select Badge__c from Badge_Contact__c where Contact__c = :parentId)');    
+                }
+                
+            }
+            
+            //LAll.addall(L);
+            //LAll.addall(L1);
+            Map<Id, sObject> om = new Map<Id, sObject>();
+            for(sObject so :L)
+                om.put(so.Id, so);
+            for(sObject so :L1)
+                om.put(so.Id, so);
+            for(Id id :om.keySet())
+                LAll.add(om.get(id));
+            
+            List<sObject> lstPostShares = new List<Post_Share__c>();
+            if(objectType == 'Post__c') {
+            	lstPostShares = [select Contact__c, Post__c from post_share__c where Post__c in :om.keySet()];
+            }
+            if(objectType == 'Badge__c') {
+              	lstPostShares = [select Contact__c, Badge__c, Status__c from Badge_Contact__c where Badge__c in :om.keySet()];
+            }
+                        
+            
+            List<User_Group_Contact__c> lstUgc = new List<User_Group_Contact__c>();
+            List<Badge_Contact__c> lstBc = new List<Badge_Contact__c>();
+            if(objectType == 'User_Group__c') {
+                lstUgc = [select Contact__c, User_Group__c from User_Group_Contact__c where User_Group__c in :om.keySet()];
+				rd.members = lstUgc;
+            } else if(objectType == 'Badge__c') {
+                lstBc = [select Id, Contact__c, Badge__c, Status__c from Badge_Contact__c where Badge__c in :om.keySet()];
+                rd.members = lstBc;
+                rd.memberAttachments = [Select Id, Name, ParentId, ContentType from Attachment where ParentId in :lstBc order by LastModifiedDate];
+            }
+            //System.assert(false, 'BOOM!:' +lstPostShares);
+            
+            system.debug('* * * Query fetchFormData Remoter ...'+query);            
+                        
+            List<Attachment> lstAttachments = [Select Id, Name, ParentId, ContentType from Attachment where ParentId in :om.keySet() order by LastModifiedDate];
+            rd.recordShares = lstPostShares;            
+            rd.recordData  = LAll;
+            rd.attachments = lstAttachments;
+            rd.fields= resultObject;
+        }
+        
+        return rd;
+    }
+
+    @RemoteAction
+    global static Boolean removeAttachment(Id attachmentId) {
+        
+		String userId = UserInfo.getUserId();        
+        List<User> lstUser = [Select Id,ContactId from User where Id = :userId];
+        
+        if( lstUser != null && lstUser.size() > 0 ) {
+
+            String contactId = lstUser[0].ContactId; 
+         
+            Attachment att = [select Id, ParentId from Attachment where Id = :attachmentId];
+            delete att;
+            return true;
+        }
+        return false;
+    }
+
+    
+    @RemoteAction
+    global static returnData fetchFormData(String objectType, String recordId, List<String> fields) {
+    
+        Schema.DescribeSObjectResult DR_SObject;
+        Map<String, Schema.sObjectField> mapToken_Fields;
+        Map<String, Schema.sObjectType> mapToken_SObjects;
+        
+        Map<string,fieldInfo > resultObject = new Map<String,fieldInfo >();    
+        mapToken_SObjects = Schema.getGlobalDescribe();
+        
+        DR_SObject = mapToken_SObjects.get(objectType).getDescribe();
+        
+        mapToken_Fields = DR_SObject.fields.getMap();
+        
+        System.debug('fields ' + DR_SObject.fields);
+        
+        String query;
+        Integer cnt=0;
+        for (String field : fields) {
+            if(cnt == 0) {
+                query = field;
+            } else {
+                query = query + ',' + field;
+            }     
+            cnt++;
+        }        
+        
+        String fname;
+        for (String fieldName : mapToken_Fields.keySet()){
+             //System.debug('field name is ' + fieldName);   
+             
+             Integer found=0;
+             for (String field : fields) {
+                 
+                 if(field.toLowerCase().compareTo(fieldName.toLowerCase()) == 0) {
+                     found = 1;
+                 }
+             }
+                 
+             if(found == 0) {
+                 continue;
+             }
+                       
+             fname = fieldName;
+             
+             Schema.DescribeFieldResult dfr = mapToken_Fields.get(fieldName).getDescribe();
+             //System.debug(dfr.getName() + ' >> ' + dfr.getLabel());    
+            
+             fieldInfo fd = new fieldInfo();
+             fd.name = dfr.getName();
+             fd.label = dfr.getLabel(); 
+             fd.type = String.valueOf(dfr.getType()); 
+             
+             fd.maxLength = dfr.getLength();
+             fd.isCalculated = dfr.isCalculated();
+             fd.isNillable = dfr.isNillable();
+             fd.description = dfr.getInlineHelpText();
+            
+             List<String> lstPickvals=new List<String>();
+             
+             List<Schema.PicklistEntry>pick_list_values = dfr.getPickListValues();
+             for (Schema.PicklistEntry a : pick_list_values) { //for all values in the picklist list
+                  lstPickvals.add(a.getValue());//add the value  to our final list
+             }             
+                         
+             fd.pickList = lstPickvals;
+             
+             resultObject.put(dfr.getName(), fd);     
+
+        }    
+                    
+        List<sObject> L = Database.query('SELECT Id, ' + query + ' FROM ' + objectType + ' WHERE Id = :recordId');
+        system.debug('* * * Query fetchFormData Remoter ...'+query);
+                
+        returnData rd = new returnData();
+        
+        rd.recordData  = L;
+        rd.fields= resultObject;
+        
+        return rd;
+    }
+
+   @RemoteAction
+    public static String uploadAttachment(String filename, String fileData, Id record) {
+        String user = UserInfo.getUserID();
+
+        if(fileData==null)
+            return String.valueOf('Invalid file data.');
+
+        String base64 = fileData.substring(fileData.indexOf(',')+1);
+        Blob actualdata = EncodingUtil.base64Decode(base64);
+
+        if(actualdata.size()<=0)
+            return String.valueOf('File size cannot be greater then 10MB.');
+
+        Attachment att = new Attachment(ParentId=record, Body=actualdata);
+        att.Name = filename;
+        insert(att);
+
+        return String.valueOf('Upload Successful!');
+    }     
+ }

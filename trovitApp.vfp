@@ -1,0 +1,144 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" controller="trovitAppRemoter" applyBodyTag="false" applyHtmlTag="false" docType="html-5.0">
+
+    <apex:variable var="envPath" value="{!URLFOR($Resource.trovitApp)}" />
+ 
+    <html xmlns:ng="http://angularjs.org" ng-app="myApp" lang="en">
+        <head>
+            
+            <meta charset="utf-8"/>
+     
+            <script>
+               var envPath = "{!envPath}";
+                var qs = (function(a) {
+                    if (a == "") return {};
+                    var b = {};
+                    for (var i = 0; i < a.length; ++i)
+                    {
+                        var p=a[i].split('=');
+                        if (p.length != 2) continue;
+                        b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+                    }
+                    return b;
+                })(window.location.search.substr(1).split('&'));
+            
+            //alert(window.location);
+            
+                if(qs["start"] !== null && typeof qs["start"] !== "undefined") {
+                    var startPath = qs["start"];
+                    if(qs["redir"] === null || typeof qs["redir"] === "undefined")
+                        window.location.href="https://build-garpbuild.cs16.force.com/apex/sfdcApp?redir=1&start="+startPath;
+                    //alert(startPath);
+                }
+                var addthis_config = {"data_track_addressbar":true};
+ 
+            </script>            
+            
+            <link href="{!envPath}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+            <link href="{!envPath}/css/trovitApp.css" rel="stylesheet"/>
+            <link href="{!envPath}/css/global_variables.css" rel="stylesheet"/>
+            <link href="{!envPath}/css/nav_styles.css" rel="stylesheet"/>
+            <link href="{!envPath}/css/font-awesome.min.css" rel="stylesheet"/>
+            <link href="{!envPath}/css/timeline.css" rel="stylesheet"/>
+            <link href="{!envPath}/lib/datetimepicker/css/datetimepicker.css" rel="stylesheet"/>
+            <link href="{!envPath}/lib/multi-select/angular-multi-select.css" rel="stylesheet" />
+            <link href="{!envPath}/lib/switch/css/bootstrap-switch.css" rel="stylesheet" />
+            <link href="{!envPath}/lib/calendar/css/angular-bootstrap-calendar.min.css" rel="stylesheet" />            
+            
+            <apex:includeScript value="{!envPath}/lib/jquery/jquery-1.10.2.min.js"/>
+            <apex:includeScript value="{!envPath}/lib/bootstrap/js/bootstrap.min.js"/>
+            <apex:includeScript value="{!envPath}/lib/ics.deps.min.js"/>
+            
+            <!-- script type="text/javascript" src="{!envPath}/lib/socialite.min.js"></script -->
+            
+
+            <!-- Other Plugins -->
+            <apex:includeScript value="{!envPath}/lib/spinjs/spin.min.js"/>
+                
+            <apex:includeScript value="{!envPath}/lib/underscore.js"/>
+            <apex:includeScript value="{!envPath}/lib/moment.min.js"/>
+            <apex:includeScript value="{!envPath}/lib/moment-timezone-with-data-2010-2020.min.js"/>
+            
+            
+            <apex:includeScript value="{!envPath}/lib/async.js"/>
+            <apex:includeScript value="{!envPath}/lib/angular/angular-file-upload-html5-shim.js"/>           
+            <apex:includeScript value="{!envPath}/lib/angular/angular.js"/>
+            <apex:includeScript value="{!envPath}/lib/angular/angular-ui-router.min.js"/>
+            <apex:includeScript value="{!envPath}/lib/angular/angular-resource.js"/>
+            <apex:includeScript value="{!envPath}/lib/angular/angular-sanitize.js"/>
+            <apex:includeScript value="{!envPath}/lib/angular/ngStorage.js"/>
+            
+            <apex:includeScript value="{!envPath}/lib/angular/ui-bootstrap-tpls-0.10.0.js"/>
+          
+            <apex:includeScript value="{!envPath}/lib/angular/angular-file-upload.js"/>
+            <apex:includeScript value="{!envPath}/lib/datetimepicker/datetimepicker.js"/>  
+            <apex:includeScript value="{!envPath}/lib/multi-select/angular-multi-select.js"/>  
+            <apex:includeScript value="{!envPath}/lib/switch/bootstrap-switch.js"/>  
+            <apex:includeScript value="{!envPath}/lib/calendar/angular-bootstrap-calendar.js"/>  
+            <apex:includeScript value="{!envPath}/lib/angular/ui-utils.min.js"/>
+            
+            <apex:includeScript value="{!envPath}/lib/switch/module.js"/>  
+            <apex:includeScript value="{!envPath}/lib/switch/bsSwitch.js"/>  
+                      
+            <apex:include pageName="trovitAppVisualForceServices"/>       
+            
+            <apex:includeScript value="{!envPath}/js/app.js"/>
+            <apex:includeScript value="{!envPath}/js/utilites.js"/>
+            <apex:includeScript value="{!envPath}/js/controllers.js"/>
+            <apex:includeScript value="{!envPath}/js/controllers/panelList.js"/>   
+            <apex:includeScript value="{!envPath}/js/controllers/panelFields.js"/>   
+            <apex:includeScript value="{!envPath}/js/controllers/orders.js"/>   
+            <apex:includeScript value="{!envPath}/js/controllers/invoice.js"/>   
+            <apex:includeScript value="{!envPath}/js/controllers/register.js"/>   
+             <apex:includeScript value="{!envPath}/js/controllers/nav.js"/>  
+             <apex:includeScript value="{!envPath}/js/controllers/dash.js"/>  
+             <apex:includeScript value="{!envPath}/js/controllers/dashMember.js"/>  
+             <apex:includeScript value="{!envPath}/js/controllers/profile.js"/>  
+            <apex:includeScript value="{!envPath}/js/controllers/posts.js"/> 
+            <apex:includeScript value="{!envPath}/js/controllers/groups.js"/> 
+            <apex:includeScript value="{!envPath}/js/controllers/badges.js"/> 
+             
+            <apex:includeScript value="{!envPath}/js/controllers/profileSettings.personalInformation.js"/> 
+            <apex:includeScript value="{!envPath}/js/controllers/profileSettings.membership.js"/> 
+
+            
+            <apex:includeScript value="{!envPath}/js/services.js"/> 
+            <apex:includeScript value="{!envPath}/js/services/panelFieldsService.js"/> 
+            <apex:includeScript value="{!envPath}/js/utilityServices.js"/> 
+            <apex:includeScript value="{!envPath}/js/commonServices.js"/> 
+            <apex:includeScript value="https://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-53f63a3a6b847ada"/> 
+            <apex:includeScript value="https://addthisevent.com/libs/1.5.8/ate.min.js"/> 
+            
+
+        </head>
+        <body style="background: #FFFFFF url({!envPath}/img/light_noise_diagonal.png) repeat;">    
+              <div id="nav" style="display:none" ng-include="'{!envPath}/partials/nav.html'"></div>
+              <div id="navPublic" style="display:none" ng-include="'{!envPath}/partials/navPublic.html'"></div>
+              <apex:outputPanel layout="block" html-data-ui-view="" html-class="scale-fade" html-data-autoscroll="false">
+              </apex:outputPanel>
+            
+                <div id="error" ng-include="'{!envPath}/partials/error.html'"></div>
+
+            
+            <!-- Bootstrap core JavaScript
+            ================================================== -->
+            <!-- Placed at the end of the document so the pages load faster -->
+
+            <script type="text/javascript">
+piAId = '40542';
+piCId = '6858';
+
+(function() {
+    function async_load(){
+        var s = document.createElement('script'); s.type = 'text/javascript';
+        s.src = ('https:' == document.location.protocol ? 'https://pi' : 'http://cdn') + '.pardot.com/pd.js';
+        var c = document.getElementsByTagName('script')[0]; c.parentNode.insertBefore(s, c);
+    }
+    if(window.attachEvent) { window.attachEvent('onload', async_load); }
+    else { window.addEventListener('load', async_load, false); }
+})();
+</script>
+            
+        </body>
+    </html>
+
+</apex:page>
