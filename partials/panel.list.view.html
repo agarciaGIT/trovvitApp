@@ -1,0 +1,254 @@
+<div class="container page-container">
+  <div id="spin"></div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb" style="color: black">
+        <li><a href="" ng-click="navigate(panelRecord.onRoute)">{{panelRecord.title}}</a></li>
+        <li>View</li>
+        <li>{{panelValues.Name}}</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="panel panel-primary">
+    <div class="panel-body">
+
+      <div class="row">
+        <div class="col-md-8">
+
+          <div class="row">
+            <div class="col-md-12">
+              <div ng-repeat="panelFieldItem in panelRecord.fieldRecords | filter:criteriaMatch(panelFieldItem)">
+                <!-- p>{{panelFieldItem.label}}</p -->
+                <!-- p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p -->
+
+                <div ng-if="getFieldHTML(panelFieldItem.name,panelValues[panelFieldItem.name])!=null">
+                   <p ng-bind-html="getFieldHTML(panelFieldItem.name,panelValues[panelFieldItem.name])"></p>
+                </div>
+
+                <div ng-if="getFieldHTML(panelFieldItem.name,panelValues[panelFieldItem.name])==null">
+
+                  <div ng-if="isName(panelFieldItem.name)" style="font-size:16px;font-weight:700;">
+                    {{panelValues[panelFieldItem.name]}}
+                  </div>
+
+                  <div ng-if="panelFieldItem.type!='DATETIME' && !isName(panelFieldItem.name)">
+                    {{panelValues[panelFieldItem.name]}}
+                  </div>
+                  <div ng-if="panelFieldItem.type=='DATETIME' && !isName(panelFieldItem.name)">
+                    {{getEpochDateTimeText(panelValues[panelFieldItem.name])}}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          
+          <div ng-if="type == 'Badge__c'">
+            <div ng-if="myShare.Status__c == 'Invite Sent' || myShare.Status__c == 'Invite Opened'" class="row">
+              <div class="col-md-12">
+                You have been Invited to participate in the Digitial Badge. Would you like to accept the challange?<br>
+                <button class="btn" ng-click="updateBadge('Invite Accepted / Badge in Progress')">Accept Badge</button>
+                <button class="btn" ng-click="updateBadge('Badge Declined')">Decline Badge</button>
+                <button class="btn" ng-click="updateBadge('Badge Snoozed')">Snooze Badge</button>
+              </div>
+            </div>
+
+            <div ng-if="myShare.Status__c == 'Badge Declined'" class="row">
+              <div class="col-md-12">
+                Yor Badge is currently declined.<br>
+              </div>
+            </div>
+
+            <div ng-if="myShare.Status__c == 'Badge Snoozed'" class="row">
+              <div class="col-md-12">
+                Yor Badge is currently snoozed...What to get back on it?<br>
+                <button class="btn" ng-click="updateBadge('Invite Accepted / Badge in Progress')">Accept Badge</button>
+                <button class="btn" ng-click="updateBadge('Badge Declined')">Decline Badge</button>
+              </div>
+            </div>
+
+            <div ng-if="myShare.Status__c == 'Invite Accepted / Badge in Progress' && !showSubmission" class="row">
+              <div class="col-md-12">
+                Yor Badge is currently in progress. Have you completed your mission?<br>
+                <button class="btn" ng-click="submitBadge()">Complete Badge</button>
+                <button class="btn" ng-click="updateBadge('Badge Snoozed')">Snooze Badge</button>
+              </div>
+            </div>
+
+            <div ng-if="myShare.Status__c == 'Invite Accepted / Badge in Progress' && showSubmission" class="row">
+
+              <div ng-if="panelValues.Completion_Setting__c == 'Attest with Essay'" class="row">
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>                
+                <div class="col-md-12">
+                  <div class="row">
+                    <div>
+                      <span class="in-input">Badge Completion Essay</span>
+                      <textarea name="location" id="location" class="form-control" rows="3" ng-model="page.essay"></textarea>
+                    </div>
+                    <iframe style="width:100%;height:120px;" ng-src="{{attachIFrameSrc}}">&#160;</iframe>                
+                  </div>
+                </div>
+              </div>
+
+              <div ng-if="attachments" class="row">
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>                
+                <div class="col-md-12">
+                  <div ng-repeat="att in attachments">
+                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> <a href="/trovit/servlet/servlet.FileDownload?file={{att.Id}}" target="_new">{{att.Name}}</a> <a href="" ng-click="removeAttachment(att.Id)" ng-if="panelRecord.mode=='add' || panelRecord.mode=='edit'"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <input type="checkbox" ng-change="attestBadge()" ng-model="page.atest"> I have completed this badge to the best of my ability.
+                </div>
+              </div>
+
+            </div>
+
+
+            <div ng-if="myShare.Status__c == 'Badge Completed / Attestation Submitted'" class="row">
+              <div class="col-md-12">
+                You have submitted your Badge. It will soon be under review, please check back later.<br>
+                <div ng-if="myShare.Essay__c">
+                  <div class="row">
+                    <div class="col-md-12">
+                      &nbsp;
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      You wrote:<br>
+                      {{myShare.Essay__c}}<br>
+                      <a href="#" ng-click="editEssay()">Edit Essay</a>
+                    </div>
+                  </div>
+                  <!-- button class="btn" ng-click="editShare('Badge Snoozed')">Edit</button -->
+                </div>
+              </div>
+              <div ng-if="attachments">
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>                
+                <div class="row">
+                  <div class="col-md-1">
+                  </div>
+                  <div class="col-md-11">
+                    <div ng-repeat="att in attachments">
+                      <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> <a href="/trovit/servlet/servlet.FileDownload?file={{att.Id}}" target="_new">{{att.Name}}</a> <a href="" ng-click="removeAttachment(att.Id)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div ng-if="myShare.Status__c == 'Badge Under Review'" class="row">
+              <div class="col-md-12">
+                Yor Badge is currently under review please check back later.<br>
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    You wrote:<br>
+                    {{myShare.Essay__c}}<br>
+                  </div>
+                </div>
+                <div ng-if="attachments">
+                  <div class="row">
+                    <div class="col-md-12">
+                      &nbsp;
+                    </div>
+                  </div>                  
+                  <div ng-repeat="att in attachments">
+                    <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> <a href="/trovit/servlet/servlet.FileDownload?file={{att.Id}}" target="_new">{{att.Name}}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div ng-if="myShare.Status__c == 'Badge Approved'" class="row">
+              <div class="col-md-12">
+                Congratulations you have earned your badge!<br>
+                <button class="btn" ng-click="shareBadge()">Share your Badge</button>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  &nbsp;
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  You wrote:<br>
+                  {{myShare.Essay__c}}<br>
+                </div>
+              </div>
+              <div ng-if="attachments">
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>                                  
+                <div ng-repeat="att in attachments">
+                  <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> <a href="/trovit/servlet/servlet.FileDownload?file={{att.Id}}" target="_new">{{att.Name}}</a>
+                </div>
+              </div>              
+            </div>
+
+            <div ng-if="myShare.Status__c == 'Badge Denied'" class="row">
+              <div class="col-md-12">
+                Sorry, your Badge was denied.<br>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <button ng-if="!isShared() && type == 'Posts__c'" class="btn garp-btn-portal" ng-click="sharePanel()">Share</button>
+              <button class="btn garp-btn-portal" ng-click="done()">Done</button>
+            </div>
+          </div>
+          <div ng-if="type != 'Badge__c'" class="row">
+            <div class="col-md-12">
+              <iframe frameBorder="0" style="width:100%;height:500px;" src="{{IframeSrc}}"></iframe>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ul class="list-group list-group nopadding">
+              <li ng-repeat="user in users" class="list-group-item">
+                <img ng-src="{{user.FullPhotoUrl}}" class="img-center center-block event-profile-image" style='border-radius:50%;'>
+                <br>
+                <h3>{{user.Name}}</h3>
+                <button class="btn garp-btn-blue">{{user.Email}}</button>                
+              </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+  
+  <!-- iframe style="width:100%;height:500px;" frameBorder="0" src="{{getIframeSrc()}}" -->
+
+</div>

@@ -1,0 +1,156 @@
+<div class="container page-container">
+  <div id="spin"></div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb" style="color: black">
+        <li><a href="" ng-click="navigate(panelRecord.onRoute)">{{panelRecord.title}}</a></li>
+        <li>Membership</li>
+        <li>{{recordData.Name}}</li>
+      </ol>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Membership</h2>
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-body">
+
+      <form id="memberForm" name="form.fields" class="css-form" novalidate>
+        <div ng-if="screenMode=='search'">
+          <div class="row">
+            <div class="col-md-12">
+              <div>
+                <span class="in-input">Search Terms</span>
+                <input type="text" name="searchTerms" ng-model="searchTerms" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div>
+                <span class="in-input">Search Type</span>
+                <select class="form-control" ng-options="option as option for option in ['Name','Email','Institution']" name="searchType" ng-model="searchType"></select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button type="search" class="btn btn-block garp-btn-portal" ng-click="searchUsers()">Search</button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+
+            <div ng-if="screenMode=='search'">
+              <h3 ng-if="!users || users.length == 0">No Users Found</h3>
+              <ul ng-if="users && users.length > 0" class="list-group" >
+                <li class="list-group-item" ng-click="preview(user)" ng-repeat="user in users">
+
+                  <div ng-if="!isMember(user)">
+                    <button type="button" class="close" aria-hidden="true" ng-click="addMemberUser(user)"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></button>{{user.Name}}, {{user.Email}}
+                  </div>
+                  <div ng-if="isMember(user)">
+                    <button type="button" class="close" aria-hidden="true" ng-click="deleteMemberUser(user)" style="color:green"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>{{user.Name}}, {{user.Email}}
+                  </div>
+
+                </li>
+              </ul>            
+            </div>
+            <div ng-if="screenMode!='search'">            
+              <h3 ng-if="!members || members.length == 0">No Members</h3>
+              <ul ng-if="members && members.length > 0" class="list-group" >
+                <li class="list-group-item" ng-click="preview(member)" ng-repeat="member in members" ng-class="{'member-selected' : isPreview(member)}"><button type="button" class="close" aria-hidden="true" ng-click="deleteMember(member)">×</button>{{member.Contact__r.Name}} : {{member.Status__c}}</li>
+              </ul>            
+            </div>
+
+          </div>
+          <div class="col-md-4">
+
+            <div class="panel panel-primary">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <div ng-if="currentMember" class="row">
+                      <div class="col-md-12">
+                        <h4>{{currentMember.Contact__r.Name}}</h4>
+                      </div>
+                    </div>
+
+                    <div ng-if="currentMember" class="row">
+                      <div class="col-md-12">
+                        <b>Status:</b> {{currentMember.Status__c}}
+                      </div>
+                    </div>
+
+                    <div ng-if="currentMember.Status__c == 'Badge Completed / Attestation Submitted' || currentMember.Status__c == 'Badge Under Review' || currentMember.Status__c == 'Badge Approved'">
+                      <div class="row">
+                        <div class="col-md-12">
+                          &nbsp;
+                        </div>
+                      </div>
+
+                      <div class="row" ng-if="currentMember.Essay__c && currentMember.Essay__c != ''">
+                        <div class="col-md-12">
+                          {{currentMember.Contact__r.Name}} wrote:<br>
+                          {{currentMember.Essay__c}}<br>
+                        </div>
+                        <div class="col-md-12">
+                         &nbsp;
+                        </div>
+                      </div>
+
+                      <div ng-if="getMemberAttachment(currentMember)" class="row">
+                        <div class="col-md-12">
+                          <a href="/trovit/servlet/servlet.FileDownload?file={{getMemberAttachment(currentMember)}}" target="_new">Click Here</a> to download submitted attachment.
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          &nbsp;
+                        </div>
+                      </div>
+                      <div class="col-md-12" ng-if="currentMember.Status__c == 'Badge Completed / Attestation Submitted' || currentMember.Status__c == 'Badge Under Review'">
+                        Would you like to Certify this participant?<br>
+                        <button type="button" class="btn" ng-click="acceptBadge(member)">Yes</button> <button type="button" class="btn" ng-click="denyBadge(member)">No</button>  <button  ng-if="currentMember.Status__c != 'Badge Under Review'" type="button" class="btn" ng-click="reviewBadge(member)">Mark as Under Review</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <div ng-if="screenMode!='search'"> 
+                      <div>
+                        <button type="search" class="btn garp-btn-portal" ng-click="addUsers()">Add More Users</button>
+                        <button type="search" class="btn garp-btn-portal" ng-click="navigate(panelRecord.onRoute)">Done</button> 
+                      </div>
+                    </div>
+                    <div ng-if="screenMode=='search'">
+                      <button type="search" class="btn garp-btn-portal" ng-click="doneAddUsers()">Done</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>

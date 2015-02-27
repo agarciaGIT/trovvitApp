@@ -1,0 +1,30 @@
+<div class="container page-container">
+
+<div id="spin"></div>
+
+<div class="container">
+    <div class="page-header">
+        <h1 id="timeline">Timeline</h1>
+    </div>
+    <ul class="timeline">
+        <li ng-class="{'timeline-inverted' : $index % 2 != 0}" ng-repeat="post in posts">
+          <div class="timeline-badge info"><i class="glyphicon glyphicon-check"></i></div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+                <h4 class="timeline-title">{{post.Name}}</h4>
+                <div ng-if="getAttachmentId(post.Id)">
+                    <img ng-src="/trovit/servlet/servlet.FileDownload?file={{getAttachmentId(post.Id)}}" width="200">
+                </div>
+            </div>
+            <div class="timeline-body">
+              <p>{{post.Post_Text__c}}</p>
+              <div ng-if="isShared(post.Id)" style="color:green">
+                <span class="glyphicon glyphicon-share" aria-hidden="true"></span> <span style="color:black">Shared with {{getSharedCount(post.Id)}} others</span>
+                 <button type="button" class="btn garp-btn-portal" ng-click="viewPanel(post.Id)">View</button>
+              </div>
+              <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> {{getEpochDateTimeText(post.Post_Date_Time__c)}}</small></p>
+            </div>
+          </div>
+        </li>
+    </ul>
+</div>

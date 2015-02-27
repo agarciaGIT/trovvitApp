@@ -355,6 +355,45 @@ myApp.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
           }
         }
       })
+      .state('timeline', {
+        url: '/timeline',
+        templateUrl: envPath + "/partials/timeline.html",
+        controller: 'SFDCAppTimelineCtrl',
+        resolve: {
+          myVar: function($q,$http,remoteDataService){
+            //code to be executed before route change goes here
+            var defer = $q.defer();
+            remoteDataService.fetchData(defer);
+            return defer.promise;
+          }
+        }
+      })
+      .state('badges', {
+        url: '/badges',
+        templateUrl: envPath + "/partials/badges.html",
+        controller: 'SFDCAppBadgesCtrl',
+        resolve: {
+          myVar: function($q,$http,remoteDataService){
+            //code to be executed before route change goes here
+            var defer = $q.defer();
+            remoteDataService.fetchData(defer);
+            return defer.promise;
+          }
+        }
+      })
+      .state('groups', {
+        url: '/groups',
+        templateUrl: envPath + "/partials/groups.html",
+        controller: 'SFDCAppGroupsCtrl',
+        resolve: {
+          myVar: function($q,$http,remoteDataService){
+            //code to be executed before route change goes here
+            var defer = $q.defer();
+            remoteDataService.fetchData(defer);
+            return defer.promise;
+          }
+        }
+      })
       .state('posts', {
         url: '/posts',
         templateUrl: envPath + "/partials/posts.html",
@@ -394,6 +433,45 @@ myApp.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
           }
         }
       })
+      .state('panelListView', {
+        url: '/panelListView:fieldRecord:type:id',
+        templateUrl: envPath + "/partials/panel.list.view.html",
+        controller: 'SFDCAppPanelListViewCtrl',
+        resolve: {
+          myVar: function($q,$http,remoteDataService){
+            //code to be executed before route change goes here
+            var defer = $q.defer();
+            remoteDataService.fetchData(defer);
+            return defer.promise;
+          }
+        }
+      })            
+      .state('panelListMembers', {
+        url: '/panelListMembers:fieldRecord:type:id',
+        templateUrl: envPath + "/partials/panel.list.members.html",
+        controller: 'SFDCAppPanelListMembersCtrl',
+        resolve: {
+          myVar: function($q,$http,remoteDataService){
+            //code to be executed before route change goes here
+            var defer = $q.defer();
+            remoteDataService.fetchData(defer);
+            return defer.promise;
+          }
+        }
+      })            
+      .state('panelListShare', {
+        url: '/panelListShare:fieldRecord:type:id',
+        templateUrl: envPath + "/partials/panel.list.share.html",
+        controller: 'SFDCAppPanelListShareCtrl',
+        resolve: {
+          myVar: function($q,$http,remoteDataService){
+            //code to be executed before route change goes here
+            var defer = $q.defer();
+            remoteDataService.fetchData(defer);
+            return defer.promise;
+          }
+        }
+      })            
       .state('panelListAdd', {
         url: '/panelListAdd:fieldRecord',
         templateUrl: envPath + "/partials/panel.list.add.html",

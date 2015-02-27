@@ -1,332 +1,290 @@
 <div class="row" ng-controller="SFDCAppPanelFieldsCtrl">
-    <div class="col-md-12">
+   <div class="col-md-12">
+      <div ng-class="{'panel' : !panelRecord.checkBoxGroup.readSave}">
+         <div ng-class="{'mbrPrflHead panel-heading' : !panelRecord.checkBoxGroup.readSave}">
+            <h3 ng-if="!panelRecord.checkBoxGroup.readSave" class="panel-title">{{panelRecord.title}}</h3>
+         </div>
+         <div ng-class="{'panel-body' : !panelRecord.checkBoxGroup.readSave}">
+            <div id="fieldSpin{{recordName}}{{recordIndex}}"></div>
+            <div id="formArea">
+               <form id="{{panelRecord.name}}" name="form.fields" class="css-form" novalidate>
+                  <div ng-repeat="panelFieldItem in panelRecord.fieldRecords | filter:criteriaMatch(panelFieldItem)">
 
-        <div ng-class="{'panel' : !panelRecord.checkBoxGroup.readSave}">
-            <div ng-class="{'mbrPrflHead panel-heading' : !panelRecord.checkBoxGroup.readSave}">
-                <h3 ng-if="!panelRecord.checkBoxGroup.readSave" class="panel-title">{{panelRecord.title}}</h3>
+                     <div class="row">
+                        <div ng-class="{'form-group': panelRecord.isAddress==null || panelRecord.isAddress==false || panelRecord.mode!='view'}" class="col-md-12 col-lg-12 col-sm-12 ng-scope">
+                           <div ng-if="panelRecord.mode=='view' && !panelFieldItem.hidden">
+                              <div ng-if="panelFieldItem.type=='BOOLEAN'">
+                                 <div ng-if="panelRecord.checkBoxGroup">
+                                    <div ng-if="panelRecord.checkBoxGroup.readSave">
+                                       <p>{{panelFieldItem.label}}</p>
+                                       <div ng-if="disableField(panelFieldItem)">
+                                          <input bs-switch ng-model="panelValues[panelFieldItem.name]" type="checkbox" switch-active="false" switch-on-text="ON" switch-off-text="OFF" switch-on-color="success" switch-off-color="danger" switch-animate="true" switch-size="small" switch-label="" switch-icon="" switch-radio-off="false" ng-change="switchToggle()">
+                                       </div>
+                                       <div ng-if="!disableField(panelFieldItem)">
+                                          <input bs-switch ng-model="panelValues[panelFieldItem.name]" type="checkbox" switch-active="true" switch-on-text="ON" switch-off-text="OFF" switch-on-color="success" switch-off-color="danger" switch-animate="true" switch-size="small" switch-label="" switch-icon="" switch-radio-off="false" ng-change="switchToggle()">
+                                       </div>
+                                    </div>
+                                    <div ng-if="!panelRecord.checkBoxGroup.readSave">
+                                       <div ng-if="panelRecord.checkBoxGroup && $index == panelRecord.checkBoxGroup.index">
+                                          <label class="fieldName">{{panelRecord.checkBoxGroup.name}}</label>
+                                       </div>
+                                       <span ng-if="panelValues[panelFieldItem.name] == true">{{panelFieldItem.label}}</span>
+                                    </div>
+                                 </div>
+                                 <div ng-if="!panelRecord.checkBoxGroup">
+                                    <label ng-if="panelValues[panelFieldItem.name] == true" class="btn garp-btn-portal btn-sm multicolor on active">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    </label>
+                                    <label ng-if="panelValues[panelFieldItem.name] == false" class="btn btn-danger btn-sm multicolor off active">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                    </label>
+                                    <span class="fieldName">{{panelFieldItem.label}}</span>
+                                    <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
+                                 </div>
+                              </div>
+                              <div ng-if="panelFieldItem.type=='CURRENCY'">
+                                 <span class="fieldName">{{panelFieldItem.label}}</span>
+                                 <br>
+                                 <span class="fieldValue">${{formatAmountDisplay(panelValues[panelFieldItem.name])}}</span>
+                                 <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
+                              </div>
+                              <div ng-if="panelFieldItem.type=='MULTIPICKLIST'">
+                                 <span class="fieldName">{{panelFieldItem.label}}</span><br>
+                                 <span class="fieldValue">{{panelValues[panelFieldItem.name].value}}</span>
+                                 <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
+                              </div>
+
+                              <div ng-if="panelFieldItem.type=='REFERENCE'">
+                                 <span class="fieldName">{{panelFieldItem.label}}</span><br>
+                                 <span class="fieldValue">{{panelValues[panelFieldItem.name]}}</span>
+                              </div>
+
+
+                              <div ng-if="getFieldHTML(panelFieldItem.name,panelValues[panelFieldItem.name])!=null">
+                                 <p ng-bind-html="getFieldHTML(panelFieldItem.name,panelValues[panelFieldItem.name])"></p>
+                              </div>
+
+                              <div ng-if="getFieldHTML(panelFieldItem.name,panelValues[panelFieldItem.name]) == null && panelFieldItem.type!='BOOLEAN' && panelFieldItem.type!='CURRENCY' && panelFieldItem.type!='MULTIPICKLIST' && panelFieldItem.type!='REFERENCE'">
+                                 <div ng-if="panelRecord.isAddress==null || panelRecord.isAddress==false"><span class="fieldName">{{panelFieldItem.label}}</span>
+                                    <br>
+                                 </div>
+                                 <span ng-if="panelFieldItem.type!='DATE' && panelFieldItem.type!='DATETIME' && panelFieldItem.label.indexOf('QR') == -1 && panelFieldItem.type!='BOOLEAN'" class="fieldValue">{{panelValues[panelFieldItem.name]}}</span>
+                                 <span ng-if="panelFieldItem.type=='DATE' && panelFieldItem.type!='BOOLEAN'" class="fieldValue">{{getDateText(panelValues[panelFieldItem.name])}}</span>
+                                 <span ng-if="panelFieldItem.type=='DATETIME' && panelFieldItem.type!='BOOLEAN'" class="fieldValue">{{getEpochDateTimeText(panelValues[panelFieldItem.name])}}</span>
+                                 <img ng-if="panelFieldItem.label.indexOf('QR') > -1" ng-src="{{qrcode}}{{panelValues[panelFieldItem.Id]}}" class="ticket-info-qrcode-image">
+                                 <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
+                              </div>
+                           </div>
+                           <div ng-if="(panelRecord.mode=='edit' || panelRecord.mode=='add' || panelRecord.mode=='form') && !panelFieldItem.readOnly && !panelFieldItem.hidden">
+                              <ng-form name="userFieldForm">
+
+
+                                 <div ng-class="{ 'has-error' : userFieldForm.panelFieldItemName.$invalid && submitted }">
+                                    <!-- REFERENCE -->
+                                    <div ng-if="panelFieldItem.type=='REFERENCE' || getFieldReferenceValues(panelFieldItem.name)">
+                                       <span class="in-input">{{panelFieldItem.label}}</span>
+                                                    
+                                       <input ng-if="getFieldReferenceOther(panelFieldItem.name)" type="text" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]" typeahead="state.name for state in getFieldReferenceValues(panelFieldItem.name) | filter:$viewValue | limitTo:8" class="form-control">
+
+                                       <select ng-if="!getFieldReferenceOther(panelFieldItem.name) && getFieldReferenceValues(panelFieldItem.name) && getFieldReferenceValues(panelFieldItem.name).length > 0" class="form-control" ng-options="region.code as region.name for region in getFieldReferenceValues(panelFieldItem.name) | orderBy:'name'" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]"></select>
+                                      
+                                    </div>
+                                    <!-- Number -->
+                                    <div ng-if="panelFieldItem.type=='DOUBLE'">
+                                       <span class="in-input">{{panelFieldItem.label}}</span>
+                                       <input ng-if="panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]">
+                                       <input ng-if="!panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" required>
+                                    </div>
+                                    <div ng-if="panelFieldItem.type=='MULTIPICKLIST'">
+                                       <span>{{panelFieldItem.label}}</span>
+                                       <div multi-select input-model="panelFieldItem.multiSelect" button-label="name" item-label="name" tick-property="ticked">
+                                       </div>
+                                    </div>
+                                    <div ng-if="panelFieldItem.type=='CURRENCY'">
+                                       <span class="in-input">{{panelFieldItem.label}}</span>
+                                       <input ng-if="panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]">
+                                       <input ng-if="!panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" required>
+                                    </div>
+                                    <!-- text -->
+                                    <div ng-if="panelFieldItem.type!='BOOLEAN' && panelFieldItem.type!='PICKLIST' && panelFieldItem.type!='TEXTAREA' && panelFieldItem.type!='EMAIL' && panelFieldItem.type!='DATE' && panelFieldItem.type!='DATETIME' && panelFieldItem.type!='LOOKUP' && panelFieldItem.type!='REFERENCE' && panelFieldItem.type!='DOUBLE' && panelFieldItem.type!='MULTIPICKLIST' && panelFieldItem.type!='CURRENCY' && (!getFieldReferenceValues(panelFieldItem.name) || getFieldReferenceValues(panelFieldItem.name).length == 0)">
+                                       <span class="in-input">{{panelFieldItem.label}}</span>
+                                       <input ng-if="panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}">
+                                       <input ng-if="!panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}" required>
+                                    </div>
+                                    <div ng-if="panelFieldItem.type=='DATETIME'">
+                                       <div class="well">
+                                          <div class="dropdown">
+                                             <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+                                                <div class="input-group">
+                                                   <input ng-if="panelFieldItem.isNillable" type="text" class="form-control" ng-required="false" name="panelFieldItemName" data-ng-model="panelValues[panelFieldItem.name]">
+                                                   <input ng-if="!panelFieldItem.isNillable" type="text" class="form-control" ng-required="true" name="panelFieldItemName" data-ng-model="panelValues[panelFieldItem.name]" required>
+                                                   <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                </div>
+                                             </a>
+                                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                <datetimepicker data-ng-model="panelValues[panelFieldItem.name]" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" />
+                                             </ul>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div ng-if="panelFieldItem.type=='DATE'">
+                                       <p ng-if="panelFieldItem.isNillable" class="input-group">
+                                          <span class="in-input">{{panelFieldItem.label}}</span>
+                                          <input type="text" class="form-control" datepicker-popup="{{format}}" show-weeks="false" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
+                                          <span class="input-group-btn">
+                                          <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                          </span>
+                                       </p>
+                                       <p ng-if="!panelFieldItem.isNillable" class="input-group">
+                                          <span class="in-input">{{panelFieldItem.label}}</span>
+                                          <input type="text" class="form-control" datepicker-popup="{{format}}" show-weeks="false" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]" is-open="opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                          <span class="input-group-btn">
+                                          <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                          </span>
+                                       </p>
+                                    </div>
+                                    <!-- email -->
+                                    <div ng-if="panelFieldItem.type=='EMAIL'">
+                                       <span class="in-input">{{panelFieldItem.label}}</span>
+                                       <input ng-if="panelFieldItem.isNillable" class="form-control" type="email" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}">
+                                       <input ng-if="!panelFieldItem.isNillable" class="form-control" type="email" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}" required>
+                                    </div>
+                                    <!-- textarea -->
+                                    <div ng-if="panelFieldItem.type=='TEXTAREA'">
+                                       <span class="in-input">{{panelFieldItem.label}}</span>
+                                       <textarea ng-if="panelFieldItem.isNillable" name="panelFieldItemName" id="{{panelFieldItem.name}}" class="form-control" rows="3" ng-model="panelValues[panelFieldItem.name]"></textarea>
+                                       <textarea ng-if="!panelFieldItem.isNillable" name="panelFieldItemName" id="{{panelFieldItem.name}}" class="form-control" rows="3" ng-model="panelValues[panelFieldItem.name]" required></textarea>
+                                    </div>
+                                    <!-- checkbox -->
+                                    <div ng-if="panelFieldItem.type=='BOOLEAN'" class="checkbox">
+                                       <label>
+                                       <input type="checkbox" name="panelFieldItemName" id="panelFieldItem.name" ng-model="panelValues[panelFieldItem.name]">{{panelFieldItem.label}}
+                                       </label>
+                                    </div>
+                                    <!-- select -->
+                                    <div ng-if="panelFieldItem.type=='PICKLIST'">
+                                       <span class="in-input">{{panelFieldItem.label}}</span>
+                                       <select ng-if="panelFieldItem.isNillable" name="panelFieldItemName" id="panelFieldItem.name" class="form-control" ng-model="panelValues[panelFieldItem.name]">
+                                          <option ng-repeat="option in panelFieldItem.pickList" value="{{option}}">{{option}}</option>
+                                       </select>
+                                       <select ng-if="!panelFieldItem.isNillable" name="panelFieldItemName" id="panelFieldItem.name" class="form-control" ng-model="panelValues[panelFieldItem.name]" required>
+                                          <option ng-repeat="option in panelFieldItem.pickList" value="{{option}}">{{option}}</option>
+                                       </select>
+                                    </div>
+                                    <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
+                                    <!-- div>
+                                       <span style="color:red" ng-show="hasClass('{{panelFieldItem.name}}','ng-invalid-maxlength')">{{panelFieldItem.label}} can only by {{panelFieldItem.maxLength}} characters.</span>
+                                       <span style="color:red" ng-show="hasClass('{{panelFieldItem.name}}','ng-invalid-required')">{{panelFieldItem.label}} is required.</span>
+                                       </div-->
+                                    <p ng-show="userFieldForm.panelFieldItemName.$error.required && submitted" class="help-block">{{panelFieldItem.name}} is required.</p>
+                                    <p ng-show="userFieldForm.panelFieldItemName.$error.email && submitted" class="help-block">Not a vaild email address.</p>
+                                    <p ng-show="userFieldForm.panelFieldItemName.$error.minlength && submitted" class="help-block">{{panelFieldItem.name}} must be at least {{panelFieldItem.minLength}} letters.</p>
+                                    <p ng-show="userFieldForm.panelFieldItemName.$error.maxlength && submitted" class="help-block">{{panelFieldItem.name}} can not be more than {{panelFieldItem.maxLength}} letters.</p>
+                                 </div>
+                              </ng-form>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div ng-if="attachments">
+                     <div ng-repeat="att in attachments">
+                        <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> <a href="/trovit/servlet/servlet.FileDownload?file={{att.Id}}" target="_new">{{att.Name}}</a> <a href="" ng-click="removeAttachment(att.Id)" ng-if="panelRecord.mode=='add' || panelRecord.mode=='edit'"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                        <div>
+                           <img ng-src="/trovit/servlet/servlet.FileDownload?file={{att.Id}}" width="200">
+                        </div>
+                     </div>
+                  </div>
+                  <div ng-if="(panelRecord.mode=='edit' || panelRecord.mode=='add' || panelRecord.mode=='form') && panelRecord.attachment">
+                     <button ng-if="!showAttachementAdd" type="button" class="btn garp-btn-portal" ng-click="attach()">Attach a File</button>
+                     <button ng-if="showAttachementAdd" type="button" class="btn garp-btn-portal" ng-click="attach()">Done Attaching</button>
+                     <iframe ng-if="showAttachementAdd" style="width:100%;height:120px;" ng-src="{{iFrameSrc}}">&#160;</iframe>
+                  </div>
+
+               </form>
+               <div ng-if="panelRecord.isAddress==true" class="row">
+                  <div class="col-md-12">&nbsp;
+                  </div>
+               </div>
+               <div ng-if="isShared() && panelRecord.share" style="color:green">
+                  <span class="glyphicon glyphicon-share" aria-hidden="true"></span> <span style="color:black">Shared with {{getSharedCount()}} others</span>
+                  <button ng-if="panelRecord.mode=='view' && panelRecord.share" type="button" class="btn garp-btn-portal" ng-click="viewPanel()">View</button>
+               </div>
+
+               <div ng-if="getMembershipCount() > 0 && panelRecord.membership">
+                  <div class="col-md-12">
+                     My Status: <b>{{myShare.Status__c}}</b>
+                  </div>
+                  <div class="col-md-12">&nbsp;
+                  </div>
+                  <div class="col-md-12" style="color:blue">
+                     <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <span style="color:black">{{getMembershipCount()}} </span>
+                     <span ng-if="panelRecord.membershipName">{{panelRecord.membershipName}}</span>
+                     <span ng-if="!panelRecord.membershipName">members</span>
+                     <a href='#' ng-click="viewPanel()"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Share / View</a>
+                  </div>
+                  <!-- button type="button" class="btn garp-btn-portal" ng-click="viewPanel()">View</button -->
+               </div>
+
+               <!-- {{panelRecord.allowEdit}}, {{canEdit}}, {{panelRecord.mode}}, {{panelRecord.mode}}, {{panelRecord.checkBoxGroup.readSave}}, {{panelRecord.share}}, {{isShared()}}, {{panelRecord.membership}}, {{isParticipant()}} -->
+
+               <div ng-if="panelRecord.allowEdit">
+                  <div ng-if="(canEdit || panelRecord.mode=='add' || panelRecord.mode=='form') && !panelRecord.checkBoxGroup.readSave && (panelRecord.share == false || !isShared()) && (panelRecord.membership == false || !isParticipant())">
+
+                     <div ng-if="panelRecord.mode=='form'">
+                        <input type=checkbox name="saveEdit" checked>Save changes to your profile's Mailing Adrress
+                     </div>
+                     <!--<button ng-if="panelRecord.mode=='view'" type="button" class="btn btn-block garp-btn-portal" ng-click="editPanel()">Edit</button>-->
+                     <!-- Default button!!-->
+                     <!-- Edit buttons-->
+                     <button ng-if="panelRecord.mode=='view' && panelRecord.editButtonName" type="button" class="btn garp-btn-portal" ng-click="editPanel()">{{panelRecord.editButtonName}}</button>
+                     <button ng-if="panelRecord.mode=='view' && !panelRecord.editButtonName" type="button" class="btn garp-btn-portal" ng-click="editPanel()">Edit</button>
+                     <!-- Delete button-->
+                     <button ng-if="panelRecord.mode=='view' && panelRecord.deleteButtonName && panelRecord.obectId==''" type="button" class="btn garp-btn-portal" ng-click="deletePanel()">{{panelRecord.deleteButtonName}}</button>
+                     <button ng-if="panelRecord.mode=='view' && !panelRecord.deleteButtonName&& panelRecord.obectId==''" type="button" class="btn garp-btn-portal" ng-click="deletePanel()">Delete</button>
+
+
+                     <button ng-if="panelRecord.mode=='view' && panelRecord.share" type="button" class="btn garp-btn-portal" ng-click="sharePanel()">Share <span ng-if="getSharedCount()>0" class="badge">{{getSharedCount()}}</span></button>
+                     <button ng-if="panelRecord.mode=='view' && panelRecord.share" type="button" class="btn garp-btn-portal" ng-click="viewPanel()">View</button>
+
+                     <button ng-if="panelRecord.mode=='view' && panelRecord.membership && panelRecord.membershipName" type="button" class="btn garp-btn-portal" ng-click="membersPanel()">Manage {{panelRecord.membershipName}}</button>
+
+                     <button ng-if="panelRecord.mode=='view' && panelRecord.membership && !panelRecord.membershipName" type="button" class="btn garp-btn-portal" ng-click="membersPanel()">membership</button>
+
+                     <div class="row">
+                        <!-- Save button-->
+                        <div class="col-md-6">
+                           <button ng-if="(panelRecord.mode=='edit' || panelRecord.mode=='add') && panelRecord.saveButtonName" type="button" class="btn btn-block garp-btn-portal" ng-click="savePanel()">{{panelRecord.saveButtonName}}</button>
+                           <button ng-if="(panelRecord.mode=='edit' || panelRecord.mode=='add') && !panelRecord.saveButtonName" type="button" class="btn btn-block garp-btn-portal" ng-click="savePanel()">Save</button>
+                        </div>
+                        <!-- Cancel button-->
+                        <div class="col-md-6">
+                           <button ng-if="panelRecord.mode=='edit' || panelRecord.mode=='add'" type="button" class="btn btn-block garp-btn-portal" ng-click="cancelPanel()">Cancel</button>
+                        </div>
+                     </div>
+                     <p style="color:red">{{panelRecord.error}}</p>
+                  </div>
+               </div>
             </div>
-            <div ng-class="{'panel-body' : !panelRecord.checkBoxGroup.readSave}">
-
-                <div id="fieldSpin{{recordName}}{{recordIndex}}"></div>
-
-                <div id="formArea">
-                    <form id="{{panelRecord.name}}" name="form.fields" class="css-form" novalidate>
-
-
-
-                        <div ng-repeat="panelFieldItem in panelRecord.fieldRecords | filter:criteriaMatch(panelFieldItem)">
-
-                            <div class="row">
-                                <div ng-class="{'form-group': panelRecord.isAddress==null || panelRecord.isAddress==false || panelRecord.mode!='view'}" class="col-md-12 col-lg-12 col-sm-12 ng-scope">
-
-
-                                    <div ng-if="panelRecord.mode=='view' && !panelFieldItem.hidden">
-
-
-                                        <div ng-if="panelFieldItem.type=='BOOLEAN'">
-
-                                            <div ng-if="panelRecord.checkBoxGroup">
-
-                                                <div ng-if="panelRecord.checkBoxGroup.readSave">
-                                                    <p>{{panelFieldItem.label}}</p>
-                                                    <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
-
-                                                    <div ng-if="disableField(panelFieldItem)">
-
-                                                        <input bs-switch ng-model="panelValues[panelFieldItem.name]" type="checkbox" switch-active="false" switch-on-text="ON" switch-off-text="OFF" switch-on-color="success" switch-off-color="danger" switch-animate="true" switch-size="small" switch-label="" switch-icon="" switch-radio-off="false" ng-change="switchToggle()">
-
-                                                    </div>
-
-                                                    <div ng-if="!disableField(panelFieldItem)">
-                                                        <input bs-switch ng-model="panelValues[panelFieldItem.name]" type="checkbox" switch-active="true" switch-on-text="ON" switch-off-text="OFF" switch-on-color="success" switch-off-color="danger" switch-animate="true" switch-size="small" switch-label="" switch-icon="" switch-radio-off="false" ng-change="switchToggle()">
-                                                    </div>
-                                                </div>
-
-                                                <div ng-if="!panelRecord.checkBoxGroup.readSave">
-                                                    <div ng-if="panelRecord.checkBoxGroup && $index == panelRecord.checkBoxGroup.index">
-                                                        <label class="fieldName">{{panelRecord.checkBoxGroup.name}}</label>
-                                                    </div>
-                                                    <span ng-if="panelValues[panelFieldItem.name] == true">{{panelFieldItem.label}}</span>
-                                                </div>
-
-                                            </div>
-
-                                            <div ng-if="!panelRecord.checkBoxGroup">
-                                                <label ng-if="panelValues[panelFieldItem.name] == true" class="btn garp-btn-portal btn-sm multicolor on active">
-                                                    <span class="glyphicon glyphicon-ok"></span>
-                                                </label>
-                                                <label ng-if="panelValues[panelFieldItem.name] == false" class="btn btn-danger btn-sm multicolor off active">
-                                                    <span class="glyphicon glyphicon-remove"></span>
-                                                </label>
-                                                <span class="fieldName">{{panelFieldItem.label}}</span>
-
-                                                <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
-
-                                            </div>
-
-                                        </div>
-
-                                        <div ng-if="panelFieldItem.type=='CURRENCY'">
-                                            <span class="fieldName">{{panelFieldItem.label}}</span>
-                                            <br>
-                                            <span class="fieldValue">${{formatAmountDisplay(panelValues[panelFieldItem.name])}}</span>
-
-                                            <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
-
-                                        </div>
-
-                                        <div ng-if="panelFieldItem.type=='MULTIPICKLIST'">
-                                          <span class="fieldName">{{panelFieldItem.label}}</span><br>
-                                          <span class="fieldValue">{{panelValues[panelFieldItem.name].value}}</span>
-
-                                          <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
-
-                                        </div>                                        
-
-                                        <div ng-if="panelFieldItem.type!='BOOLEAN' && panelFieldItem.type!='CURRENCY' && panelFieldItem.type!='MULTIPICKLIST'"">
-
-                                            <div ng-if="panelRecord.isAddress==null || panelRecord.isAddress==false"><span class="fieldName">{{panelFieldItem.label}}</span>
-                                                <br>
-                                            </div>
-
-                                            <span ng-if="panelFieldItem.type!='DATE' && panelFieldItem.type!='DATETIME' && panelFieldItem.label.indexOf('QR') == -1 && panelFieldItem.type!='BOOLEAN'" class="fieldValue">{{panelValues[panelFieldItem.name]}}</span>
-                                            <span ng-if="panelFieldItem.type=='DATE' && panelFieldItem.type!='BOOLEAN'" class="fieldValue">{{getDateText(panelValues[panelFieldItem.name])}}</span>
-                                            <span ng-if="panelFieldItem.type=='DATETIME' && panelFieldItem.type!='BOOLEAN'" class="fieldValue">{{getEpochDateTimeText(panelValues[panelFieldItem.name])}}</span>
-
-                                            <img ng-if="panelFieldItem.label.indexOf('QR') > -1" ng-src="{{qrcode}}{{panelValues[panelFieldItem.Id]}}" class="ticket-info-qrcode-image">
-
-                                            <p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p>
-
-                                        </div>
-
-
-                                    </div>
-
-
-
-                                    <div ng-if="(panelRecord.mode=='edit' || panelRecord.mode=='add' || panelRecord.mode=='form') && !panelFieldItem.readOnly && !panelFieldItem.hidden">
-
-                                        <ng-form name="userFieldForm">
-
-                                            <div ng-class="{ 'has-error' : userFieldForm.panelFieldItemName.$invalid && submitted }">
-
-                                                <!-- REFERENCE -->
-                                                <div ng-if="panelFieldItem.type=='REFERENCE' || panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values">
-
-                                                    <span class="in-input">{{panelFieldItem.label}}</span>
-
-                                                    <input ng-if="panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].otherFieldName != ''" type="text" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]" typeahead="state.name for state in panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values | filter:$viewValue | limitTo:8" class="form-control">
-
-                                                    <select ng-if="panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].otherFieldName == '' && panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values && panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values.length > 0" class="form-control" ng-options="region.code as region.name for region in panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values | orderBy:'name'" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]"></select>
-
-
-                                                    <!-- input ng-if="panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].otherFieldName == '' && panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values && panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values.length == 0 && panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}" >
-
-                        <input ng-if="panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].otherFieldName == '' && panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values && panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values.length == 0 && !panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}" required  -->
-
-                                                </div>
-
-
-                                                <!-- Number -->
-                                                <div ng-if="panelFieldItem.type=='DOUBLE'">
-                                                    <span class="in-input">{{panelFieldItem.label}}</span>
-
-                                                    <input ng-if="panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]">
-
-                                                    <input ng-if="!panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" required>
-
-                                                </div>
-
-
-                                                <div ng-if="panelFieldItem.type=='MULTIPICKLIST'">
-                                                    <span>{{panelFieldItem.label}}</span>
-                                                    <div multi-select input-model="panelFieldItem.multiSelect" button-label="name" item-label="name" tick-property="ticked">
-                                                    </div>
-                                                </div>
-
-                                                <div ng-if="panelFieldItem.type=='CURRENCY'">
-
-                                                    <span class="in-input">{{panelFieldItem.label}}</span>
-
-                                                    <input ng-if="panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]">
-
-                                                    <input ng-if="!panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" required>
-
-                                                </div>
-
-
-                                                <!-- text -->
-                                                <div ng-if="panelFieldItem.type!='BOOLEAN' && panelFieldItem.type!='PICKLIST' && panelFieldItem.type!='TEXTAREA' && panelFieldItem.type!='EMAIL' && panelFieldItem.type!='DATE' && panelFieldItem.type!='DATETIME' && panelFieldItem.type!='LOOKUP' && panelFieldItem.type!='REFERENCE' && panelFieldItem.type!='DOUBLE' && panelFieldItem.type!='MULTIPICKLIST' && panelFieldItem.type!='CURRENCY' && (!panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values || panelRecord.fetchPanelFieldsParams.references[panelFieldItem.name].values.length == 0)">
-                                                    <span class="in-input">{{panelFieldItem.label}}</span>
-
-                                                    <input ng-if="panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}">
-
-                                                    <input ng-if="!panelFieldItem.isNillable" class="form-control" type="text" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}" required>
-
-                                                </div>
-
-                                                <div ng-if="panelFieldItem.type=='DATETIME'">
-                                                    <div class="well">
-                                                        <div class="dropdown">
-                                                            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
-                                                                <div class="input-group">
-                                                                    <input ng-if="panelFieldItem.isNillable" type="text" class="form-control" ng-required="false" name="panelFieldItemName" data-ng-model="panelValues[panelFieldItem.name]">
-                                                                    <input ng-if="!panelFieldItem.isNillable" type="text" class="form-control" ng-required="true" name="panelFieldItemName" data-ng-model="panelValues[panelFieldItem.name]" required>
-                                                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                                                </div>
-                                                            </a>
-                                                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                                                <datetimepicker data-ng-model="panelValues[panelFieldItem.name]" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" />
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div ng-if="panelFieldItem.type=='DATE'">
-
-                                                    <p ng-if="panelFieldItem.isNillable" class="input-group">
-                                                        <span class="in-input">{{panelFieldItem.label}}</span>
-                                                        <input type="text" class="form-control" datepicker-popup="{{format}}" show-weeks="false" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Close" />
-                                                        <span class="input-group-btn">
-                            <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
-                                                    </p>
-
-                                                    <p ng-if="!panelFieldItem.isNillable" class="input-group">
-                                                        <span class="in-input">{{panelFieldItem.label}}</span>
-                                                        <input type="text" class="form-control" datepicker-popup="{{format}}" show-weeks="false" name="panelFieldItemName" ng-model="panelValues[panelFieldItem.name]" is-open="opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
-                                                        <span class="input-group-btn">
-                            <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
-                                                    </p>
-
-                                                </div>
-
-                                                <!-- email -->
-
-                                                <div ng-if="panelFieldItem.type=='EMAIL'">
-                                                    <span class="in-input">{{panelFieldItem.label}}</span>
-                                                    <input ng-if="panelFieldItem.isNillable" class="form-control" type="email" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}">
-
-                                                    <input ng-if="!panelFieldItem.isNillable" class="form-control" type="email" name="panelFieldItemName" id="{{panelFieldItem.name}}" ng-model="panelValues[panelFieldItem.name]" ng-maxLength="{{panelFieldItem.maxLength}}" required>
-
-                                                </div>
-
-                                                <!-- textarea -->
-
-                                                <div ng-if="panelFieldItem.type=='TEXTAREA'">
-                                                    <span class="in-input">{{panelFieldItem.label}}</span>
-                                                    <textarea ng-if="panelFieldItem.isNillable" name="panelFieldItemName" id="{{panelFieldItem.name}}" class="form-control" rows="3" ng-model="panelValues[panelFieldItem.name]"></textarea>
-
-                                                    <textarea ng-if="!panelFieldItem.isNillable" name="panelFieldItemName" id="{{panelFieldItem.name}}" class="form-control" rows="3" ng-model="panelValues[panelFieldItem.name]" required></textarea>
-
-
-                                                </div>
-
-                                                <!-- checkbox -->
-
-                                                <div ng-if="panelFieldItem.type=='BOOLEAN'" class="checkbox">
-                                                    <label>
-                                                        <input type="checkbox" name="panelFieldItemName" id="panelFieldItem.name" ng-model="panelValues[panelFieldItem.name]">{{panelFieldItem.label}}
-                                                    </label>
-
-                                                </div>
-
-                                                <!-- select -->
-
-                                                <div ng-if="panelFieldItem.type=='PICKLIST'">
-                                                    <span class="in-input">{{panelFieldItem.label}}</span>
-
-                                                    <select ng-if="panelFieldItem.isNillable" name="panelFieldItemName" id="panelFieldItem.name" class="form-control" ng-model="panelValues[panelFieldItem.name]">
-                                                        <option ng-repeat="option in panelFieldItem.pickList" value="{{option}}">{{option}}</option>
-                                                    </select>
-
-                                                    <select ng-if="!panelFieldItem.isNillable" name="panelFieldItemName" id="panelFieldItem.name" class="form-control" ng-model="panelValues[panelFieldItem.name]" required>
-                                                        <option ng-repeat="option in panelFieldItem.pickList" value="{{option}}">{{option}}</option>
-                                                    </select>
-
-                                                </div>
-
-                                                <!-- p ng-if="panelFieldItem.description">{{panelFieldItem.description}}</p -->
-
-                                                <!-- div>
-                        <span style="color:red" ng-show="hasClass('{{panelFieldItem.name}}','ng-invalid-maxlength')">{{panelFieldItem.label}} can only by {{panelFieldItem.maxLength}} characters.</span>
-                        <span style="color:red" ng-show="hasClass('{{panelFieldItem.name}}','ng-invalid-required')">{{panelFieldItem.label}} is required.</span>
-                      </div-->
-
-                                                <p ng-show="userFieldForm.panelFieldItemName.$error.required && submitted" class="help-block">{{panelFieldItem.name}} is required.</p>
-                                                <p ng-show="userFieldForm.panelFieldItemName.$error.email && submitted" class="help-block">Not a vaild email address.</p>
-                                                <p ng-show="userFieldForm.panelFieldItemName.$error.minlength && submitted" class="help-block">{{panelFieldItem.name}} must be at least {{panelFieldItem.minLength}} letters.</p>
-                                                <p ng-show="userFieldForm.panelFieldItemName.$error.maxlength && submitted" class="help-block">{{panelFieldItem.name}} can not be more than {{panelFieldItem.maxLength}} letters.</p>
-
-                                            </div>
-                                        </ng-form>
-                                    </div>
-
-
-
-
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </form>
-
-                    <div ng-if="panelRecord.isAddress==true" class="row">
-                        <div class="col-md-12">&nbsp;
-                        </div>
-                    </div>
-
-                    <div ng-if="panelRecord.allowEdit">
-
-                        <div ng-if="canEdit">
-
-                        </div>
-
-                        <div ng-if="(canEdit || panelRecord.mode=='add' || panelRecord.mode=='form') && !panelRecord.checkBoxGroup.readSave">
-
-                            <div ng-if="panelRecord.mode=='form'">
-                                <input type=checkbox name="saveEdit" checked>Save changes to your profile's Mailing Adrress
-                            </div>
-
-                            <!--<button ng-if="panelRecord.mode=='view'" type="button" class="btn btn-block garp-btn-portal" ng-click="editPanel()">Edit</button>-->
-                            <!-- Default button!!-->
-
-                            <!-- Edit buttons-->
-                            <button ng-if="panelRecord.mode=='view' && panelRecord.editButtonName" type="button" class="btn garp-btn-portal" ng-click="editPanel()">{{panelRecord.editButtonName}}</button>
-
-                            <button ng-if="panelRecord.mode=='view' && !panelRecord.editButtonName" type="button" class="btn garp-btn-portal" ng-click="editPanel()">Edit</button>
-
-
-                            <!-- Delete button-->
-
-                            <button ng-if="panelRecord.mode=='view' && panelRecord.deleteButtonName && panelRecord.obectId==''" type="button" class="btn garp-btn-portal" ng-click="deletePanel()">{{panelRecord.deleteButtonName}}</button>
-
-                            <button ng-if="panelRecord.mode=='view' && !panelRecord.deleteButtonName&& panelRecord.obectId==''" type="button" class="btn garp-btn-portal" ng-click="deletePanel()">Delete</button>
-
-                            <div class="row">
-                                <!-- Save button-->
-                                <div class="col-md-6">
-                                    <button ng-if="(panelRecord.mode=='edit' || panelRecord.mode=='add') && panelRecord.saveButtonName" type="button" class="btn btn-block garp-btn-portal" ng-click="savePanel()">{{panelRecord.saveButtonName}}</button>
-
-                                    <button ng-if="(panelRecord.mode=='edit' || panelRecord.mode=='add') && !panelRecord.saveButtonName" type="button" class="btn btn-block garp-btn-portal" ng-click="savePanel()">Save</button>
-
-                                </div>
-
-                                <!-- Cancel button-->
-                                <div class="col-md-6">
-                                    <button ng-if="panelRecord.mode=='edit' || panelRecord.mode=='add'" type="button" class="btn btn-block garp-btn-portal" ng-click="cancelPanel()">Cancel</button>
-                                </div>
-                            </div>
-
-                            <p style="color:red">{{panelRecord.error}}</p>
-                        </div>
-                    </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="modal fade" id="myAttachModal" tabindex="-1" role="dialog" aria-labelledby="myAttachModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">
+                     Attach File
+                     </h4>
+                </div>
+                <div class="modal-body">
+                  <iframe style="width:100%;height:120px;" ng-src="{{iFrameSrc}}">&#160;</iframe>
+                  <br />
+                  <!--button name="done" ng-click="doneAttch()" class="btn garp-btn-orange">Done</button -->
                 </div>
             </div>
         </div>
-
-    </div>
+   </div>
 
 </div>

@@ -43,16 +43,11 @@ utilityServices.factory('util', ['$resource','$http','$location','$window','$loc
 
     util.communityDom = window.location.hostname;
     util.dashboardURL = communityDom + "/apex/sfdcApp#!/";
+    util.communityURL = window.location.hostname + "/trovit";
 
-    if(util.communityDom.indexOf("build") > -1) {
-      util.membershipURL = "http://build-altest.cs16.force.com";
-      util.contactsURL = "https://build-garpbuild.cs16.force.com";
-      util.paymentURL = "https://build-altest.cs16.force.com?req="
-    } else if(util.communityDom.indexOf("uat") > -1) {
-      util.membershipURL = "http://uat-altest.cs15.force.com";
-      util.contactsURL = "https://uat-garp.cs15.force.com";
-      util.paymentURL = "https://uat-altest.cs15.force.com?req="
-    }
+    util.membershipURL = util.communityURL;
+    util.contactsURL = util.communityURL;
+    util.paymentURL = util.communityURL + "?req="
 
     util.digitalBadgeFrmURL = "/test/DigitalBadgeFRM";
     util.digitalBadgeErpURL = "/test/DigitalBadgeERP";
@@ -173,7 +168,7 @@ utilityServices.factory('util', ['$resource','$http','$location','$window','$loc
                 // do stuff
                 if(pStr=="")
                   pStr = params[property];
-                else pStr = pStr + "," + params[property];
+                else pStr = pStr + ":" + params[property];
             }
         }
 

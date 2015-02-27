@@ -1,0 +1,115 @@
+<div class="container page-container">
+  <div id="spin"></div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <ol class="breadcrumb" style="color: black">
+        <li><a href="" ng-click="navigate(panelRecord.onRoute)">{{panelRecord.title}}</a></li>
+        <li>Share</li>
+      </ol>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Share</h2>
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-body">
+
+      <form id="shareForm" name="form.fields" class="css-form" novalidate>
+        <div ng-if="shareMode=='search'">
+          <div class="row">
+            <div class="col-md-12">
+              <div>
+                <span class="in-input">Search Terms</span>
+                <input type="text" name="shareSearchTerms" ng-model="shareSearchTerms" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div>
+                <span class="in-input">Search Type</span>
+                <select class="form-control" ng-options="option as option for option in ['Name','Email','Institution']" name="shareSearchType" ng-model="shareSearchType"></select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button type="search" class="btn btn-block garp-btn-portal" ng-click="searchUsers()">Search</button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+
+            <div ng-if="shareMode=='search'">
+              <h3 ng-if="!users || users.length == 0">No Users Found</h3>
+              <ul ng-if="users && users.length > 0" class="list-group" >
+                <li class="list-group-item" ng-click="preview(user)" ng-repeat="user in users">
+
+                  <div ng-if="!isShared(user)">
+                    <button type="button" class="close" aria-hidden="true" ng-click="addShareUser(user)"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></button>{{user.Name}}, {{user.Email}}
+                  </div>
+                  <div ng-if="isShared(user)">
+                    <button type="button" class="close" aria-hidden="true" ng-click="deleteShareUser(user)" style="color:green"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>{{user.Name}}, {{user.Email}}
+                  </div>
+
+                </li>
+              </ul>            
+            </div>
+            <div ng-if="shareMode!='search'">            
+              <h3 ng-if="!shares || shares.length == 0">No Users Shared With</h3>
+              <ul ng-if="shares && shares.length > 0" class="list-group" >
+                <li class="list-group-item" ng-click="preview(share)" ng-repeat="share in shares"><button type="button" class="close" aria-hidden="true" ng-click="deleteShare(share)">×</button>{{share.Contact__r.Name}}</li>
+              </ul>            
+            </div>
+
+          </div>
+          <div class="col-md-4">
+
+            <div class="panel panel-primary">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    Preview!
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    &nbsp;
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <div ng-if="shareMode!='search'"> 
+                      <div>
+                        <button type="search" class="btn garp-btn-portal" ng-click="addUsers()">Add User</button>
+                      </div>
+                      <div>
+                        <select ng-model="userGroupSelect.select" ng-options="userGroup.Name for userGroup in userGroups"></select>
+                      </div>
+                      <div>
+                        <button type="search" class="btn garp-btn-portal" ng-click="addUserGroups()">Add User Groups</button><br> <button type="search" class="btn garp-btn-portal" ng-click="navigate(panelRecord.onRoute)">Done</button> 
+                      </div>
+                    </div>
+                    <div ng-if="shareMode=='search'">
+                      <button type="search" class="btn garp-btn-portal" ng-click="doneAddUsers()">Done</button> <button type="search" class="btn garp-btn-portal" ng-click="addUserGroupss()">Add User Groups</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>

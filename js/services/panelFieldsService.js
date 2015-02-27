@@ -95,9 +95,11 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
               fieldRecords[i].refValue = match.id;
               fieldRecords[i].value = panelValues[fieldRecords[i].name];
             } else {
-              var otherFieldName = fetchPanelFieldsParams.references[fieldRecords[i].name].otherFieldName;
-              fieldRecords[i].refOtherField = otherFieldName;
-              fieldRecords[i].value = val;
+              if(util.defined(field,"references.otherFieldName") && field.references.otherFieldName.length > 0) {
+                var otherFieldName = field.references.otherFieldName;
+                fieldRecords[i].refOtherField = otherFieldName;
+                fieldRecords[i].value = val;
+              }
             }
           }
 
@@ -117,9 +119,9 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
           fieldRecords[i].value = panelValues[fieldRecords[i].name];  
         }   
 
-        if(util.defined(field,"hidden") && field.hidden) {
-          fieldRecords[i].value=match.value;
-          fieldRecords[i].refValue=match.value;
+        if(util.defined(field,"hidden") && field.hidden && util.defined(field,"hiddenValue")) {
+          fieldRecords[i].value=field.hiddenValue;
+          fieldRecords[i].refValue=field.hiddenValue;
         }          
       }
 
@@ -134,6 +136,141 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
 
     }
 
+    sfdcPanelFieldsService.processFields = function(fetchPanelFieldsParams, resultFields) {
+
+        var fieldRecords = [];
+        var fields = fetchPanelFieldsParams.fields;
+        var fieldStrings = _.pluck(fetchPanelFieldsParams.fields, 'sfdcAPIName');
+
+        var keys = _.keys(resultFields);
+        for(var i=0; i<keys.length; i++) {
+
+          var key = keys[i];
+          var order = -1;
+
+          var field = _.findWhere(fetchPanelFieldsParams.fields, {sfdcAPIName: key});
+
+          var viewOnly = _.where(fetchPanelFieldsParams.fields, 'view: true');
+          if(util.defined(viewOnly,"length") && viewOnly.length > 0) {
+            var vFields = _.pluck(viewOnly, 'sfdcAPIName');
+            order = _.indexOf(vFields, key); 
+          } else {
+            order = _.indexOf(fieldStrings, key);  
+          }
+
+          var fieldKey = resultFields[key];
+          var multiSelect = [];
+          if(defined(fieldKey,"pickList.length")) {
+            for(var k=0; k<resultFields[key].pickList.length; k++) {
+              var obj = {
+                name: resultFields[key].pickList[k],
+                ticked: false
+              }
+              multiSelect.push(obj);
+            }
+          }
+
+          var fieldRecord = {
+            name: key,
+            type: resultFields[key].type,
+            label: resultFields[key].label,
+            pickList: resultFields[key].pickList,
+            multiSelect: multiSelect,
+            order: order,
+            maxLength: resultFields[key].maxLength,
+            isCalculated: resultFields[key].isCalculated,
+            isNillable: resultFields[key].isNillable,
+            description: resultFields[key].description,
+            readOnly: field.readOnly,
+            hidden: field.hidden,
+            view: field.view
+          }
+
+          fieldRecords.push(fieldRecord);
+        }
+
+        fieldRecords = _.sortBy(fieldRecords, function(rec){ return rec.order; });
+
+        return fieldRecords;
+    }
+
+    sfdcPanelFieldsService.processRecordData = function(recordData, fieldRecords) {
+
+      for(var j=0; j<recordData.length; j++) {
+
+        var recordData = recordData[j];
+
+        for(var i=0; i<fieldRecords.length; i++) {
+
+          var found = 0;
+          for (var property in recordData) {
+            if(property == fieldRecords[i].name)
+              found=1;
+          }
+
+          if(found == 0) {
+            recordData[fieldRecords[i].name]=null;
+          }
+
+          var val = recordData[fieldRecords[i].name];
+          if(!defined(val)) {
+            continue;
+          }
+
+
+          if(fieldRecords[i].type == 'MULTIPICKLIST') {
+            var ms = fieldRecords[i].multiSelect.slice();
+            for(var k=0; k<ms.length; k++) {
+              if(val.indexOf( ms[k].name) > -1)
+                 ms[k].ticked=true;
+            }
+            var obj = {
+              value: val,
+              multiSelect: ms
+            }
+            val = recordData[fieldRecords[i].name] = obj;
+          }
+
+          // Must match the values by 'Name' property
+          if(fieldRecords[i].type == 'REFERENCE') {
+
+            if(util.defined(field,"references.values")) {
+              var refData = field.references.values;
+              var match = _.findWhere(refData, {id: val});
+              if(util.defined(match)) {
+                recordData[fieldRecords[i].name] = match.name;
+              }
+            }
+          }
+
+          if(fieldRecords[i].type == 'DATETIME') {
+            var d = new Date(0);
+            d.setUTCSeconds((val/1000));
+            recordData[fieldRecords[i].name]=d;
+          }
+
+          if(fieldRecords[i].type == 'CURRENCY') {
+            recordData[fieldRecords[i].name]=util.formatAmount(val);
+          }
+
+          if(fieldRecords[i].type == 'DATE') {
+
+            var d = new Date(0);
+            d.setUTCSeconds((val/1000));
+
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth() + 1; //Months are zero based
+            var curr_year = d.getFullYear();
+
+            var dateText = curr_month + "/" + curr_date  + "/" + curr_year;
+
+            recordData[fieldRecords[i].name]=dateText;
+          }
+        }          
+      }
+      return recordData;
+    }
+
     sfdcPanelFieldsService.fetchPanelRecords = function(panelName, callback) {
 
       var fetchPanelFieldsParams = this.panelFieldRecords[panelName];
@@ -144,6 +281,7 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
         return;
       }
 
+      var _that = this;
       remoteDataService.fetchPanelList(fetchPanelFieldsParams.objectType, 
         fetchPanelFieldsParams.parentField, fetchPanelFieldsParams.parentId, fieldStrings, function(err, data) {
 
@@ -165,9 +303,9 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
           var viewOnly = _.where(fetchPanelFieldsParams.fields, 'view: true');
           if(util.defined(viewOnly,"length") && viewOnly.length > 0) {
             var vFields = _.pluck(viewOnly, 'sfdcAPIName');
-            order = _.indexOf(vFields, key.toLowerCase()); 
+            order = _.indexOf(vFields, key); 
           } else {
-            order = _.indexOf(fieldStrings, key.toLowerCase());  
+            order = _.indexOf(fieldStrings, key);  
           }
 
           var fieldKey = data.result.fields[key];
@@ -208,6 +346,8 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
           var recordData = data.result.recordData[j];
 
           for(var i=0; i<fieldRecords.length; i++) {
+
+            var field = _.findWhere(fetchPanelFieldsParams.fields, {sfdcAPIName: fieldRecords[i].name});
 
             var found = 0;
             for (var property in recordData) {
@@ -279,8 +419,17 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
 
         var recordList = {
           fieldRecords: fieldRecords,
-          recordData: data.result.recordData
+          recordData: data.result.recordData,
+          recordShares: data.result.recordShares,
+          attachments: data.result.attachments,
+          members: data.result.members
         }
+
+        _that.panelFieldRecords[panelName].fieldRecords = recordList.fieldRecords;
+        _that.panelFieldRecords[panelName].recordData = recordList.recordData;
+        _that.panelFieldRecords[panelName].recordShares = recordList.recordShares;
+        _that.panelFieldRecords[panelName].attachments = recordList.attachments;        
+        _that.panelFieldRecords[panelName].members = recordList.members;        
 
         callback(null, recordList);
 
@@ -288,98 +437,34 @@ panelFieldsServices.factory('sfdcPanelFieldsService', ['$resource','$http','$roo
     }
 
 
-    sfdcPanelFieldsService.fetchPanelFields = function(fetchPanelFieldsParams, callback) {
+    sfdcPanelFieldsService.fetchPanelFields = function(panelName, callback) {
 
-      remoteDataService.fetchPanel(fetchPanelFieldsParams.objectType, fetchPanelFieldsParams.obectId, fetchPanelFieldsParams.fields, function(err, data) {
+
+      var fetchPanelFieldsParams = this.panelFieldRecords[panelName];
+
+      var fieldStrings = _.pluck(fetchPanelFieldsParams.fields, 'sfdcAPIName');
+      if(!util.defined(fieldStrings)) {
+        callback(500, null);
+        return;
+      }
+
+      var _that = this;
+      remoteDataService.fetchPanel(fetchPanelFieldsParams.objectType, fetchPanelFieldsParams.obectId, fieldStrings, function(err, data) {
 
         if(util.errorCheck(err)) {
           callback(err,null)
         } else {
-          var fieldRecords = [];
-          var fields = fetchPanelFieldsParams.fields;
-          var requiredFields = fetchPanelFieldsParams.requiredFields;
-          fields = _.map(fields, function(field){ return field.toLowerCase().trim(); });
-          requiredFields = _.map(requiredFields, function(field){ return field.toLowerCase().trim(); });
 
-          var keys = _.keys(data.result.fields);
-          for(var i=0; i<keys.length; i++) {
-
-            var key = keys[i];
-
-            var order = _.indexOf(fields, key.toLowerCase());
-
-            var fieldRecord = {
-              name: key,
-              type: data.result.fields[key].type,
-              label: data.result.fields[key].label,
-              pickList: data.result.fields[key].pickList,
-              order: order,
-              maxLength: data.result.fields[key].maxLength,
-              isCalculated: data.result.fields[key].isCalculated,
-              isNillable: data.result.fields[key].isNillable,
-              description: data.result.fields[key].description
-            }
-
-            var required = _.indexOf(requiredFields, key.toLowerCase());
-            if(defined(required) && required > -1) {
-              fieldRecord.isNillable = false;
-            }
-
-            fieldRecords.push(fieldRecord);
-          }
-
-          fieldRecords = _.sortBy(fieldRecords, function(rec){ return rec.order; });
-
-          // Check for empty properties
-          //for(var j=0; j<data.result.recordData.length; j++) {
-
-          var recordData = {};
-          if(defined(data,"result.recordData.length") && data.result.recordData.length > 0) {
-            recordData = data.result.recordData[0];
-          } else {
-            recordData.Id = fetchPanelFieldsParams.obectId;
-          }
-          
-          for(var i=0; i<fieldRecords.length; i++) {
-
-              var found = 0;
-              for (var property in recordData) {
-                if(property == fieldRecords[i].name)
-                  found=1;
-              }
-
-              if(found == 0) {
-                recordData[fieldRecords[i].name]=null;
-              }
-
-              if(fieldRecords[i].type == 'DATETIME') {
-                var d = new Date(0);
-                var val = recordData[fieldRecords[i].name];
-                d.setUTCSeconds((val/1000));
-                recordData[fieldRecords[i].name]=d;
-              }
-
-              if(fieldRecords[i].type == 'DATE') {
-
-                var d = new Date(0);
-                var val = recordData[fieldRecords[i].name];
-                d.setUTCSeconds((val/1000));
-
-                var curr_date = d.getDate();
-                var curr_month = d.getMonth() + 1; //Months are zero based
-                var curr_year = d.getFullYear();
-
-                var dateText = curr_month + "/" + curr_date  + "/" + curr_year;
-
-                val=dateText;
-              }
-
-          }
+          var fieldRecords = _that.processFields(fetchPanelFieldsParams,data.result.fields);
+          var recordData = _that.processRecordData(data.result.recordData, fieldRecords);
 
           var recordFields = {
             fieldRecords: fieldRecords,
-            recordData: [recordData]
+            recordData: recordData
           }
+
+          _that.panelFieldRecords[panelName].fieldRecords = recordFields.fieldRecords;
+          _that.panelFieldRecords[panelName].recordData = [recordFields.recordData];
 
           callback(null, recordFields);
 

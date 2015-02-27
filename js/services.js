@@ -25,406 +25,6 @@ sfdcServices.factory('sfdcCPESelectService', ['$resource','$http','remoteDataSer
 }]);
 
 
-sfdcServices.factory('sfdcPanelFieldsServiceX', ['$resource','$http','$rootScope','remoteDataService','util',
-  function($resource, $http, $rootScope, remoteDataService,util){
-
-    var sfdcPanelFieldsService = {};
-    sfdcPanelFieldsService.$http = $http;
-    sfdcPanelFieldsService.userData = {};
-    sfdcPanelFieldsService.viewMode = 'card';
-    sfdcPanelFieldsService.mode = 'view';
-
-    sfdcPanelFieldsService.changeMode = function(mode, recordName) {
-      $rootScope.$broadcast('handleModeChange', mode, recordName);
-    };
-
-    sfdcPanelFieldsService.changeData = function(panelFieldsInfo) {
-      $rootScope.$broadcast('handleDataChange', panelFieldsInfo);
-    };
-
-
-    sfdcPanelFieldsService.deleteFormData = function(panelInfo, recordIndex, callback) {
-      var panelValues = panelInfo.recordData[recordIndex]; 
-      remoteDataService.deletePanel(panelInfo.objectType, panelValues.Id, function(err, data) {
-        callback(err, data);
-      })
-    };
-
-    sfdcPanelFieldsService.saveFormData = function(panelInfo, recordIndex, callback) {
-
-      var recordData = panelInfo.recordData;
-      var fieldRecords = panelInfo.fieldRecords;
-      var fetchPanelFieldsParams = panelInfo.fetchPanelFieldsParams;
-
-      if(panelInfo.addRecordData !== null && typeof panelInfo.addRecordData !== "undefined") {
-        var panelValues = panelInfo.addRecordData[recordIndex];
-      } else {
-        var panelValues = recordData[recordIndex];  
-      }
-
-      var hiddenfields = fetchPanelFieldsParams.hiddenfields;
-      var readOnlyfields = fetchPanelFieldsParams.readOnlyfields;
-
-      for(var i=0; i<fieldRecords.length; i++) {
-        delete fieldRecords[i].$$hashKey;
-
-        var val = panelValues[fieldRecords[i].name];
-        if(!defined(val) && !fieldRecords[i].hidden && fieldRecords[i].type != 'MULTIPICKLIST') {
-          fieldRecords[i].value = null;
-          continue;
-        }
-
-        if(fieldRecords[i].type == 'DATETIME') {
-          var mdate = moment(val);
-          fieldRecords[i].epochValue = mdate.unix() * 1000;
-        }
-
-        if(fieldRecords[i].type == 'DATE') {
-
-          // If a date object
-          var dt = new Date();
-
-          if(typeof panelValues[fieldRecords[i].name] == "object") {
-
-            dt = new Date(panelValues[fieldRecords[i].name].toUTCString());
-            fieldRecords[i].epochValue = dt.getTime();                
-
-          } else {
-
-            val = panelValues[fieldRecords[i].name] + ' 00:00';
-            var parts = val.match(/(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{2}):(\d{2})/);
-
-            var epochVal = Date.UTC(+parts[3], parts[1]-1, +parts[2], +parts[4], +parts[5]);
-            dt = new Date(epochVal)
-            fieldRecords[i].epochValue = dt.getTime();
-
-          }
-
-          var curr_date = dt.getDate();
-          var curr_month = dt.getMonth() + 1; //Months are zero based
-          var curr_year = dt.getFullYear();
-
-          var dateText = curr_month + "/" + curr_date  + "/" + curr_year;
-          fieldRecords[i].value = dateText;
-
-              // Must match the values by 'Name' property
-        } else if(fieldRecords[i].type == 'REFERENCE') {
-
-          if(fetchPanelFieldsParams.references[fieldRecords[i].name] !== null && typeof fetchPanelFieldsParams.references[fieldRecords[i].name] !== "undefined" &&
-            fetchPanelFieldsParams.references[fieldRecords[i].name].values !== null && typeof fetchPanelFieldsParams.references[fieldRecords[i].name].values !== "undefined") {
-
-            var refData = fetchPanelFieldsParams.references[fieldRecords[i].name].values;
-            var match = _.findWhere(refData, {name: val});
-            if(match !== null && typeof match !== "undefined") {
-              fieldRecords[i].refValue = match.id;
-              fieldRecords[i].value = panelValues[fieldRecords[i].name];
-            } else {
-              var otherFieldName = fetchPanelFieldsParams.references[fieldRecords[i].name].otherFieldName;
-              fieldRecords[i].refOtherField = otherFieldName;
-              fieldRecords[i].value = val;
-            }
-          }
-
-        } else if(fieldRecords[i].type == 'MULTIPICKLIST') {
-          var val = '';
-          for(var j=0; j<fieldRecords[i].multiSelect.length; j++) {
-            var fld = fieldRecords[i].multiSelect[j];
-            if ( fld.ticked === true ) {
-              if(val == '')
-                val = fld.name
-              else val = val + '; ' + fld.name;
-            }
-          }
-          fieldRecords[i].value = val;
-
-        } else {
-          fieldRecords[i].value = panelValues[fieldRecords[i].name];  
-        }   
-
-        if(hiddenfields !== null && typeof hiddenfields !== "undefined" && fieldRecords[i].hidden) {
-          var match = _.findWhere(hiddenfields, {name: fieldRecords[i].name});
-          if(match !== null && typeof match !== "undefined" && match.value != null && typeof match.value !== "undefined") {
-            fieldRecords[i].value=match.value;
-            fieldRecords[i].refValue=match.value;
-          }
-        }          
-      }
-
-      // delete fieldRecords.$$hashKey 
-      // for(var i=0; i<fieldRecords.length; i++) {
-      //   delete fieldRecords[i].$$hashKey;
-      // }
-
-      remoteDataService.savePanel(panelInfo.objectType, panelValues.Id, fieldRecords, function(err, data) {
-			  callback(err, data);
-      })
-
-    }
-
-    sfdcPanelFieldsService.fetchPanelRecords = function(fetchPanelFieldsParams, callback) {
-
-      remoteDataService.fetchPanelList(fetchPanelFieldsParams.objectType, fetchPanelFieldsParams.parentField, fetchPanelFieldsParams.parentId, fetchPanelFieldsParams.fields, function(err, data) {
-        
-        if(util.errorCheck(err)) {
-          callback(err,null)
-        } else {
-          var fieldRecords = [];
-          var fields = fetchPanelFieldsParams.fields;
-          var readOnlyfields = fetchPanelFieldsParams.readOnlyfields;
-          var hiddenfields = fetchPanelFieldsParams.hiddenfields;
-          var viewfields = null;
-          if(defined()) {
-            viewfields = fetchPanelFieldsParams.viewFields;
-            viewfields = _.map(viewfields, function(field){ return field.toLowerCase().trim(); });
-          }
-
-          fields = _.map(fields, function(field){ return field.toLowerCase().trim(); });
-
-          var keys = _.keys(data.result.fields);
-          for(var i=0; i<keys.length; i++) {
-
-            var key = keys[i];
-            var order = -1;
-            if(defined(viewfields)) {
-              order = _.indexOf(viewfields, key.toLowerCase());
-            } else {
-              order = _.indexOf(fields, key.toLowerCase());  
-            }
-            
-            var fieldKey = data.result.fields[key];
-            var multiSelect = [];
-            if(defined(fieldKey,"pickList.length")) {
-              for(var k=0; k<data.result.fields[key].pickList.length; k++) {
-                var obj = {
-                  name: data.result.fields[key].pickList[k],
-                  ticked: false
-                }
-                multiSelect.push(obj);
-              }
-            }
-
-            var fieldRecord = {
-              name: key,
-              type: data.result.fields[key].type,
-              label: data.result.fields[key].label,
-              pickList: data.result.fields[key].pickList,
-              multiSelect: multiSelect,
-              order: order,
-              maxLength: data.result.fields[key].maxLength,
-              isCalculated: data.result.fields[key].isCalculated,
-              isNillable: data.result.fields[key].isNillable,
-              description: data.result.fields[key].description
-            }
-
-            if(readOnlyfields !== null && typeof readOnlyfields !== "undefined") {
-              var found = _.indexOf(readOnlyfields, key);
-              if(found > -1) {
-                fieldRecord.readOnly=true;
-              }
-            }
-            if(hiddenfields !== null && typeof hiddenfields !== "undefined") {
-              var match = _.findWhere(hiddenfields, {name: key});
-              if(match !== null && typeof match !== "undefined") {
-                fieldRecord.hidden=true;
-              }
-            }
-            fieldRecords.push(fieldRecord);
-          }
-
-          fieldRecords = _.sortBy(fieldRecords, function(rec){ return rec.order; });
-
-          for(var j=0; j<data.result.recordData.length; j++) {
-
-            var recordData = data.result.recordData[j];
-
-            for(var i=0; i<fieldRecords.length; i++) {
-
-                var found = 0;
-                for (var property in recordData) {
-                  if(property == fieldRecords[i].name)
-                    found=1;
-                }
-
-                if(found == 0) {
-                  recordData[fieldRecords[i].name]=null;
-                }
-
-                var val = recordData[fieldRecords[i].name];
-                if(!defined(val)) {
-                  continue;
-                }
-
-                if(fieldRecords[i].type == 'MULTIPICKLIST') {
-
-                  var ms = fieldRecords[i].multiSelect.slice();
-                  for(var k=0; k<ms.length; k++) {
-                    if(val.indexOf( ms[k].name) > -1)
-                       ms[k].ticked=true;
-                  }
-                  var obj = {
-                    value: val,
-                    multiSelect: ms
-                  }
-                  val = recordData[fieldRecords[i].name] = obj;
-
-                }
-
-                // Must match the values by 'Name' property
-                if(fieldRecords[i].type == 'REFERENCE') {
-
-                  if(fetchPanelFieldsParams.references !== null && typeof fetchPanelFieldsParams.references !== "undefined" &&
-                    fetchPanelFieldsParams.references[fieldRecords[i].name] !== null && typeof fetchPanelFieldsParams.references[fieldRecords[i].name] !== "undefined" &&
-                    fetchPanelFieldsParams.references[fieldRecords[i].name].values !== null && typeof fetchPanelFieldsParams.references[fieldRecords[i].name].values !== "undefined") {
-                      var refData = fetchPanelFieldsParams.references[fieldRecords[i].name].values;
-                      var match = _.findWhere(refData, {id: val});
-                      if(match !== null && typeof match !== "undefined") {
-                        recordData[fieldRecords[i].name] = match.name;
-                      }
-                  }
-                }
-
-                if(fieldRecords[i].type == 'DATETIME') {
-                  var d = new Date(0);
-                  d.setUTCSeconds((val/1000));
-                  recordData[fieldRecords[i].name]=d;
-                }
-
-                if(fieldRecords[i].type == 'CURRENCY') {
-                  recordData[fieldRecords[i].name]=util.formatAmount(val);
-                }
-
-                if(fieldRecords[i].type == 'DATE') {
-
-                  var d = new Date(0);
-                  d.setUTCSeconds((val/1000));
-
-                  var curr_date = d.getDate();
-                  var curr_month = d.getMonth() + 1; //Months are zero based
-                  var curr_year = d.getFullYear();
-
-                  var dateText = curr_month + "/" + curr_date  + "/" + curr_year;
-
-                  recordData[fieldRecords[i].name]=dateText;
-                }
-            }
-          }
-
-          var recordList = {
-            fieldRecords: fieldRecords,
-            recordData: data.result.recordData
-          }
-
-          callback(null, recordList);
-
-        }
-      });
-
-    }
-
-
-    sfdcPanelFieldsService.fetchPanelFields = function(fetchPanelFieldsParams, callback) {
-
-      remoteDataService.fetchPanel(fetchPanelFieldsParams.objectType, fetchPanelFieldsParams.obectId, fetchPanelFieldsParams.fields, function(err, data) {
-
-        if(util.errorCheck(err)) {
-          callback(err,null)
-        } else {
-          var fieldRecords = [];
-          var fields = fetchPanelFieldsParams.fields;
-          var requiredFields = fetchPanelFieldsParams.requiredFields;
-          fields = _.map(fields, function(field){ return field.toLowerCase().trim(); });
-          requiredFields = _.map(requiredFields, function(field){ return field.toLowerCase().trim(); });
-
-          var keys = _.keys(data.result.fields);
-          for(var i=0; i<keys.length; i++) {
-
-            var key = keys[i];
-
-            var order = _.indexOf(fields, key.toLowerCase());
-
-            var fieldRecord = {
-              name: key,
-              type: data.result.fields[key].type,
-              label: data.result.fields[key].label,
-              pickList: data.result.fields[key].pickList,
-              order: order,
-              maxLength: data.result.fields[key].maxLength,
-              isCalculated: data.result.fields[key].isCalculated,
-              isNillable: data.result.fields[key].isNillable,
-              description: data.result.fields[key].description
-            }
-
-            var required = _.indexOf(requiredFields, key.toLowerCase());
-            if(defined(required) && required > -1) {
-              fieldRecord.isNillable = false;
-            }
-
-            fieldRecords.push(fieldRecord);
-          }
-
-          fieldRecords = _.sortBy(fieldRecords, function(rec){ return rec.order; });
-
-          // Check for empty properties
-          //for(var j=0; j<data.result.recordData.length; j++) {
-
-          var recordData = {};
-          if(defined(data,"result.recordData.length") && data.result.recordData.length > 0) {
-            recordData = data.result.recordData[0];
-          } else {
-            recordData.Id = fetchPanelFieldsParams.obectId;
-          }
-          
-          for(var i=0; i<fieldRecords.length; i++) {
-
-              var found = 0;
-              for (var property in recordData) {
-                if(property == fieldRecords[i].name)
-                  found=1;
-              }
-
-              if(found == 0) {
-                recordData[fieldRecords[i].name]=null;
-              }
-
-              if(fieldRecords[i].type == 'DATETIME') {
-                var d = new Date(0);
-                var val = recordData[fieldRecords[i].name];
-                d.setUTCSeconds((val/1000));
-                recordData[fieldRecords[i].name]=d;
-              }
-
-              if(fieldRecords[i].type == 'DATE') {
-
-                var d = new Date(0);
-                var val = recordData[fieldRecords[i].name];
-                d.setUTCSeconds((val/1000));
-
-                var curr_date = d.getDate();
-                var curr_month = d.getMonth() + 1; //Months are zero based
-                var curr_year = d.getFullYear();
-
-                var dateText = curr_month + "/" + curr_date  + "/" + curr_year;
-
-                val=dateText;
-              }
-
-          }
-
-          var recordFields = {
-            fieldRecords: fieldRecords,
-            recordData: [recordData]
-          }
-
-          callback(null, recordFields);
-
-        }
-      });
-    }
-
-  return sfdcPanelFieldsService;
-
-}]);
-
 sfdcServices.factory('remoteDataService', ['$resource','$http','$rootScope','$timeout','$q','$location','common',
   function($resource, $http, $rootScope, $timeout,$q,$location,common){
 
@@ -435,6 +35,107 @@ sfdcServices.factory('remoteDataService', ['$resource','$http','$rootScope','$ti
 
     remoteDataService.logError = function(errorObject, msg, file, method, callback) {
       sfdcService.logError(errorObject, msg, file, method, function(err, data) {
+        callback(err, data);
+      });
+    }
+
+    
+    remoteDataService.attestBadge = function(badgeId, essay, callback) {
+      sfdcService.attestBadge(badgeId, essay, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+
+    remoteDataService.setOthersBadgeStatus = function(badgeId, memberId, status, callback) {
+      sfdcService.setBadgeStatus(badgeId, memberId, status, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.setBadgeStatus = function(badgeId, status, callback) {
+      sfdcService.setBadgeStatus(badgeId, null, status, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.addUserGroupShare = function(userGroupId, postId, callback) {
+      sfdcService.addUserGroupShare(userGroupId, postId, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.fetchUserGroups = function(callback) {
+      sfdcService.fetchUserGroups(function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.getPostFolders = function(callback) {
+      sfdcService.getPostFolders(function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.deleteObjectMember = function(parentObject, groupId, contactId, callback) {
+      sfdcService.deleteObjectMember(parentObject, groupId, contactId, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.deleteObjectShare = function(parentObject, objectId, contactId, callback) {
+      sfdcService.deleteObjectShare(parentObject, objectId, contactId, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.addObjectMember = function(parentObject, groupId, contactId, callback) {
+      sfdcService.addObjectMember(parentObject, groupId, contactId, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.addObjectShare = function(parentObject, objectId, contactId, callback) {
+      sfdcService.addObjectShare(parentObject, objectId, contactId, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.searchUsers = function(searchText, searchType, callback) {
+      sfdcService.searchUsers(searchText, searchType, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+
+    remoteDataService.fetchObjectShareDetails = function(parentObject, parentID, callback) {
+      sfdcService.fetchObjectShareDetails(parentObject, parentID, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.fetchObjectMembers = function(parentObject, parentID, callback) {
+      sfdcService.fetchObjectMembers(parentObject, parentID, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
+
+    remoteDataService.fetchObjectShares = function(parentObject, parentID, callback) {
+      sfdcService.fetchObjectShares(parentObject, parentID, function(err, data) {
+        err = common.serviceErrorCheck(data);
         callback(err, data);
       });
     }
@@ -900,6 +601,12 @@ sfdcServices.factory('remoteDataService', ['$resource','$http','$rootScope','$ti
       });
     }
 
+    remoteDataService.removeAttachment = function(attachmentId, callback) {
+      sfdcService.removeAttachment(attachmentId, function(err, data) {
+        err = common.serviceErrorCheck(data);
+        callback(err, data);
+      });
+    }
 
     remoteDataService.uploadAttachment = function(name, fileData, record, callback) {
       sfdcService.uploadAttachment(name, fileData, record, function(err, data) {

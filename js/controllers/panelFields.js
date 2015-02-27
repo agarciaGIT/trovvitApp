@@ -2,19 +2,23 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
   function(util,common, $scope, $rootScope, $state, $stateParams, $timeout, remoteDataService, sfdcPanelFieldsService) {
 
     $scope.recordIndex = 0;
+    $scope.recordId = 0;
     $scope.submitted = false;
-    var recName = $scope.recordName
+    $scope.showAttachementAdd = false;
 
+    var recName = $scope.recordName
     var params = recName.split(':');
     if(params.length > 1) {
       $scope.recordName = params[0];
-      $scope.recordIndex = params[1];
+      $scope.recordId = params[1];
     }
     $scope.displayMode = 'card';
     if(params.length > 2) {
       $scope.displayMode = params[2];
     }
 
+    $scope.iFrameSrc = null;
+    
     $scope.regions = [
         {
         name: "Alabama",
@@ -30,11 +34,24 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
     $scope.qrcode = "http://api.qrserver.com/v1/create-qr-code/?size=75x75&data=https://" + domain + "/apex/ExamCheckin?id=";
     $scope.panelRecord = jQuery.extend(true, {}, sfdcPanelFieldsService.panelFieldRecords[$scope.recordName]); 
     $scope.panelRecordBackup = jQuery.extend(true, {}, $scope.panelRecord); 
+    $scope.attachments = $scope.panelRecord.attachments;
+    var add = [];
+    if(util.defined($scope,"attachments") && util.defined($scope,"attachments.length")) {
+      for(var i=0; i<$scope.attachments.length; i++)
+        if($scope.attachments[i].ParentId == $scope.recordId)
+          add.push($scope.attachments[i]);
+    } else {
+      //add.push($scope.attachments);
+    }
+    $scope.attachments = add;
+
+
+    $scope.myShare = _.findWhere($scope.panelRecord.members, {Contact__c: $scope.userData.contactData.Id, Badge__c: $scope.recordId});
 
     if(params.length > 1 && defined($scope,"panelRecord.recordData.length")) {
 
       for(var i=0; i<$scope.panelRecord.recordData.length; i++) {
-        if($scope.panelRecord.recordData[i].Id == $scope.recordIndex) {
+        if($scope.panelRecord.recordData[i].Id == $scope.recordId) {
           break;
         }
       }
@@ -63,6 +80,52 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
         $scope.spinner = util.startSpinner("#fieldSpin"+$scope.recordName+$scope.recordIndex, '#8b8989', 0, 15)
       }
     });
+
+    $scope.isName = function(fieldName) {
+      return ($scope.panelRecord.nameFieldAPIname == fieldName);
+    }
+    
+    $scope.getFieldInclude = function(fieldId) {
+      var field = _.findWhere($scope.panelRecord.fields, {sfdcAPIName: fieldId});
+      if(util.defined(field,"include")) 
+        return field.include
+      else return null;
+    }
+
+    $scope.getFieldHTML = function(fieldId, fieldValue) {
+      var field = _.findWhere($scope.panelRecord.fields, {sfdcAPIName: fieldId});
+      if(util.defined(field,"returnHTML")) 
+        return field.returnHTML(fieldValue);
+      else return null;
+    }
+
+
+    $scope.getFieldReferenceValue = function(fieldId, fieldValue) {
+      var field = _.findWhere($scope.panelRecord.fields, {sfdcAPIName: fieldId});
+      if(util.defined(field,"references.values") && field.references.values.length > 0) {
+        var value = _.findWhere(field.references.values, {id: fieldValue});
+        if(util.defined(value))
+          return value.name;
+        else return null;  
+      }
+      else return null;
+    }
+
+    $scope.getFieldReferenceValues = function(fieldId) {
+      var field = _.findWhere($scope.panelRecord.fields, {sfdcAPIName: fieldId});
+      if(util.defined(field,"references.values") && field.references.values.length > 0)
+        return field.references.values;
+      else return null;
+    }
+
+    $scope.getFieldReferenceOther = function(fieldId) {
+      var field = _.findWhere($scope.panelRecord.fields, {sfdcAPIName: fieldId});
+      if(util.defined(field,"references.otherFieldName") && field.references.otherFieldName.length > 0)
+        return field.references.otherFieldName;
+      else return null;
+    }
+
+    
 
     $scope.hasClass = function(fieldId, classname) {
       return $('#' + fieldId).hasClass(classname);      
@@ -96,6 +159,87 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
     $rootScope.$on('handleSave', function(event, mode, recordName) {
       $scope.savePanel();
     });
+
+    $scope.isParticipant = function() {
+      //return _.findWhere($scope.shares, {Contact__c: user.Id}) + 1;
+      if(util.defined($scope,"panelValues.Contact_Owner__c")) {
+        if($scope.panelValues.Contact_Owner__c == $scope.userData.contactData.Id)
+          return false;
+        else return true;        
+      } else {
+        return true;
+      }
+    }
+
+    $scope.isShared = function() {
+      //return _.findWhere($scope.shares, {Contact__c: user.Id}) + 1;
+      if(util.defined($scope,"panelValues.Contact_Owner__c")) {
+        if($scope.panelValues.Contact_Owner__c == $scope.userData.contactData.Id)
+          return false;
+        else return true;        
+      } else {
+        return true;
+      }
+    }
+
+    $scope.getMembershipCount = function() {
+      if($scope.panelRecord.membership && $scope.panelRecord.objectType == 'User_Group__c' && util.defined($scope,"panelRecord.members"))
+        var fnd = _.where($scope.panelRecord.members, {User_Group__c: $scope.recordId});
+      else var fnd = _.where($scope.panelRecord.members, {Badge__c: $scope.recordId});
+      if(util.defined(fnd,"length"))
+        return fnd.length;
+      else return 0;
+    }
+
+    $scope.getSharedCount = function() {
+      var fnd = _.where($scope.panelRecord.recordShares, {Post__c: $scope.recordId});
+      if(util.defined(fnd,"length"))
+        return fnd.length;
+      else return 0;
+    }
+
+
+    $scope.removeAttachment = function(attachmentId) {
+      remoteDataService.removeAttachment(attachmentId, function(err, data) {
+          $rootScope.$apply(function(){ 
+            $scope.attachments = _.reject($scope.attachments, function(obj) {
+                  return (obj.Id == attachmentId);
+            });
+          });
+      });
+    }
+
+    $scope.attach = function() {
+      if($scope.panelRecord.mode=='add') {
+        return $scope.savePanel(true);
+      } else {
+        $scope.iFrameSrc = 'https://' + util.contactsURL + util.uploadURL + $scope.recordId;        
+        if($scope.showAttachementAdd == true) {
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
+        } else {
+          $scope.showAttachementAdd=!$scope.showAttachementAdd;
+        }
+      }
+    }
+    $scope.doneAttch = function() {
+      $("#myAttachModal").hide();
+    }
+
+    $scope.viewPanel = function() {
+      util.navigate('panelListView',{fieldRecord: $scope.recordName, type: $scope.panelRecord.objectType, id: $scope.panelRecord.recordData[$scope.recordIndex].Id});
+    }
+
+    $scope.membersPanel = function() {
+      util.navigate('panelListMembers',{fieldRecord: $scope.recordName, type: $scope.panelRecord.objectType, id: $scope.panelRecord.recordData[$scope.recordIndex].Id});
+    }
+
+    $scope.sharePanel = function() {
+      util.navigate('panelListShare',{fieldRecord: $scope.recordName, type: $scope.panelRecord.objectType, id: $scope.panelRecord.recordData[$scope.recordIndex].Id});
+    }
 
     $scope.editPanel = function() {
       $scope.panelRecord.mode = 'edit';
@@ -170,7 +314,7 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
     }
 
 
-    $scope.savePanel = function() {
+    $scope.savePanel = function(isAttachment) {
 
       var saveErrorText = "";
       $scope.panelRecord.error = "";
@@ -190,7 +334,6 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
         if(saveErrorText == "") {
 
           sfdcPanelFieldsService.saveFormData($scope.panelRecord, $scope.recordIndex, function(err, data) {
-            
             if(util.errorCheck(err)) {
               $rootScope.$apply(function(){ 
                 util.disableToggleForm("#formArea", false);
@@ -201,9 +344,19 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
               return;
             }
 
+            var objectId = data.result;
+
             delete $scope.panelRecord.addRecordData;
 
             if(err) {
+            } else if(isAttachment) {
+              
+              $rootScope.$apply(function(){ 
+                $scope.iFrameSrc = 'https://' + util.contactsURL + util.uploadURL + objectId;
+                util.disableToggleForm("#formArea", false);
+                $scope.spinner.stop();
+                $scope.showAttachementAdd=!$scope.showAttachementAdd;
+              });
 
             } else {        
               $scope.panelRecordBackup = jQuery.extend(true, {}, $scope.panelRecord); 
@@ -266,31 +419,33 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
 
     });
 
-    $scope.$on('handlePanelDisplay', function() {
+    $scope.$on('handlePanelDisplay', function(event, finishName) {
 
-      $("#fieldSpin"+$scope.recordName+$scope.recordIndex).parent().css('height','100%')
-      $('#formArea').show();
-      $scope.spinner.stop();
+      if((util.defined(finishName) && finishName == $scope.recordName) || !util.defined(finishName)) {
+        $("#fieldSpin"+$scope.recordName+$scope.recordIndex).parent().css('height','100%')
+        $('#formArea').show();
+        $scope.spinner.stop();
 
-      $rootScope.$apply(function(){
+        $rootScope.$apply(function(){
 
-        $scope.panelRecord = jQuery.extend(true, {}, sfdcPanelFieldsService.panelFieldRecords[$scope.recordName]); 
-        $scope.panelRecordBackup = jQuery.extend(true, {}, $scope.panelRecord); 
-        $scope.panelValues = $scope.panelRecord.recordData[$scope.recordIndex];
-        
-        $scope.canEdit = true;
-        var fetchPanelFieldsParams = sfdcPanelFieldsService.panelFieldRecords[$scope.recordName];
+          $scope.panelRecord = jQuery.extend(true, {}, sfdcPanelFieldsService.panelFieldRecords[$scope.recordName]); 
+          $scope.panelRecordBackup = jQuery.extend(true, {}, $scope.panelRecord); 
+          $scope.panelValues = $scope.panelRecord.recordData[$scope.recordIndex];
+          
+          $scope.canEdit = true;
+          var fetchPanelFieldsParams = sfdcPanelFieldsService.panelFieldRecords[$scope.recordName];
 
-        if(defined(fetchPanelFieldsParams,"canEdit")) {
-          $scope.canEdit = fetchPanelFieldsParams.canEdit($scope.panelRecord, $scope.panelValues);
-        }
+          if(defined(fetchPanelFieldsParams,"canEdit")) {
+            $scope.canEdit = fetchPanelFieldsParams.canEdit($scope.panelRecord, $scope.panelValues);
+          }
 
-        $scope.dateOptions = {
-          'year-format': "'yyyy'",
-          'starting-day': 1
-        };
-        $scope.format = 'MM/dd/yyyy';
-      });
+          $scope.dateOptions = {
+            'year-format': "'yyyy'",
+            'starting-day': 1
+          };
+          $scope.format = 'MM/dd/yyyy';
+        });
+      }
     });
 
     $scope.formatAmountDisplay = function(amount) {
@@ -381,10 +536,10 @@ sfdcControllers.controller('SFDCAppPanelFieldsCtrl', ['util','common','$scope', 
         
         if(util.defined($scope,"panelRecord.fieldFilter")) {
 
-          var pv = jQuery.extend(true, {}, $scope.panelValues);
-          var pr = jQuery.extend(true, {}, $scope.panelRecord);
+          //var pv = jQuery.extend(true, {}, $scope.panelValues);
+          //var pr = jQuery.extend(true, {}, $scope.panelRecord);
 
-          return $scope.panelRecord.fieldFilter(item, pv, pr);
+          return $scope.panelRecord.fieldFilter(item, $scope.panelValues, $scope.panelRecord);
 
         } else {
 

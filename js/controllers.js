@@ -3,6 +3,116 @@
 /* Controllers */
 var sfdcControllers = angular.module('sfdcControllers', []);
 
+sfdcControllers.controller('SFDCAppTimelineCtrl', ['util','common','$scope','$rootScope','$stateParams','$state','remoteDataService','sfdcPanelFieldsService',
+  function(util, common, $scope, $rootScope, $stateParams, $state, remoteDataService, sfdcPanelFieldsService) {
+
+    $scope.userData = remoteDataService.userData;
+    $scope.currentAccount = remoteDataService.currentAccount;
+    $scope.envPath = envPath;
+
+    var now = new Date();
+
+    $scope.fieldPanel = {
+      objectType: 'Post__c', 
+      obectId: '', 
+      name: 'timelineposts',
+      title: 'Posts',
+      mode: 'view',
+      allowEdit: true, 
+      editButtonName: 'Edit',
+      saveButtonName: 'Save',
+      deleteButtonName: 'Delete',
+      parentField: 'Contact_Owner__c',
+      parentId: $scope.userData.contactData.Id,
+      defaultSort: 'Post_Date_Time__c',
+      defaultSortReverse: true,      
+      onRoute: 'timeline',
+      share: true,
+      attachment: true,
+      fields: [
+        {
+          sfdcAPIName: 'Contact_Owner__c',
+          view: false,
+          readOnly: false,
+          hidden: true         
+        },
+        {
+          sfdcAPIName: 'Post_Text__c',
+          view: true,
+          readOnly: false,
+          hidden: false         
+        },
+        {
+          sfdcAPIName: 'Post_Date_Time__c',
+          defaultValue: now,
+          view: true,
+          readOnly: false,
+          hidden: false         
+        },
+        {
+          sfdcAPIName: 'Post_Folder__c',
+          view: true,
+          readOnly: false,
+          hidden: false,
+          references: {
+            values: $scope.postFolders,
+            otherFieldName: 'Post_Folder_New__c'
+          }           
+        }],
+        canEdit: function( panelRecord, panelValues ) {
+          return true;
+        },
+        onSave: function( panelRecord, recordIndex, userData ) {
+          return "";
+        },
+        listFilter: function( item, userData ) {
+          return 1;
+        }
+        //fieldFilter: function( item, panelValues, panelRecord ) {
+          //return 1;
+        //}
+    }
+
+    sfdcPanelFieldsService.panelFieldRecords[$scope.fieldPanel.name] = $scope.fieldPanel;
+
+    sfdcPanelFieldsService.fetchPanelRecords($scope.fieldPanel.name, function(err, panelListData) {
+      $rootScope.$apply(function(){
+        $scope.posts = panelListData.recordData;
+        $scope.attachments = panelListData.attachments;
+        $scope.recordShares = panelListData.recordShares;
+        $scope.contactShares = _.pluck($scope.recordShares, 'Contact__c');
+      });
+    });
+
+
+    $scope.getEpochDateTimeText = function(epochDate) {
+      return util.getEpochDateTimeText(epochDate);
+    }
+
+    $scope.getAttachmentId = function(postId) {
+      var att = _.findWhere($scope.attachments, {ParentId: postId});
+      if(util.defined(att,"Id"))
+        return att.Id;
+      else return null;
+    }
+
+    $scope.isShared = function(postId) {
+      return _.findWhere($scope.recordShares, {Post__c: postId});
+    }
+
+    $scope.getSharedCount = function(postId) {
+      var fnd = _.where($scope.recordShares, {Post__c: postId});
+      if(util.defined(fnd,"length"))
+        return fnd.length;
+      else return 0;
+    }
+
+    $scope.viewPanel = function(postId) {
+      util.navigate('panelListView',{fieldRecord: 'timelineposts', type:'Post__c', id: postId});
+    }
+
+
+}]);
 
 sfdcControllers.controller('SFDCAppRegisterInfoCtrl', ['util','common','$scope','$rootScope','$stateParams','$state','remoteDataService',
   function(util, common, $scope, $rootScope, $stateParams, $state, remoteDataService) {
